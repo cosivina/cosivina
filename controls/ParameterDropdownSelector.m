@@ -1,3 +1,48 @@
+% ParameterDropdownSelector (COSIVINA toolbox)
+%   Control that creates a dropdown menu with an accompanying text field in
+%   the GUI. The menu allows to change the values of one or more parameters
+%   between a number of presets.
+% 
+% Constructor call:
+% ParameterDropdownSelector(controlLabel, elementLabels, ...
+%   parameterNames, dropdownValues, dropdownLabels, ...
+%   initialSelection, toolTip, position)
+% 
+% Arguments:
+% controlLabel - label of the control displayed in the text field next to
+%   the dropdown menu
+% elementLabels - string or cell array of strings specifying the
+%   labels of elements connected to this control
+% parameterNames - string or cell array of strings specifying the names of
+%   the element parameters controlled by this slider; arguments
+%   elementLabels and parameterNames must have the same size, with each
+%   pair of entries fully specifying one controlled parameter
+% dropdownValues - a numerical array or a cell array of numerical arrays
+%   specifying the parameter values associated with each menu entry; if the
+%   control is connected to a single element parameter, this argument
+%   should be an array with one valid parameter value for each item in the
+%   dropdown menu; if multiple parameters are connected, it should be a
+%   cell array of such arrays
+% dropdownLabels - cell array of strings specifying the menu items in the
+%   dropdown menu (optional, if not specified the dropdownValues for the
+%   first connected parameter are used as labels)
+% initialSelection - integer specifying the initial selection in the 
+%   dropdown menu (optional, default is 1)
+% tooltip - tooltip displayed when hovering over the control with the mouse
+%   (optional)
+% position - position of the control in the GUI figure window in relative
+%   coordinates (optional, is overwritten when specifying a grid position
+%   in the GUI’s addControl function)
+%
+% Examples:
+% h = ParameterDropdownSelector('p_sA', 'stimulus A', 'position', ...
+%   [25, 50, 75], {'left', 'center', 'right'}, 2, ...
+%   'position of stimulus A');
+% h = ParameterDropdownSelector('d_s', {'stimulus A', 'stimulus B'},...
+%   {'position', 'position'}, {[40, 45, 48], [60, 55, 52]}, ... 
+%   {'far', 'close', 'very close'}, 1, 'distance between stimuli A and B');
+
+
 classdef ParameterDropdownSelector < Control
   properties
     controlLabel = '';

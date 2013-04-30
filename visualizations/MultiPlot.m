@@ -1,3 +1,47 @@
+% MultiPlot (COSIVINA toolbox)
+%   Visualization that creates a set of axes with one or more plots in it,
+%   oriented either vertically or horizontally.
+%
+% Constructor call:
+% MultiPlot(plotElements, plotComponents, scales, orientation, 
+%   axesProperties, plotProperties, title, xlabel, ylabel, position)
+%
+% Arguments:
+% plotElements - string or cell array of strings (with one entry for each
+%   plot) listing the labels of the elements whose components should be
+%   plotted
+% plotComponents - string or cell array of strings (with one entry for
+%   each plot) listing the component names that should be plotted for the
+%   specified elements; one pair of entries from plotElements and
+%   plotComponents fully specifies the source data for one plot
+% scales - scalar or numeric vector specifying a scaling factor for each
+%   plot (optional, by default all scaling factors are 1)
+% orientation - string specifying the orientation of the plot, should be
+%   either horizontal (default) or vertical
+% axesProperties - cell array containing a list of valid axes settings
+%   (as property/value pairs) that can be applied to the axes handle via
+%   the set function (optional, see Matlab documentation on axes for 
+%   further information)
+% plotProperties - cell array of cell arrays containing lists of valid
+%   lineseries settings (as property/value pairs or as a single string
+%   specifying the line style) that can be applied to the plot handles
+%   via the set function (see Matlab documentation on the plot function
+%   for further information); the outer cell array must contain one inner
+%   cell array for every plot (optional)
+% title - string specifying an axes title (optional)
+% xlabel - string specifying an x-axis label (optional)
+% ylabel - string specifying a y-axis label (optional)
+% position - position of the control in the GUI figure window in relative
+%   coordinates (optional, is overwritten when specifying a grid position
+%   in the GUI’s addVisualization function)
+%
+% Example:
+% h = MultiPlot({'field u', 'field u', 'stimulus A'}, ...
+%   {'activation', 'output', 'output'}, [1, 10, 1], 'horizontal', ...
+%   {'YLim', [-10, 10]}, { {'b-', 'LineWidth', 2}, {'r-'}, {'g--'} }, ...
+%   'perceptual field', 'feature value', 'activation');
+
+
 classdef MultiPlot < Visualization
   properties
     nPlots = 0;

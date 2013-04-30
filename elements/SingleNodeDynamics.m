@@ -1,8 +1,8 @@
 % SingleNodeDynamics (COSIVINA toolbox)
 %   Creates a single dynamic node and computes rates of change for all
-%   Possible activation states within a specified range. (Note: This
+%   possible activation states within a specified range. (Note: This
 %   class is mainly for visualization and analysis; if you just want
-%   the basic behavior of a dynamic node, use NeuralField class instead.
+%   the basic behavior of a dynamic node, use NeuralField class instead.)
 % 
 % Constructor call:
 % SingleNodeDynamics(label, tau, h, beta, selfExcitation, range, resolution)
@@ -15,7 +15,7 @@
 %   noiseLevel - strength of Gaussian noise
 %   range - range of activation values for which rates of 
 %     change is computed
-%   resolution - resolution with which range is sampled
+%   resolution - step size with which range is sampled
 
 
 classdef SingleNodeDynamics < Element
@@ -26,7 +26,7 @@ classdef SingleNodeDynamics < Element
       'noiseLevel', ParameterStatus.Changeable, ...
       'range', ParameterStatus.Fixed, 'resolution', ParameterStatus.Fixed);
     components = {'input', 'activation', 'output', 'h', 'rateOfChange', 'samplingPoints', 'sampledRatesOfChange', ...
-      'attractorPositions', 'attractorValues', 'repellorPositions', 'repellorValues'};
+      'attractorStates', 'attractorRatesOfChange', 'repellorStates', 'repellorRatesOfChange'};
     defaultOutputComponent = 'output';
   end
   
@@ -47,10 +47,10 @@ classdef SingleNodeDynamics < Element
     rateOfChange
     samplingPoints
     sampledRatesOfChange
-    attractorPositions
-    attractorValues
-    repellorPositions
-    repellorValues
+    attractorStates
+    attractorRatesOfChange
+    repellorStates
+    repellorRatesOfChange
   end
   
   methods
@@ -100,14 +100,14 @@ classdef SingleNodeDynamics < Element
       iAttractor = find(diff(obj.sampledRatesOfChange < 0) == 1);
       y1 = obj.sampledRatesOfChange(iAttractor);
       y2 = obj.sampledRatesOfChange(iAttractor+1);
-      obj.attractorPositions = obj.samplingPoints(iAttractor) - (y1 * obj.resolution) ./ (y2 - y1);
-      obj.attractorValues = 1/obj.tau * ...
-        (-obj.attractorPositions + obj.h + obj.selfExcitation * sigmoid(obj.attractorPositions, obj.beta, 0) + obj.input);
+      obj.attractorStates = obj.samplingPoints(iAttractor) - (y1 * obj.resolution) ./ (y2 - y1);
+      obj.attractorRatesOfChange = 1/obj.tau * ...
+        (-obj.attractorStates + obj.h + obj.selfExcitation * sigmoid(obj.attractorStates, obj.beta, 0) + obj.input);
       
 %       iRepellor = find(diff(obj.sampledRatesOfChange > 0) == 1);
-      obj.repellorPositions = obj.samplingPoints(diff(obj.sampledRatesOfChange > 0) == 1) + obj.resolution * 0.5;
-      obj.repellorValues = 1/obj.tau * ...
-        (-obj.repellorPositions + obj.h + obj.selfExcitation * sigmoid(obj.repellorPositions, obj.beta, 0) + obj.input);
+      obj.repellorStates = obj.samplingPoints(diff(obj.sampledRatesOfChange > 0) == 1) + obj.resolution * 0.5;
+      obj.repellorRatesOfChange = 1/obj.tau * ...
+        (-obj.repellorStates + obj.h + obj.selfExcitation * sigmoid(obj.repellorStates, obj.beta, 0) + obj.input);
     end
     
     
@@ -123,14 +123,14 @@ classdef SingleNodeDynamics < Element
         (-obj.samplingPoints + obj.h + obj.selfExcitation * sigmoid(obj.samplingPoints, obj.beta, 0) + obj.input);
       
       iAttractor = find(diff(obj.sampledRatesOfChange < 0) == 1);
-      obj.attractorPositions = obj.samplingPoints(iAttractor+1) + obj.resolution * 0.5;
-      obj.attractorValues = 1/obj.tau * ...
-        (-obj.attractorPositions + obj.h + obj.selfExcitation * sigmoid(obj.attractorPositions, obj.beta, 0) + obj.input);
+      obj.attractorStates = obj.samplingPoints(iAttractor+1) + obj.resolution * 0.5;
+      obj.attractorRatesOfChange = 1/obj.tau * ...
+        (-obj.attractorStates + obj.h + obj.selfExcitation * sigmoid(obj.attractorStates, obj.beta, 0) + obj.input);
       
       iRepellor = find(diff(obj.sampledRatesOfChange > 0) == 1);
-      obj.repellorPositions = obj.samplingPoints(iRepellor+1) + obj.resolution * 0.5;
-      obj.repellorValues = 1/obj.tau * ...
-        (-obj.repellorPositions + obj.h + obj.selfExcitation * sigmoid(obj.repellorPositions, obj.beta, 0) + obj.input);
+      obj.repellorStates = obj.samplingPoints(iRepellor+1) + obj.resolution * 0.5;
+      obj.repellorRatesOfChange = 1/obj.tau * ...
+        (-obj.repellorStates + obj.h + obj.selfExcitation * sigmoid(obj.repellorStates, obj.beta, 0) + obj.input);
     end
   end
 end

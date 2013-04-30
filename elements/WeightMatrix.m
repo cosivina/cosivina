@@ -1,3 +1,15 @@
+% WeightMatrix (COSIVINA toolbox)
+%   Connective element that multiplies its input with a weight matrix:
+%   O = I * W
+%   Both the input I and the output O are row vectors.
+%
+% Constructor call:
+% WeightMatrix(label, weights)
+%   label - element label
+%   weights - matrix of connection weights (size of input and output is
+%     determined from this)
+
+
 classdef WeightMatrix < Element
   
   properties (Constant)
@@ -10,7 +22,7 @@ classdef WeightMatrix < Element
   properties
     % parameters
     size = [1, 1];
-    weights = 1;
+    weights = 0;
         
     % accessible structures
     output

@@ -1,0 +1,35 @@
+CHANGELOG
+
+Version 1.1
+* added comments for command window help to Simulator, StandardGUI, and all 
+  visualization and control classes
+* changed base class of Element to matlab.mixin.Copyable to allow shallow copies
+  of elements without requiring a copy function in each derived class
+* added method copy to Simulator class that creates deep copy of simulator
+* added method connect to StandardGUI class and additional optional parameter
+  in method run, so that one StandardGUI instance can be run with different
+  instances of a simulator
+* added elements History, RunningHistory, WeightMatrix, and SingleNodeDynamics 
+  (documentation), and added elements HalfWaveRectification and DynamicVariable
+* added control PresetSelector (documentation)
+* added visualizations XYPlot and SlicePlot (documentation), and SurfacePlot
+* adjusted Simulator:fromStruct and Simulator:parametersFromStruct functions to
+  be compatible with latest JSONlab version 0.9.1 (which changes certain 
+  matrices to cell arrays when loading a file)
+* adjusted Simulator:parametersFromStruct function so that it is possible to 
+  load from a parameter file that does not fully match the architecture in the 
+  simulator object (with warning indicating the non-matching elements)
+* sligthly changed handling of parameter panel when GUI is closed; previously
+  it could cause problems when starting the same GUI again, now parameter 
+  panel is always closed when re-starting a GUI
+* added support for pauseDuration of 0 in StandardGUI class
+* in StandardGUI, introduced more reasonable handling of pause duration in each
+  step while simulation is paused, by introducing separate property
+  pauseDurationWhilePaused (otherwise wastes resources for very fast updating of
+  plots when the value of pauseDuration is very small)
+* added auxiliary function compareConfigFiles
+* changed form of method calls from object.method(...) to method(object, ...) to
+  improve performance, especially in older Matlab versions
+* removed component input from NeuralField class to improve performance
+
+

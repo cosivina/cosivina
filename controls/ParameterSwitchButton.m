@@ -1,3 +1,38 @@
+% ParameterSwitchButton (COSIVINA toolbox)
+%   Control that creates a labeled toggle button (i.e. the button toggles
+%   between pressed and not pressed when clicked). This control can switch
+%   the values of one or more parameter between two predefined values.
+% 
+% Constructor call:
+% ParameterSwitchButton(controlLabel, elementLabels, parameterNames,
+%   offValues, onValues, toolTip, pressedOnInit, position)
+% 
+% Arguments:
+% controlLabel - label of the control displayed on the button
+% elementLabels - string or cell array of strings specifying the
+%   labels of elements controlled by this button
+% parameterNames - string or cell array of strings specifying the names of
+%   the element parameters controlled by this button; arguments
+%   elementLabels and parameterNames must have the same size, with each
+%   pair of entries fully specifying one controlled parameter
+% offValues - scalar or vector specifying for every connected element
+%   parameter the value it should take while the button is not pressed
+% onValues - scalar or vector specifying for every connected element
+%   parameter the value it should take while the button is pressed
+% tooltip - tooltip displayed when hovering over the control with the mouse
+%   (optional)
+% pressedOnInit - specifies whether the button should be in the pressed or
+%   not pressed state on initialization of the GUI (default is false)
+% position - position of the control in the GUI figure window in relative
+%   coordinates (optional, is overwritten when specifying a grid position
+%   in the GUI’s addControl function)
+%
+% Example:
+% h = ParameterSwitchButton('stimuli on', {'stimulus A', 'stimulus B'}, ...
+%   {'amplitude', 'amplitude'}, [0, 0], [6, 6], ...
+%   'toggle stimuli on/off', false);
+
+
 classdef ParameterSwitchButton < Control
   properties
     controlLabel
@@ -51,7 +86,7 @@ classdef ParameterSwitchButton < Control
           || numel(obj.elementLabels) ~= obj.nParameters || numel(obj.offValues) ~= obj.nParameters ...
           || numel(obj.onValues) ~= obj.nParameters;
         error('ParameterSlider:ParameterSlider:invalidArguments', ...
-          ['Arguments elementLabels and parameter names must be strings or cell arrays of strings' ...
+          ['Arguments elementLabels and parameterNames must be strings or cell arrays of strings ' ...
           'with equal number of elements, and arguments offValues and onValues must be vectors of that same size']);
       end
     end

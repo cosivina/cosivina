@@ -1,4 +1,5 @@
-% script for example C from the documentation
+% Example C: Creating and Using a GUI
+% (see the documentation for detailed explanation of the script)
 
 % create object sim by constructor call
 sim = Simulator();

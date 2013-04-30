@@ -1,3 +1,56 @@
+% SlicePlot (COSIVINA toolbox)
+%   Visualization that plots one-dimensional slices (rows or columns) taken
+%   at specified positions from one or several two-dimensional input
+%   matrices.
+% 
+% Constructor call:
+% SlicePlot(plotElements, plotComponents, plotSlices, ...
+%   sliceOrientations, scales, plotOrientation, axesProperties, ...
+%   plotProperties, title, xlabel, ylabel, position)
+%
+% Arguments:
+% plotElements - string or cell array of strings listing the labels of
+%   the elements from which slices should be plotted
+% plotComponents - string or cell array of strings listing the component
+%   names from which slices should be plotted for the specified elements;
+%   one pair of entries from plotElements and plotComponents fully
+%   specifies the source data for one set of slice plots
+% plotSlices - integer vector or cell of integer vector, specifying for
+%   each entry in plotElements a set of indices of the rows or columns
+%   that should be plotted
+% sliceOrientations - string or cell array of strings with each entry
+%   either ’horizontal’ or ’vertical’, specifying the slice orientation
+%   (rows or columns) for each entry in plotElements
+% scales - scalar or numeric vector specifying a scaling factor for each
+%   set of slices (optional, by default all scaling factors are 1)
+% plotOrientation - string specifying the orientation of all plots,
+%   should be either horizontal (default) or vertical
+% axesProperties - cell array containing a list of valid axes settings
+%   (as property/value pairs) that can be applied to the axes handle via
+%   the set function (optional, see Matlab documentation on axes for 
+%   further information)
+% plotProperties - cell array of cell arrays containing lists of valid
+%   lineseries settings (as property/value pairs or as a single string
+%   specifying the line style) that can be applied to the plot handles
+%   via the set function (see Matlab documentation on the plot function
+%   for further information); the outer cell array must contain one inner
+%   cell array for every plot (optional)
+% title - string specifying an axes title (optional)
+% xlabel - string specifying an x-axis label (optional)
+% ylabel - string specifying a y-axis label (optional)
+% position - position of the control in the GUI figure window in relative
+%   coordinates (optional, is overwritten when specifying a grid position
+%   in the GUI’s addVisualization function)
+%
+% Example:
+% h = SlicePlot('field u', 'activation', [25, 50, 75], 'horizontal', ...
+%   1, 'horizontal', {'YLim', [-10, 10]}, {{'r-'}, {'g-'}, {'b-'}}, ...
+%   'three slices through field u', 'field position', 'activation');
+
+
+
+
+
 classdef SlicePlot < Visualization
   properties (Constant)
     Horizontal = 0;
@@ -23,6 +76,14 @@ classdef SlicePlot < Visualization
     plotHandles = [];
     plotProperties = {};
     
+    title = '';
+    xlabel = '';
+    ylabel = '';
+    
+    titleHandle = 0;
+    xlabelHandle = 0;
+    ylabelHandle = 0;
+    
     orientation = SlicePlot.Horizontal;
     dataProperty = 'YData';
     
@@ -32,7 +93,7 @@ classdef SlicePlot < Visualization
   methods
     % Constructor    
     function obj = SlicePlot(plotElements, plotComponents, plotSlices, sliceOrientations, scales, plotOrientation, ...
-        axesProperties, plotProperties, position)
+        axesProperties, plotProperties, title, xlabel, ylabel, position)
       if nargin >= 4 && ~isempty(plotElements)
         obj.plotElementLabels = plotElements;
         obj.plotComponents = plotComponents;
@@ -96,7 +157,16 @@ classdef SlicePlot < Visualization
         obj.plotProperties = cell(obj.nPlots, 1);
         [obj.plotProperties{:}] = deal(cell(0));
       end
-      if nargin >= 9
+      if nargin >= 9 && ~isempty(title)
+        obj.title = title;
+      end
+      if nargin >= 10 && ~isempty(xlabel)
+        obj.xlabel = xlabel;
+      end
+      if nargin >= 11 && ~isempty(ylabel)
+        obj.ylabel = ylabel;
+      end
+      if nargin >= 12
         obj.position = position;
       end
     end
@@ -158,6 +228,16 @@ classdef SlicePlot < Visualization
       else
         obj.dataProperty = 'XData';
       end
+      
+      if ~isempty(obj.title)
+        obj.titleHandle = title(obj.title); %#ok<CPROP>
+      end
+      if ~isempty(obj.xlabel)
+        obj.xlabelHandle = xlabel(obj.xlabel); %#ok<CPROP>
+      end
+      if ~isempty(obj.ylabel)
+        obj.ylabelHandle = ylabel(obj.ylabel); %#ok<CPROP>
+      end
     end
     
     
@@ -174,32 +254,8 @@ classdef SlicePlot < Visualization
         end
       end
     end
-    
-    
-%     % add new plot
-%     function obj = addPlot(obj, plotElement, plotComponent, plotProperties, scale)
-%       if obj.connected
-%         error('SlicePlot:addPlot:noAddAfterConnect', ...
-%           'Cannot add plots after SlicePlot object has been connected to a simulator (e.g. by adding it to a GUI).');
-%       end
-%       
-%       obj.plotElementLabels{end+1} = plotElement;
-%       obj.plotComponents{end+1} = plotComponent;
-%       if nargin >= 4
-%         obj.plotProperties{end+1} = plotProperties;
-%       else 
-%         obj.plotProperties{end+1} = {};
-%       end
-%       if nargin >= 5
-%         obj.plotScales(end+1) = scale;
-%       else
-%         obj.plotScales(end+1) = 1;
-%       end
-%       
-%       obj.nPlots = obj.nPlots + 1;
-%       obj.plotHandles(end+1) = 0;
-%     end
+
   end
-    
-  
 end
+
+

@@ -1,3 +1,6 @@
+% Visualization (COSIVINA toolbox)
+%   Abstract base class for visualizations (plots etc.) in the GUI.
+
 classdef Visualization < handle
   properties
     position

@@ -3,11 +3,11 @@ COSIVINA - Compose, Simulate, and Visualize Neurodynamic Architectures
 An open source toolbox for MATLAB
 --------------------------------------------------------------------------------
 
-Version 1.0 (released 2012-12-20)
+Version 1.1 (released 2013-03-25)
 Written by Sebastian Schneegans at the Institut für Neuroinformatik,
 Ruhr-Universität Bochum, Germany.
 
-Copyright (c) 2012 Sebastian Schneegans <Sebastian@Schneegans.de>
+Copyright (c) 2012, 2013 Sebastian Schneegans <Sebastian@Schneegans.de>
 Published under the Simplified BSD License (see LICENSE_BSD.txt)
 
 
@@ -34,4 +34,20 @@ toolbox JSONlab (you can use all other functionality of COSIVINA without
 JSONlab, but will only receive a warning message when trying to save or load a 
 parameter file). You can download JSONlab for free e.g. from here:
 http://sourceforge.net/projects/iso2mesh/files/jsonlab/
+COSIVINA has been tested with JSONlab versions 0.9.0 and 0.9.1.
+
+
+COMPATIBILITY WITH EARLIER VERSIONS OF MATLAB
+
+The full functionality of the framework is supported by Matlab Release 2011a and
+later. Compatibility with Matlab Release 2009a and later can be achieved through
+a small modification: In the file base/Element.m, replace the first line
+classdef Element < matlab.mixin.Copyable
+by
+classdef Element < handle
+With this modification, there is no longer a straightforward way to create a
+copy of an element (rather than the element handle). This functionality is not
+required for basic use of the framework, including creation and use of GUIs 
+(see documentation for further information).
+
 

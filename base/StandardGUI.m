@@ -1,10 +1,65 @@
+% StandardGUI (COSIVINA toolbox)
+%   Creates customized graphical user interfaces to show evolution of
+%   activation patterns in neurodynamic architectures and change element
+%   parameters online.
+%
+% Constructor call:
+% StandardGUI(simulatorHandle, figurePosition, pauseDuration, ...
+%   visGridPosition, visGridSize, visGridPadding, 
+%   controlGridPosition, controlGridSize, elementGroups, elementsInGroups)
+% Arguments (all optional except for the first two):
+%   simulatorHandle - handle to the simulator object which should be run in
+%     the GUI (maybe 0, then simulator has to be connected at a later time)
+%   figurePosition - screen position and size of the GUI main window in the
+%     form [posX, posY, width, height]
+%   pauseDuration - duration of pause for every simulation step (default =
+%     0.1, should be set lower for computationally costly simulations)
+%   visGridPosition - position of the visualizations grid in the GUI window
+%     in the format [posX, posY, width, height], in normalized coordinates
+%     (relative to figure size)
+%   visGridSize - grid size of the visualizations grid in the form 
+%     [rows, cols]
+%   visGridPadding - padding around each visualization element in grid,
+%     relative to figure size, as scalar or vector [padHor, padVert]
+%   controlGridPosition - relative position of the controls grid in the GUI
+%     window in the form [posX, posY, width, height]
+%   controlGridSize - grid size of the controls grid in the form 
+%     [rows, cols]
+%   elementGroups - labels for elements or groups of elements listed in the
+%     parameter panel dropdown menu as cell array of strings
+%   elementsInGroups - elements accessed by each list item in the parameter
+%     panel dropdown menu; each list item may access a single element or a
+%     group of elements of the same type that share parameters; given as
+%     cell array of strings or cell array of cell arrays of strings
+%
+% Methods to design the GUI:
+% addVisualization(visualization, positionInGrid, sizeInGrid) - adds a
+%   new visualization element to the GUI at positionInGrid (two-element
+%   vector [row, col]) that extends over sizeInGrid (two-element vector
+%   [rows, cols]; optional, default is [1, 1])
+% addControl(visualization, positionInGrid, sizeInGrid) - adds a
+%   new control element to the GUI, analogous to addVisualization
+%
+% Methods to run the GUI:
+% run(tMax, initializeSimulator, simulatorHandle) - runs the
+%   simulation in the GUI until simulation time tMax (optional, default is
+%   inf) is reached or GUI is quit manually; optional boolean argument
+%   initializeSimulator forces re-initialization of the simulator at the
+%   start of the GUI, optional argument simulatorHandle can specify the
+%   simulator object that is run in the GUI (if not specified at creation)
+% connect(simulatorHandle) - connect GUI with a simulator object (if not
+%   done during creation, or to change connected simulator object)
+
+
 classdef StandardGUI < handle
   
   properties (SetAccess = protected)
-    simulatorHandle
+    connected = false;
+    
+    simulatorHandle = 0;
     figureHandle
     paramPanelHandle
-        
+    
     nVisualizations = 0;
     visualizations = {};
         
@@ -17,20 +72,21 @@ classdef StandardGUI < handle
   properties (SetAccess = public)  
     figurePosition = [];
     pauseDuration = 0.01;
+    pauseDurationWhilePaused = 0.1;
+
+    visGridPosition = [0, 1/3, 1, 2/3];
+    visGridSize = [2, 1];
+    visGridPadding = [0.05, 0.05];
     
-    controlGridPosition
-    controlGridSize
-    
-    visGridPosition
-    visGridSize
-    visGridPadding
+    controlGridPosition = [0, 0, 1, 1/3];
+    controlGridSize = [5, 4];
     
     % these flags can be set via GUI controls (like buttons)
     pauseSimulation = false; % should remain true as long as simulator should remain paused
-    quitSimulation = false;
+    quitSimulation = false; % set to true once, is automatically reset after quit (to allow restart) 
     resetSimulation = false; % set to true once, is automatically reset after simulator is re-initialized
     saveParameters = false; % set to true once, is automatically reset after parameters are saved
-    loadParameters = false; % set to true once, is automaticallt reset after parameters are loaded
+    loadParameters = false; % set to true once, is automatically reset after parameters are loaded
     paramPanelRequest = false; % should remain true as long as panel should remain active
     loadFile = ''; % file name from which presets are loaded, empty when no preset is loaded
   end
@@ -40,7 +96,11 @@ classdef StandardGUI < handle
     function obj = StandardGUI(simulatorHandle, figurePosition, pauseDuration, ...
         visGridPosition, visGridSize, visGridPadding, controlGridPosition, controlGridSize, ...
         elementGroups, elementsInGroups)
-      obj.simulatorHandle = simulatorHandle;
+      
+      if ~isempty(simulatorHandle) && simulatorHandle ~= 0
+        obj.simulatorHandle = simulatorHandle;
+        obj.connected = true;
+      end
       obj.figurePosition = figurePosition;
       
       if nargin >= 3
@@ -50,26 +110,19 @@ classdef StandardGUI < handle
         obj.visGridPosition = visGridPosition;
         obj.visGridSize = visGridSize;
         obj.visGridPadding = visGridPadding;
-        if numel(visGridPadding) == 1
+        if numel(obj.visGridPadding) == 1
           obj.visGridPadding = repmat(obj.visGridPadding, [1, 2]);
         end
-      else
-        obj.visGridPosition = [0, 1/3, 1, 2/3];
-        obj.visGridSize = [2, 1];
-        obj.visGridPadding = 0.05;
       end
       if nargin >= 8
         obj.controlGridPosition = controlGridPosition;
         obj.controlGridSize = controlGridSize;
-      else
-        obj.controlGridPosition = [0, 0, 1, 1/3];
-        obj.controlGridSize = [5, 4];
       end
+      
       if nargin < 10
         elementGroups = {};
         elementsInGroups = {};
       end
-      
       obj.paramPanelHandle = ParameterPanel(simulatorHandle, elementGroups, elementsInGroups, obj.figurePosition);
     end
     
@@ -79,37 +132,66 @@ classdef StandardGUI < handle
       obj.simulatorHandle = [];
       obj.paramPanelHandle = [];
     end
+    
+    
+    % connect to a simulator obj
+    function obj = connect(obj, simulatorHandle)
+      obj.simulatorHandle = simulatorHandle;
       
+      connect(obj.paramPanelHandle, simulatorHandle);
+      for i = 1 : obj.nVisualizations
+        connect(obj.visualizations{i}, obj.simulatorHandle);
+      end
+      for i = 1 : obj.nControls
+        connect(obj.controls{i}, obj.simulatorHandle);
+      end
+      
+      obj.connected = true;
+    end
+    
     
     % initialization
     function obj = init(obj)
+      if ~obj.connected
+        error('StandardGUI:init:notConnected', ...
+          'Cannot initialize StandardGUI object before it has been connected to a Simulator object');
+      end
+      
       obj.figureHandle = figure('Position', obj.figurePosition, 'Color', 'w');
       for i = 1 : obj.nVisualizations
-        obj.visualizations{i}.init(obj.figureHandle);
+        init(obj.visualizations{i}, obj.figureHandle);
       end
       for i = 1 : obj.nControls
-        obj.controls{i}.init(obj.figureHandle);
+        init(obj.controls{i}, obj.figureHandle);
       end
     end
     
     
     % run simulation in GUI
-    function obj = run(obj, tMax, initializeSimulation)
+    function obj = run(obj, tMax, initializeSimulator, simulatorHandle)      
       if nargin < 2 || isempty(tMax)
         tMax = inf;
       end
-      if nargin < 3 || isempty(initializeSimulation)
-        initializeSimulation = false;
+      if nargin < 3 || isempty(initializeSimulator)
+        initializeSimulator = false;
+      end
+      if nargin >= 4
+        connect(obj, simulatorHandle);
       end
       
-      if initializeSimulation || ~obj.simulatorHandle.initialized
-        obj.simulatorHandle.init();
+      if ~obj.connected
+        warning('StandardGUI:run:notConnected', ...
+          'Cannot run StandardGUI object before it has been connected to a Simulator object');
+        return;
+      end
+      
+      if initializeSimulator || ~obj.simulatorHandle.initialized
+        init(obj.simulatorHandle);
       end
       
       obj.init();
       
       while ~obj.quitSimulation && obj.simulatorHandle.t < tMax
-        
         if ~ishandle(obj.figureHandle)
           break;
         end
@@ -117,12 +199,11 @@ classdef StandardGUI < handle
         % checking for changes in controls and param panel
         updatePanel = false;
         for i = 1 : obj.nControls
-          updatePanel = obj.controls{i}.check() || updatePanel;
+          updatePanel = check(obj.controls{i}) || updatePanel;
         end
+        updateControls = false;
         if obj.paramPanelActive
-          updateControls = obj.paramPanelHandle.check();
-        else
-          updateControls = false;
+          updateControls = check(obj.paramPanelHandle);
         end
         
         % opening and closing param panel
@@ -131,18 +212,20 @@ classdef StandardGUI < handle
           obj.paramPanelRequest = false;
         end
         if obj.paramPanelRequest && ~obj.paramPanelActive
-          obj.paramPanelHandle.open();
+          open(obj.paramPanelHandle);
           obj.paramPanelActive = true;
         elseif ~obj.paramPanelRequest && obj.paramPanelActive
-          obj.paramPanelHandle.close();
+          close(obj.paramPanelHandle);
           obj.paramPanelActive = false;
         end
         
-        % reset, save, load
+        % reset
         if obj.resetSimulation
           obj.simulatorHandle.init();
           obj.resetSimulation = false;
         end
+        
+        % save
         if obj.saveParameters
           if exist('savejson', 'file') ~= 2
             warndlg(['Cannot save parameters to file: File SAVEJSON.M not found. ' ...
@@ -150,13 +233,15 @@ classdef StandardGUI < handle
           else
             [paramFile, paramPath] = uiputfile('*.json', 'Save parameter file');
             if ~(length(paramFile) == 1 && paramFile == 0)
-              if ~obj.simulatorHandle.saveSettings([paramPath paramFile])
+              if ~saveSettings(obj.simulatorHandle, [paramPath paramFile])
                 warndlg('Could not write to file. Saving of parameters failed.');
               end
             end
           end
           obj.saveParameters = false;
         end
+        
+        % load
         if obj.loadParameters
           if exist('loadjson', 'file') ~= 2
             warndlg(['Cannot load parameters from file: File LOADJSON.M not found. ' ...
@@ -172,7 +257,7 @@ classdef StandardGUI < handle
               if ~obj.simulatorHandle.loadSettings(obj.loadFile)
                 warndlg(['Could not read file ' obj.loadFile '. Loading of parmeters failed.'], 'Warning');
               end
-              obj.simulatorHandle.init();
+              init(obj.simulatorHandle);
               updateControls = true;
               updatePanel = true;
             end
@@ -183,30 +268,38 @@ classdef StandardGUI < handle
           
         % the actual simulation step
         if ~obj.pauseSimulation
-          obj.simulatorHandle.step();
+          step(obj.simulatorHandle);
         end
         
         % updating visualizations, controls and panel
         for i = 1 : obj.nVisualizations
-          obj.visualizations{i}.update();
+          update(obj.visualizations{i});
         end
         if updatePanel && obj.paramPanelActive
-          obj.paramPanelHandle.update();
+          update(obj.paramPanelHandle);
         end
         if updateControls
           for i = 1 : obj.nControls
-            obj.controls{i}.update();
+            update(obj.controls{i});
           end
         end
         
-        pause(obj.pauseDuration);
+        drawnow;
+        if obj.pauseSimulation
+          pause(obj.pauseDurationWhilePaused);
+        else
+          pause(obj.pauseDuration);
+        end
       end
       
       obj.quitSimulation = false;
       
+      % close everything
       obj.simulatorHandle.close();
       if obj.paramPanelActive
         obj.paramPanelHandle.close();
+        obj.paramPanelActive = false;
+        obj.paramPanelRequest = false;
       end
       if ishandle(obj.figureHandle)
         delete(obj.figureHandle);
@@ -220,7 +313,9 @@ classdef StandardGUI < handle
       obj.visualizations{end+1} = visualization;
       obj.nVisualizations = obj.nVisualizations + 1;
       
-      obj.visualizations{end}.connect(obj.simulatorHandle);
+      if obj.connected
+        connect(obj.visualizations{end}, obj.simulatorHandle);
+      end
       if nargin < 4
         sizeInGrid = [1, 1];
       end
@@ -239,7 +334,9 @@ classdef StandardGUI < handle
       obj.controls{end+1} = control;
       obj.nControls = obj.nControls + 1;
       
-      obj.controls{end}.connect(obj.simulatorHandle);
+      if obj.connected
+        connect(obj.controls{end}, obj.simulatorHandle);
+      end
       if nargin < 4
         sizeInGrid = [1, 1];
       end
@@ -265,7 +362,8 @@ classdef StandardGUI < handle
         gridPosition = obj.visGridPosition;
         padding = obj.visGridPadding;
       else
-        error('StandardGUI:gridToRelPosition', 'Argument TYPE must be either ''control'' or ''visualization''.');
+        error('StandardGUI:gridToRelPosition:invalidArgument', ...
+          'Argument TYPE must be either ''control'' or ''visualization''.');
       end
       
       cellSize = [gridPosition(3)/gridSize(2), gridPosition(4)/gridSize(1)]; % [x, y]

@@ -1,3 +1,36 @@
+% ScaledImage (COSIVINA toolbox)
+%   Visualization that plots 2-dimensional data using the Matlab imagesc
+%   function.
+% 
+% Constructor call: ScaledImage(imageElement, imageComponent, imageRange,
+%   axesProperties, imageProperties, title, xlabel, ylabel, position)
+%
+% Arguments:
+% imageElement - label of the element whose component should be
+%   visualized
+% imageComponent - name of the element component that should be plotted
+% imageRange - two-element vector specifying the range of the image’s
+%   color code
+% axesProperties - cell array containing a list of valid axes settings
+%   (as property/value pairs) that can be applied to the axes handle via
+%   the set function (optional, see Matlab documentation on axes for 
+%   further information)
+% imageProperties - cell array containing a list of valid image object
+%   settings (as property/value pairs) that can be applied to the image
+%   handle via the set function (optional, see Matlab documentation on
+%   the image function for further information)
+% title - string specifying an axes title (optional)
+% xlabel - string specifying an x-axis label (optional)
+% ylabel - string specifying a y-axis label (optional)
+% position - position of the control in the GUI figure window in relative
+%   coordinates (optional, is overwritten when specifying a grid position
+%   in the GUI’s addVisualization function)
+%
+% Example:
+% h = ScaledImage('field u', 'activation', [-10, 10], ...
+%   {'YDir', 'normal'}, {}, 'perceptual field', 'position', 'color');
+
+
 classdef ScaledImage < Visualization
   properties
     imageElementHandle
@@ -79,13 +112,13 @@ classdef ScaledImage < Visualization
       colormap(jet(256));
       
       if ~isempty(obj.title)
-        obj.titleHandle = title(obj.title); %#ok<CPROP>
+        obj.titleHandle = title(obj.title); %#ok<PROP,CPROP>
       end
       if ~isempty(obj.xlabel)
-        obj.xlabelHandle = xlabel(obj.xlabel); %#ok<CPROP>
+        obj.xlabelHandle = xlabel(obj.xlabel); %#ok<PROP,CPROP>
       end
       if ~isempty(obj.ylabel)
-        obj.ylabelHandle = ylabel(obj.ylabel); %#ok<CPROP>
+        obj.ylabelHandle = ylabel(obj.ylabel); %#ok<PROP,CPROP>
       end
       
     end

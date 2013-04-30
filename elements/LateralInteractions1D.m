@@ -12,11 +12,12 @@
 %   sigmaInh - width parameter of inhibitory Gaussian
 %   amplitudeInh - amplitude of inhibitory Gaussian
 %   amplitudeGlobal - amplitude of global component
-%   circular - flag indicating whether convolution is circular
+%   circular - flag indicating whether convolution is circular (default =
+%     true)
 %   normalized - flag indicating whether local kernel components are
-%     normalized before scaling with amplitude
+%     normalized before scaling with amplitude (default = true)
 %   cutoffFactor - multiple of larger sigma at which the kernel is cut off
-%     (global component is treated separately)
+%     (global component is treated separately, default = 5)
 
 
 classdef LateralInteractions1D < Element
@@ -48,7 +49,7 @@ classdef LateralInteractions1D < Element
     output
   end
   
-  properties (SetAccess = private)
+  properties (SetAccess = protected)
     kernelRangeLeft
     kernelRangeRight
     extIndex

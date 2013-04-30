@@ -1,3 +1,45 @@
+% KernelPlot (COSIVINA toolbox)
+%   Visualization that plots an interaction kernel (which may consistent of
+%   multiple components) in a fixed range around zero. All specified
+%   kernels are first brought to the specified range (cut off/padded with
+%   zeros), then added together. Kernel components specified as 'global'
+%   are globally added over the whole range.
+%
+% Constructor call:
+% KernelPlot(plotElements, plotComponents, kernelTypes, plotRange,
+%   axesProperties, plotProperties, title, xlabel, ylabel, position)
+%
+% Arguments:
+% plotElements - cell array of labels of elements (as strings) that
+%   contribute to the plotted interaction kernel
+% plotComponents - cell array of element components (as strings) for the
+%   corresponding entry in plotElements
+% kernelTypes - cell array of strings, with one entry of either ’local’ 
+%   or ’global’ for each entry in plotElements
+% plotRange - scalar value determining to which range (positively and
+%   negatively from zero) the kernel should be plotted
+% axesProperties - cell array containing a list of valid axes settings
+%   (as property/value pairs) that can be applied to the axes handle via
+%   the set function (optional, see Matlab documentation on axes for
+%   further information)
+% plotProperties - cell array containing lists of valid
+%   lineseries settings as property/value pairs or as a single string
+%   specifying the line style) that can be applied to the plot handle
+%   via the set function (optional, see Matlab documentation on the plot
+%   function for further information)
+% title - string specifying an axes title (optional)
+% xlabel - string specifying an x-axis label (optional)
+% ylabel - string specifying a y-axis label (optional)
+% position - position of the control in the GUI figure window in relative
+%   coordinates (optional, is overwritten when specifying a grid position
+%   in the GUI’s addVisualization function)
+%
+% Example:
+% h = KernelPlot({'u -> u', 'u -> u'}, {'kernel', 'amplitudeGlobal'}, ...
+%   {'local', 'global'}, 50, {'YLim', [-1, 1]}, {'r-', 'LineWidth', 2}, ...
+%   'kernel plot', 'distance in feature space', 'interaction weight');
+
+
 classdef KernelPlot < Visualization
   properties (Constant)
     Global = 0;

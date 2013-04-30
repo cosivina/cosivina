@@ -14,11 +14,11 @@
 %% setting up the simulator
 
 % shared parameters
-sizeSpt = 100;
-sizeFtr = 100;
+sizeSpt = 200;
+sizeFtr = 200;
 
-sigma_exc = 5;
-sigma_inh = 12.5;
+sigma_exc = 10;
+sigma_inh = 25;
 
 % create simulator
 sim = Simulator();
@@ -134,12 +134,12 @@ gui.addControl(ParameterSlider('v2', 'stimulus v2', 'amplitude', [0, 10], '%0.1f
 
 gui.addControl(ParameterSlider('f1', 'stimulus f1', 'amplitude', [0, 10], '%0.1f', 1, ...
   'amplitude of first stimulus to field f'), [4, 4]);
-gui.addControl(ParameterSlider('f2', 'stimulus f1', 'amplitude', [0, 10], '%0.1f', 1, ...
+gui.addControl(ParameterSlider('f2', 'stimulus f2', 'amplitude', [0, 10], '%0.1f', 1, ...
   'amplitude of second stimulus to field f'), [5, 4]);
 
 gui.addControl(ParameterSlider('s1', 'stimulus s1', 'amplitude', [0, 10], '%0.1f', 1, ...
   'amplitude of first stimulus to field s'), [7, 4]);
-gui.addControl(ParameterSlider('s2', 'stimulus s1', 'amplitude', [0, 10], '%0.1f', 1, ...
+gui.addControl(ParameterSlider('s2', 'stimulus s2', 'amplitude', [0, 10], '%0.1f', 1, ...
   'amplitude of second stimulus to field s'), [8, 4]);
 
 % global control buttons

@@ -1,11 +1,15 @@
 % History (COSIVINA toolbox)
-%   Element that stores its input at specified times.
+%   Element that stores its input at specified times. A vector of
+%   simulation times [t_1, ..., t_K] must be specified. The input to the
+%   element at those times is then stored in a K x N matrix if the input is
+%   a vector of size n, or in a N x M x K matrix if the input is a matrix
+%   of size N x M.
 % 
 % Constructor call:
 % History(label, inputSize, storingTimes)
 %   label - element label
 %   inputSize - size of input
-%   storingTimes - simulation times at which the input is stored
+%   storingTimes - vector of simulation times at which the input is stored
 
 
 classdef History < Element

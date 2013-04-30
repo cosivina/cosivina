@@ -1,3 +1,33 @@
+% RGBImage (COSIVINA toolbox)
+%   Plots a 3xMxN matrix as an RGB image using the Matlab image function.
+% 
+% Constructor call: RGBImage(imageElement, imageComponent, ...
+%   axesProperties, imageProperties, title, xlabel, ylabel, position)
+%
+% Arguments:
+% imageElement - label of the element whose component should be
+%   visualized
+% imageComponent - name of the element component that should be plotted
+% axesProperties - cell array containing a list of valid axes settings
+%   (as property/value pairs) that can be applied to the axes handle via
+%   the set function (optional, see Matlab documentation on axes for 
+%   further information)
+% imageProperties - cell array containing a list of valid image object
+%   settings (as property/value pairs) that can be applied to the image
+%   handle via the set function (optional, see Matlab documentation on
+%   the image function for further information)
+% title - string specifying an axes title (optional)
+% xlabel - string specifying an x-axis label (optional)
+% ylabel - string specifying a y-axis label (optional)
+% position - position of the control in the GUI figure window in relative
+%   coordinates (optional, is overwritten when specifying a grid position
+%   in the GUI’s addVisualization function)
+%
+% Example:
+% h = RGBImage('camera grabber', 'output', {'YDir', 'normal'}, {}, ...
+%   'camera image');
+
+
 classdef RGBImage < Visualization
   properties
     imageElementHandle
@@ -70,7 +100,6 @@ classdef RGBImage < Visualization
     % initialization
     function obj = init(obj, figureHandle)
       obj.axesHandle = axes('Parent', figureHandle, 'Position', obj.position);
-%       obj.imageHandle = image(obj.imageElementHandle.(obj.imageComponent));
       obj.imageHandle = image(obj.imageElementHandle.(obj.imageComponent), 'Parent', obj.axesHandle, ...
         obj.imageProperties{:});
       if ~isempty(obj.axesProperties)

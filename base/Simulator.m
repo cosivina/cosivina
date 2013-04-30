@@ -1,4 +1,53 @@
-% todo: test validity of input/target elements and components in addElement
+% Simulator (COSIVINA toolbox)
+%   Core class to create a neurodynamic architecture and simulate evolution
+%   of activation distributions over time.
+%
+% Constructor call:
+% Simulator()
+%   creates a simulator with default settings
+% Simulator(propertyName1, value1, ..., propertyNameN, valueN)
+%   specifies additional settings; each propertyName must be one of the
+%   following strings:
+%   deltaT - specifies the time difference for every simulation step
+%   tZero - specifies the simulation time on initialization
+%   struct - load simulator from struct (given by the following value)
+%   file - load simulator from parameter file (file name given by value)
+%
+% Methods for creating architectures:
+% addElement(element, inputLabels, inputComponents, targetLabels, 
+%   componentsForTargets) - adds a new element to the architecture, which
+%   receives inputs specified by inputLabels and inputComponents, and
+%   provides outputs specified by componentsForTargets to elements
+%   specified by targetLabels; the parameter 'element' is an element handle
+%   (obtained by calling an element constructor), the other parameters are
+%   all strings or cell arrays of strings
+%
+% Methods for running simulations:
+% init() - initializes the simulator
+% step() - performs one simulation step
+% close() - closes all elements (only needed when elements create connection
+%   to external devices or programs)
+% run(tMax, initialize, closeWhenFinished) - runs the simulator until
+%   simulation time reaches tMax; initializes and closes the simulator when
+%   optional arguments are set to true
+%
+% Methods for debugging:
+% tryInit() - like init, but with additional information if errors occur
+% tryStep() - like step, but with additional information if errors occur
+%
+% Methods for accessing elements:
+% isElements(label) - checks whether a string is an existing element label
+% getElement(elementLabel) - return handle to element specified by
+%   elementLabel
+% getComponent(elementLabel, componentName) - returns the specified
+%   component (typically a numeric matrix) of the element identified by
+%   elementLabel (both arguments must be strings)
+%
+% Other methods:
+% copy() - create copy of the simulator object and all its elements
+% saveSettings(filename) - saves architecture settings to file in JSON
+%   format
+% loadSettings(filename) - load full architecture from file in JSON format
 
 
 classdef Simulator < handle
@@ -10,7 +59,7 @@ classdef Simulator < handle
     
     initialized = false;
   end
-    
+  
   properties (SetAccess = public)
     deltaT = 1;
     tZero = 0;
@@ -71,11 +120,33 @@ classdef Simulator < handle
     end
     
     
+    % copy simulator (copies all elements)
+    function clonedSimulator = copy(obj)
+      clonedSimulator = Simulator('deltaT', obj.deltaT, 'tZero', obj.tZero);
+      clonedSimulator.t = obj.t;
+      clonedSimulator.initialized = obj.initialized;
+      
+      clonedSimulator.nElements = obj.nElements;
+      clonedSimulator.elementLabels = obj.elementLabels;
+      clonedSimulator.elements = cell(size(obj.elements));
+      for i = 1 : obj.nElements
+        clonedSimulator.elements{i} = copy(obj.elements{i});
+      end
+      % rewire inputs
+      for i = 1 : obj.nElements
+        for j = 1 : obj.elements{i}.nInputs
+          k = find(strcmp(obj.elementLabels, obj.elements{i}.inputElements{j}.label), 1);
+          clonedSimulator.elements{i}.inputElements{j} = clonedSimulator.elements{k};
+        end
+      end
+    end
+    
+    
     % initialization
     function obj = init(obj)
       obj.t = obj.tZero;
       for i = 1 : obj.nElements
-        obj.elements{i}.init();
+        init(obj.elements{i});
       end
       obj.initialized = true;
     end
@@ -85,7 +156,8 @@ classdef Simulator < handle
     function obj = step(obj)
       obj.t = obj.t + obj.deltaT;
       for i = 1 : obj.nElements
-        obj.elements{i}.step(obj.t, obj.deltaT);
+        step(obj.elements{i}, obj.t, obj.deltaT);
+%         obj.elements{i}.step(obj.t, obj.deltaT);
       end
     end
     
@@ -93,25 +165,23 @@ classdef Simulator < handle
     % close all elements
     function obj = close(obj)
       for i = 1 : obj.nElements
-        obj.elements{i}.close();
+        close(obj.elements{i});
       end
     end
     
     
     % run the simulation (current t to tMax)
-    function obj = run(obj, tMax, initialize, close)
+    function obj = run(obj, tMax, initialize, closeWhenFinished)
       if ~obj.initialized || nargin >= 3 && initialize
-        obj.init();
+        init(obj);
       end
 
-      for tt = obj.t + obj.deltaT : obj.deltaT : tMax
-        for i = 1 : obj.nElements
-          obj.elements{i}.step(tt, obj.deltaT);
-        end
+      while obj.t < tMax
+        step(obj);
       end
-      obj.t = tt;
-      if nargin >= 4 && close
-        obj.close;
+      
+      if nargin >= 4 && closeWhenFinished
+        close(obj);
       end
     end
     
@@ -121,7 +191,7 @@ classdef Simulator < handle
     function obj = tryInit(obj)
       for i = 1 : obj.nElements
         try
-          obj.elements{i}.init();
+          init(obj.elements{i});
         catch errorMessage
           disp(['Element ''' obj.elementLabels{i} ''' caused an error during initialization.']);
           disp(['Error message: ' errorMessage.message]);
@@ -141,7 +211,7 @@ classdef Simulator < handle
       obj.t = obj.t + obj.deltaT;
       for i = 1 : obj.nElements
         try
-          obj.elements{i}.step(obj.t, obj.deltaT);
+          step(obj.elements{i}, obj.t, obj.deltaT);
         catch errorMessage
           disp(['Element ''' obj.elementLabels{i} ''' caused an error in step function at time ' num2str(obj.t) '.']);
           disp(['Error message: ' errorMessage.message]);
@@ -198,14 +268,18 @@ classdef Simulator < handle
           elementIndex = find(strcmp(inputLabels{i}, obj.elementLabels), 1);
           if isempty(elementIndex)
             error('Simulator:addElement:invalidInputLabel', ...
-              'Element label ''%s'' requested as input for new element not found in simulator object', ...
+              'Element label ''%s'' requested as input for new element not found in simulator object.', ...
               inputLabels{i});
           end
           inputHandle = obj.elements{elementIndex};
           if isempty(inputComponents{i})
             element.addInput(inputHandle, inputHandle.defaultOutputComponent());
-          else
+          elseif inputHandle.isComponent(inputComponents{i})
             element.addInput(inputHandle, inputComponents{i});
+          else
+            error('Simulator:addElement:invalidInputComponent', ...
+              'Invalid input component ''%s'' requsted for input element ''%s''.', ...
+              inputComponents{i}, inputLabels{i});
           end
         end
       end
@@ -231,8 +305,12 @@ classdef Simulator < handle
           targetHandle = obj.elements{elementIndex};
           if isempty(componentsForTargets{i})
             targetHandle.addInput(element, element.defaultOutputComponent());
-          else
+          elseif element.isComponent(componentsForTargets{i})
             targetHandle.addInput(element, componentsForTargets{i});
+          else
+            error('Simulator:addElement:invalidComponentForTarget', ...
+              'Invalid component ''%s'' of new element requsted for target element ''%s''.', ...
+              componentsForTargets{i}, targetLabels{i});
           end
         end
       end
@@ -303,37 +381,46 @@ classdef Simulator < handle
         success = true;
       end
     end
-      
+    
     
     
     % set elements and parameters from json-compatible struct
     function obj = fromStruct(obj, simStruct)
+      if ~iscell(simStruct.elements) % for compatibility with JSONlab versions before 0.9.1
+        simStruct.elements = num2cell(simStruct.elements);
+      end
+      for i = 1 : simStruct.nElements
+        if ~iscell(simStruct.elements{i}.input)
+          simStruct.elements{i}.input = num2cell(simStruct.elements{i}.input);
+        end
+      end
+      
       obj.deltaT = simStruct.deltaT;
       obj.tZero = simStruct.tZero;
       
       obj.nElements = simStruct.nElements;
-      obj.elementLabels = cell(1, obj.nElements) ;
+      obj.elementLabels = cell(1, obj.nElements);
       obj.elements = cell(1, obj.nElements);
       
       % create elements and set parameters
       for i = 1 : obj.nElements
-        obj.elementLabels{i} = simStruct.elements(i).label;
-        obj.elements{i} = feval(simStruct.elements(i).class);
-        obj.elements{i}.label = simStruct.elements(i).label;
+        obj.elementLabels{i} = simStruct.elements{i}.label;
+        obj.elements{i} = feval(simStruct.elements{i}.class);
+        obj.elements{i}.label = simStruct.elements{i}.label;
         
         paramNames = obj.elements{i}.getParameterList();
         for j = 1 : length(paramNames)
-          if isfield(simStruct.elements(i).param, paramNames{j})
-            obj.elements{i}.(paramNames{j}) = simStruct.elements(i).param.(paramNames{j});
+          if isfield(simStruct.elements{i}.param, paramNames{j})
+            obj.elements{i}.(paramNames{j}) = simStruct.elements{i}.param.(paramNames{j});
           end
         end
       end
       
       % create inputs (after all elements have been created to avoid invalid handles)
       for i = 1 : obj.nElements
-        for j = 1 : simStruct.elements(i).nInputs
-          iInput = find(strcmp(simStruct.elements(i).input(j).label, obj.elementLabels), 1);
-          obj.elements{i}.addInput(obj.elements{iInput}, simStruct.elements(i).input(j).component);
+        for j = 1 : simStruct.elements{i}.nInputs
+          iInput = find(strcmp(simStruct.elements{i}.input{j}.label, obj.elementLabels), 1);
+          obj.elements{i}.addInput(obj.elements{iInput}, simStruct.elements{i}.input{j}.component);
         end
       end
       
@@ -343,6 +430,10 @@ classdef Simulator < handle
     
     % set parameters from json-compatible struct, keeping the existing elements and connections
     function obj = parametersFromStruct(obj, simStruct)
+      if ~iscell(simStruct.elements) % for compatibility with JSONlab 0.9.1
+        simStruct.elements = num2cell(simStruct.elements);
+      end
+      
       obj.deltaT = simStruct.deltaT;
       obj.tZero = simStruct.tZero;
       
@@ -350,14 +441,14 @@ classdef Simulator < handle
       elementsNotFound = zeros(1, simStruct.nElements);
       
       for i = 1 : simStruct.nElements
-        iHandle = find(strcmp(simStruct.elements(i).label, obj.elementLabels), 1);
-        if isempty(iHandle) || ~strcmp(class(obj.elements{iHandle}), simStruct.elements(i).class)
+        iHandle = find(strcmp(simStruct.elements{i}.label, obj.elementLabels), 1);
+        if isempty(iHandle) || ~strcmp(class(obj.elements{iHandle}), simStruct.elements{i}.class)
           elementsNotFound(i) = true;
         else
           paramNames = obj.elements{iHandle}.getParameterList;
           for j = 1 : length(paramNames)
-            if isfield(simStruct.elements(i).param, paramNames{j})
-              obj.elements{i}.(paramNames{j}) = simStruct.elements(i).param.(paramNames{j});
+            if isfield(simStruct.elements{i}.param, paramNames{j})
+              obj.elements{iHandle}.(paramNames{j}) = simStruct.elements{i}.param.(paramNames{j});
             end
           end
           elementsOverwritten(iHandle) = true;
@@ -380,7 +471,7 @@ classdef Simulator < handle
           msg = [msg, 'For some elements specified in the parameter struct, no matching elements were found' ...
             'in the simulator object: '];
           for i = find(elementsNotFound)
-            msg = [msg simStruct.elements(i).class ' element ''' simStruct.elements(i).label ''', ']; %#ok<AGROW>
+            msg = [msg simStruct.elements{i}.class ' element ''' simStruct.elements{i}.label ''', ']; %#ok<AGROW>
           end
           msg = [msg(1:end-2) '\n'];
         end
@@ -395,7 +486,7 @@ classdef Simulator < handle
       elementsStruct = struct('label', obj.elementLabels, 'class', cell(1, obj.nElements), ...
         'param', cell(1, obj.nElements), 'nInputs', cell(1, obj.nElements), 'input', cell(1, obj.nElements));
       for i = 1 : obj.nElements
-        elementsStruct(i) = obj.elements{i}.toStruct;
+        elementsStruct(i) = toStruct(obj.elements{i});
       end
         
       simStruct = struct('deltaT', obj.deltaT, 'tZero', obj.tZero, 'nElements', obj.nElements, ...

@@ -1,3 +1,52 @@
+% XYPlot (COSIVINA toolbox)
+%   Visualization that creates a set of axes with one or more plots in it.
+%   The difference to MultiPlot is that here, both the XData and YData of
+%   each individual plot can be specified as either the component of some
+%   element, or as a fixed vector. This makes it possible to plot two
+%   components against each other.
+%
+% Constructor call: XYPlot(plotElementsX, plotComponentsOrDataX,
+%   plotElementsY, plotComponentsOrDataY, axesProperties, plotProperties,
+%   title, xlabel, ylabel, position)
+%
+% Arguments:
+% plotElementsX - cell array with one entry for each plot: either the
+%   label of the element (as string) whose component should be used as
+%   XData for the plot, or an empty array [] if the XData is to be a
+%   fixed vector
+% plotComponentsOrDataX - cell array with one entry for each plot: either
+%   the component name (as string) that should be plotted for the
+%   specified element, or the fixed vector that should be used as XData
+%   for that plot
+% plotElementsY - cell array specifying the source elements for the
+%   plots’ YData, analogous to the parameter plotElementsX
+%   plotComponentsOrDataY - cell array specifying the element components
+%   or fixed vectors to be used as YData, analogous to the parameter
+%   plotComponentsOrDataY
+% axesProperties - cell array containing a list of valid axes settings
+%   (as property/value pairs) that can be applied to the axes handle via
+%   the set function (optional, see Matlab documentation on axes for 
+%   further information)
+% plotProperties - cell array of cell arrays containing lists of valid
+%   lineseries settings (as property/value pairs or as a single string
+%   specifying the line style) that can be applied to the plot handles
+%   via the set function (see Matlab documentation on the plot function
+%   for further information); the outer cell array must contain one inner
+%   cell array for every plot (optional)
+% title - string specifying an axes title (optional)
+% xlabel - string specifying an x-axis label (optional)
+% ylabel - string specifying a y-axis label (optional)
+% position - position of the control in the GUI figure window in relative
+%   coordinates (optional, is overwritten when specifying a grid position
+%   in the GUI’s addVisualization function)
+% 
+% Example:
+% h = XYPlot('node u', 'activation', 'node v', 'activation', ...
+%   {'XLim', [-10, 10], 'YLim', [-10, 10], 'Box', 'on'}, ...
+%   { {'bo', 'MarkerSize', 5} }, ...
+%   'phase plot', 'activation u', 'activation v');
+
+
 classdef XYPlot < Visualization
   properties
     nPlots = 0;
@@ -182,30 +231,45 @@ classdef XYPlot < Visualization
     end
     
     
-%     % add new plot
-%     function obj = addPlot(obj, plotElementX, plotComponentX, plotElementY, plotComponentY, plotProperties)
-%       if obj.connected
-%         error('MultiPlot:addPlot:noAddAfterConnect', ...
-%           'Cannot add plots after MultiPlot object has been connected to a simulator (e.g. by adding it to a GUI).');
-%       end
-%       
-%       obj.plotElementLabels{end+1} = plotElement;
-%       obj.plotComponents{end+1} = plotComponent;
-%       if nargin >= 4
-%         obj.plotScales(end+1) = scale;
-%       else
-%         obj.plotScales(end+1) = 1;
-%       end
-%       if nargin >= 5
-%         obj.plotProperties{end+1} = plotProperties;
-%       else 
-%         obj.plotProperties{end+1} = {};
-%       end
-%       
-%       
-%       obj.nPlots = obj.nPlots + 1;
-%       obj.plotHandles(end+1) = 0;
-%     end
+    % add new plot
+    function obj = addPlot(obj, plotElementX, plotComponentOrDataX, plotElementY, plotComponentOrDataY, plotProperties)
+      if obj.connected
+        error('XYPlot:addPlot:noAddAfterConnect', ...
+          'Cannot add plots after XYPlot object has been connected to a simulator (e.g. by adding it to a GUI).');
+      end
+      
+      i = obj.nPlots + 1;
+      obj.isConstData(i, 1:2) = false(1, 2);
+      [obj.plotElementLabels{i, 1:2}] = deal([]);
+      [obj.plotElementHandles{i, 1:2}] = deal([]);
+      [obj.plotComponents{i, 1:2}] = deal([]);
+      [obj.plotData{i, 1:2}] = deal([]);
+      
+      if isempty(plotElementX)
+        obj.isConstData(i, 1) = true;
+        obj.plotData{i, 1} = plotComponentOrDataX;
+      else
+        obj.plotElementLabels{i, 1} = plotElementX;
+        obj.plotComponents{i, 1} = plotComponentOrDataX;
+      end
+      if isempty(plotElementY)
+        obj.isConstData(i, 2) = true;
+        obj.plotData{i, 2} = plotComponentOrDataY;
+      else
+        obj.plotElementLabels{i, 2} = plotElementY;
+        obj.plotComponents{i, 2} = plotComponentOrDataY;
+      end
+      
+      if nargin >= 6
+        obj.plotProperties{end+1} = plotProperties;
+      else 
+        obj.plotProperties{end+1} = {};
+      end
+      
+      
+      obj.nPlots = i;
+      obj.plotHandles(i) = 0;
+    end
   end
     
   

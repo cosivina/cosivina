@@ -1,4 +1,3 @@
-
 % creates a symmetrical, normalized gaussian kernel with one positive and one negative mode and an 
 %   optional global component
 % 

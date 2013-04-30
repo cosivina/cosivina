@@ -1,3 +1,40 @@
+% GlobalControlButton (COSIVINA toolbox)
+%   Control that creates a button in the GUI that connects to a property of
+%   any specified object, typically the GUI itself. For the StandardGUI, it
+%   can connect to one of the following boolean properties:
+%   pauseSimulation, quitSimulation, resetSimulation, saveParameters,
+%   loadParameters, and paramPanelRequest. The values of these flags are
+%   checked in every cycle of the GUI and appropriate operations will be
+%   performed.
+%
+% Constructor call:
+% GlobalControlButton(controlLabel, controlledObject, ...
+%   propertyName, onValue, offValue, resetAfterPress, ...
+%   toolTip, position)
+% 
+% Arguments:
+% controlLabel - label of the displayed on the button
+% controlledObject - handle to the controlled object
+% propertyName - property name that is controlled by the button
+% onValue - value that the controlled property should have while the button
+%   is pressed
+% offValue - value that the controlled property should have while the
+%   button is not pressed
+% resetAfterPress - determines the behavior of the button: for false it
+%   acts as a toggle button, for true as a push button; in the latter case,
+%   the controlled property will always be set to the onValue when the
+%   button is clicked
+% tooltip - tooltip displayed when hovering over the control with the mouse
+%   (optional)
+% position - position of the control in the GUI figure window in relative
+%   coordinates (optional, is overwritten when specifying a grid position
+%   in the GUI’s addControl function)
+%
+% Example:
+% h = GlobalControlButton('Pause', gui, 'pauseSimulation', ...
+%   true, false, false, 'pause simulation');
+
+
 classdef GlobalControlButton < Control
   properties
     controlLabel

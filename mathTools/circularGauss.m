@@ -1,4 +1,4 @@
-% range_x must be equally spaced and monotone, with at least two elements
+% range_x must be equally spaced and monotone, with at least two elements;
 % the spacing between the last and the first element is assumed to
 % be the same as that between any subsequent elements
 

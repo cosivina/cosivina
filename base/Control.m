@@ -1,3 +1,6 @@
+% Control (COSIVINA toolbox)
+%   Abstract base class for control elements in the GUI.
+
 classdef Control < handle
   properties
     position

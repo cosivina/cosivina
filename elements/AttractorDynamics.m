@@ -63,11 +63,7 @@ classdef AttractorDynamics < Element
         .* sin( obj.inputElements{2}.(obj.inputComponents{2}) - obj.rangePhi) );
       obj.phiDotAll = -obj.amplitude ...
         * sum(repmat(obj.inputElements{1}.(obj.inputComponents{1})', obj.size) .* obj.sineDiffPhi);
-      
-%       [y, i] = min(abs(obj.rangePhi - obj.inputElements{2}.(obj.inputComponents{2})));
-%       obj.phiDot = obj.phiDotAll(i);
     end
-    
 
   end
 end

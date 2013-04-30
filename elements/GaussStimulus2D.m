@@ -10,9 +10,9 @@
 %   amplitude - amplitude of the Gaussian
 %   positionY, positionX - vertical and horizontal center of the Gaussian
 %   circularY, circularX - flags indicating whether Gaussian is defined
-%     circularly
+%     circularly (default value is true)
 %   normalized - flag indicating whether Gaussian is normalized before
-%     scaling with amplitude
+%     scaling with amplitude (default value is false)
 
 
 

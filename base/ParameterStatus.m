@@ -1,3 +1,7 @@
+% ParameterStatus (COSIVINA toolbox)
+%   Enumeration of possible parameter status.
+
+
 classdef ParameterStatus
   properties (Constant)
     Fixed = 0;

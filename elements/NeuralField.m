@@ -7,9 +7,9 @@
 % NeuralField(label, size, tau, h, beta)
 %   label - element label
 %   size - field size
-%   tau - time constant
-%   h - resting level
-%   beta - steepness of sigmoid output function
+%   tau - time constant (default = 10)
+%   h - resting level (default = -5)
+%   beta - steepness of sigmoid output function (default = 4)
 
 
 classdef NeuralField < Element
@@ -17,7 +17,7 @@ classdef NeuralField < Element
   properties (Constant)
     parameters = struct('size', ParameterStatus.Fixed, 'tau', ParameterStatus.Changeable, ...
       'h', ParameterStatus.Changeable, 'beta', ParameterStatus.Changeable);
-    components = {'input', 'activation', 'output', 'h'};
+    components = {'activation', 'output', 'h'};
     defaultOutputComponent = 'output';
   end
   
@@ -29,7 +29,6 @@ classdef NeuralField < Element
     beta = 4;
     
     % accessible structures
-    input
     activation
     output
   end
@@ -59,18 +58,17 @@ classdef NeuralField < Element
     
     % step function
     function obj = step(obj, time, deltaT) %#ok<INUSL>
-      obj.input(:) = 0;
+      input = 0;
       for i = 1 : obj.nInputs
-        obj.input = obj.input + obj.inputElements{i}.(obj.inputComponents{i});
+        input = input + obj.inputElements{i}.(obj.inputComponents{i});
       end
-      obj.activation = obj.activation + deltaT/obj.tau * (- obj.activation + obj.h + obj.input);
+      obj.activation = obj.activation + deltaT/obj.tau * (- obj.activation + obj.h + input);
       obj.output = sigmoid(obj.activation, obj.beta, 0);
     end
     
     
     % intialization
     function obj = init(obj)
-      obj.input = zeros(obj.size);
       obj.activation = zeros(obj.size) + obj.h;
       obj.output = sigmoid(obj.activation, obj.beta, 0);
     end

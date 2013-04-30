@@ -1,8 +1,22 @@
-% function setpath
+function setpath
+
+release = version('-release');
+releaseNum = str2double(release(1:4));
+if isnan(releaseNum)
+  fprintf(['Matlab version could not be determined. See the documentation for further \n' ...
+    'information on compatibility if you encounter any problems. \n']);
+elseif releaseNum < 2011
+  fprintf(['Full functionality of the framework is only supported for Matlab R2011a \n'...
+    'and later. Method ''copy'' will not be supported for Element and \n' ...
+    'Simulator class. Class definition in file Element.m must be adjusted for \n' ...
+    'compatibility with this Matlab version (see documentation for further \n', ...
+    'details).\n']);
+end
 
 pbase = fileparts(mfilename('fullpath'));
 p = {fullfile(pbase, 'base', ''), fullfile(pbase, 'controls', ''), fullfile(pbase, 'elements', ''), ...
-  fullfile(pbase, 'mathTools', ''), fullfile(pbase, 'examples', ''), fullfile(pbase, 'visualizations', '')};
+  fullfile(pbase, 'mathTools', ''), fullfile(pbase, 'examples', ''), fullfile(pbase, 'visualizations', ''), ...
+  fullfile(pbase, 'auxiliary', '')};
 
 allfound = true;
 for i = 1 : length(p)

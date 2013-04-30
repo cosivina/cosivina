@@ -1,4 +1,12 @@
-classdef Element < handle
+% Element (COSIVINA toolbox)
+%   Abstract base class for architecture elements.
+
+% header for Matlab versions before 2011a (copy function not supported):
+% classdef Element < handle
+
+% header for Matlab version 2011a and later:
+classdef Element < matlab.mixin.Copyable
+    
   properties (Abstract, Constant)
     parameters
     components
@@ -22,7 +30,7 @@ classdef Element < handle
     function delete(obj)
       obj.inputElements = {};
     end
-
+    
     
     % close open connections (e.g. to camera or robot)
     function obj = close(obj)

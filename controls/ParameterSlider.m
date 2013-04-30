@@ -1,3 +1,41 @@
+% ParameterSlider (COSIVINA toolbox)
+%   Control that creates a slider with an accompanying text field in the
+%   GUI. The slider is connected to one or more parameters (belonging to a
+%   single element or different elements). The parameter value is changed
+%   whenever the slider is moved. The range of parameter values covered by
+%   the slider as well as a scaling factor for the conversion from slider
+%   position to parameter value can be specified.
+% 
+% Constructor call:
+% ParameterSlider(controlLabel, elementLabels, parameterNames, ...
+%   sliderRange, valueFormat, scalingFactor, toolTip, position)
+% 
+% Arguments:
+% controlLabel - label of the control displayed in the text field next to
+%   the slider
+% elementLabels - string or cell array of strings specifying the
+%   labels of elements controlled by this slider
+% parameterNames - string or cell array of strings specifying the names of
+%   the element parameters controlled by this slider; arguments
+%   elementLabels and parameterNames must have the same size, with each
+%   pair of entries fully specifying one controlled parameter
+% sliderRange - two-element vector giving the range of the slider 
+% valueFormat - string specifying the format of the parameter value
+%   displayed next to the slider (optional, see the Matlab documentation of
+%   the fprintf function on construction of that string)
+% scalingFactor - scalar value specifying a conversion factor from the
+%   element’s parameter value to the slider position (optional)
+% tooltip - tooltip displayed when hovering over the control with the mouse
+%   (optional)
+% position - position of the control in the GUI figure window in relative
+%   coordinates (optional, is overwritten when specifying a grid position
+%   in the GUI’s addControl function)
+%
+% Example:
+% h = ParameterSlider('h_u', 'field u', 'h', [-10, 0], '%0.1f', 1,
+%   'resting level of field u');
+
+
 classdef ParameterSlider < Control
   properties
     controlLabel

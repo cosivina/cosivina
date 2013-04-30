@@ -8,9 +8,10 @@
 %   sigma - width parameter of the Gaussian
 %   amplitude - amplitude of the Gaussian
 %   position - center of the Gaussian
-%   circular - flag indicating whether Gaussian is circular
+%   circular - flag indicating whether Gaussian is circular (default value
+%     is true)
 %   normalized - flag indicating whether Gaussian is normalized before
-%     scaling with amplitude
+%     scaling with amplitude (default value is false)
 
 
 classdef GaussStimulus1D < Element

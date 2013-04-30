@@ -1,10 +1,7 @@
-% Launcher for a one-layer neural field simulator with parameter presets.
-% The scripts sets up an architecture with a single one-dimensional neural
+% Launcher for a one-layer neural field simulator.
+% The script sets up an architecture with a single one-dimensional neural
 % field, lateral interactions, and three Gaussian inputs to the field. It
-% then creates a GUI for this architecture and starts that GUI. Three
-% different parameter presets are provided for the architecture, that can
-% be activated by choosing them in the dropdown menu on the bottom right
-% and pressing the Select button below.
+% then creates a GUI for this architecture and starts that GUI.
 % Hover over sliders and buttons to see a description of their function.
 
 
@@ -36,23 +33,25 @@ sim.addElement(LateralInteractions1D('u -> u', fieldSize, sigma_exc, 0, sigma_in
 sim.addElement(NormalNoise('noise', fieldSize, 1.0));
 sim.addElement(GaussKernel1D('noise kernel', fieldSize, 0, 1.0, true, true), 'noise', 'output', 'field u');
 
+% store activation history
+sim.addElement(RunningHistory('history', fieldSize, 200, 1), 'field u', 'activation');
+
 
 %% setting up the GUI
 
 elementGroups = {'field u', 'u -> u', 'stimulus 1', 'stimulus 2', 'stimulus 3', ...
   'noise kernel'};
 
-gui = StandardGUI(sim, [50, 50, 800, 700], 0.01, [0.0, 1/4, 1.0, 3/4], [2, 1], 0.06, [0.0, 0.0, 1.0, 1/4], [6, 4], ...
+gui = StandardGUI(sim, [50, 50, 900, 700], 0.01, [0.0, 1/4, 1.0, 3/4], [2, 1], 0.06, [0.0, 0.0, 1.0, 1/4], [6, 4], ...
   elementGroups, elementGroups);
 
 gui.addVisualization(MultiPlot({'field u', 'field u', 'shifted stimulus sum'}, {'activation', 'output', 'output'}, ...
   [1, 10, 1], 'horizontal', {'YLim', [-15, 15], 'XGrid', 'on', 'YGrid', 'on'}, ...
   {{'b', 'LineWidth', 3}, {'r', 'LineWidth', 2}, {'Color', [0, 0.75, 0], 'LineWidth', 2}}, ...
-  'field u', 'feature space', 'activation / input / output'), [1, 1]);
-gui.addVisualization(KernelPlot({'u -> u', 'u -> u'}, {'kernel', 'amplitudeGlobal'}, ...
-  {'local', 'global'}, fieldSize/2, {'YLim', [-1, 1], 'XGrid', 'on', 'YGrid', 'on'}, ...
-  {'Color', [0.5, 0, 0], 'LineWidth', 2}, ...
-  'interaction kernel', 'distance in feature space', 'interaction weight'), [2, 1]);
+  'field u', 'feature space', 'activation/input/output'), [1, 1]);
+gui.addVisualization(ScaledImage('history', 'output', [-10, 10], {}, {}, 'history of field u activation', ...
+  'feature space', 'time (back from current step)'), [2, 1]);
+
 
 % add sliders
 % resting level and noise
@@ -64,7 +63,7 @@ gui.addControl(ParameterSlider('c_exc', 'u -> u', 'amplitudeExc', [0, 40], '%0.1
   'strength of lateral excitation'), [2, 1]);
 gui.addControl(ParameterSlider('c_inh', 'u -> u', 'amplitudeInh', [0, 40], '%0.1f', 1, ...
   'strength of lateral inhibition'), [2, 2]);
-gui.addControl(ParameterSlider('c_gi', 'u -> u', 'amplitudeGlobal', [0, 1], '%0.2f', -1, ...
+gui.addControl(ParameterSlider('c_gi', 'u -> u', 'amplitudeGlobal', [0, 1], '%0.1f', -1, ...
   'strength of global inhibition'), [2, 3]);
 % stimuli
 gui.addControl(ParameterSlider('w_s1', 'stimulus 1', 'sigma', [0, 20], '%0.1f', 1, 'width of stimulus 1'), [4, 1]);
@@ -87,12 +86,8 @@ gui.addControl(ParameterSlider('c_s3', 'stimulus 3', 'amplitude', [0, 20], '%0.1
 gui.addControl(GlobalControlButton('Pause', gui, 'pauseSimulation', true, false, false, 'pause simulation'), [1, 4]);
 gui.addControl(GlobalControlButton('Reset', gui, 'resetSimulation', true, false, true, 'reset simulation'), [2, 4]);
 gui.addControl(GlobalControlButton('Parameters', gui, 'paramPanelRequest', true, false, false, 'open parameter panel'), [3, 4]);
-% gui.addControl(GlobalControlButton('Save', gui, 'saveParameters', true, false, true, 'save parameter settings'), [4, 4]);
-% gui.addControl(GlobalControlButton('Load', gui, 'loadParameters', true, false, true, 'load parameter settings'), [5, 4]);
-gui.addControl(PresetSelector('Select', gui, '', ...
-  {'presetOneLayerField_stabilized.json', 'presetOneLayerField_selection.json', 'presetOneLayerField_memory.json'}, ...
-  {'stabilized', 'selection', 'memory'}, ...
-  'Load pre-defined parameter settings'), [4, 4], [2, 1]);
+gui.addControl(GlobalControlButton('Save', gui, 'saveParameters', true, false, true, 'save parameter settings'), [4, 4]);
+gui.addControl(GlobalControlButton('Load', gui, 'loadParameters', true, false, true, 'load parameter settings'), [5, 4]);
 gui.addControl(GlobalControlButton('Quit', gui, 'quitSimulation', true, false, false, 'quit simulation'), [6, 4]);
 
 

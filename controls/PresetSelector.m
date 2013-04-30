@@ -1,3 +1,39 @@
+% PresetSelector (COSIVINA toolbox)
+%   Control that loads full parameter settings for the model from one of a
+%   set of predefined parameter files. The control consists of a dropdown
+%   menu to select a parameter file (which may be listed with a descriptive
+%   label) and a confirmation button. When the button is pressed, the
+%   parameter file connected to the currently selected entry in the
+%   dropdown menu is loaded.
+%   Note: Loading from a parameter file will re-initialize the simulation.
+%
+% Constructor call:
+% PresetSelector(controlLabel, controlledObject, filePath, presetFiles, 
+%   presetLabels, toolTip, position)
+%
+% Arguments:
+% controlLabel - label displayed on the confirmation button
+% controlledObject - the object that performs the loading operation, which
+%   is always the GUI that the control is part of
+% filePath - string specifying a common relative or absolute path for all 
+%   parameter files (may be empty if files are located in different
+%   folders)
+% presetFiles - cell array of strings containing the file names (or
+%   complete paths) for the parameter files
+% presetLabels - cell array of strings containing a label for each
+%   parameter file to be shown in the dropdown menu (optional, by default
+%   the filenames are used as labels)
+% tooltip - tooltip displayed when hovering over the control with the mouse
+%   (optional)
+% position - position of the control in the GUI figure window in relative
+%   coordinates (optional, is overwritten when specifying a grid position
+%   in the GUI’s addControl function)
+% 
+% h = PresetSelector('Select', gui, 'presetsOneLayerField/', ...
+%   {'preset_stabilized.json', 'preset_selection.json', 'preset_memory.json'}, ...
+%   {'stabilized', 'selection', 'memory'}, ...
+%   'Load pre-defined parameter settings');
+
 classdef PresetSelector < Control
   properties
     controlLabel = '';
