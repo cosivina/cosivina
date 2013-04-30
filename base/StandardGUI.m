@@ -227,41 +227,16 @@ classdef StandardGUI < handle
         
         % save
         if obj.saveParameters
-          if exist('savejson', 'file') ~= 2
-            warndlg(['Cannot save parameters to file: File SAVEJSON.M not found. ' ...
-              'Install JSONLAB and add it to the Matlab path to be able to save parameters to file.']);
-          else
-            [paramFile, paramPath] = uiputfile('*.json', 'Save parameter file');
-            if ~(length(paramFile) == 1 && paramFile == 0)
-              if ~saveSettings(obj.simulatorHandle, [paramPath paramFile])
-                warndlg('Could not write to file. Saving of parameters failed.');
-              end
-            end
-          end
+          saveParametersToFile(obj);
           obj.saveParameters = false;
         end
         
         % load
         if obj.loadParameters
-          if exist('loadjson', 'file') ~= 2
-            warndlg(['Cannot load parameters from file: File LOADJSON.M not found. ' ...
-              'Install JSONLAB and add it to the Matlab path to be able to load parameters from file.']);
-          else
-            if isempty(obj.loadFile)
-              [paramFile, paramPath] = uigetfile('*.json', 'Load parameter file');
-              if ~(length(paramFile) == 1 && paramFile == 0)
-                obj.loadFile = fullfile(paramPath, paramFile);
-              end
-            end
-            if ~isempty(obj.loadFile)
-              if ~obj.simulatorHandle.loadSettings(obj.loadFile)
-                warndlg(['Could not read file ' obj.loadFile '. Loading of parmeters failed.'], 'Warning');
-              end
-              init(obj.simulatorHandle);
-              updateControls = true;
-              updatePanel = true;
-            end
-            obj.loadFile = '';
+          if loadParametersFromFile(obj);
+            init(obj.simulatorHandle);
+            updateControls = true;
+            updatePanel = true;
           end
           obj.loadParameters = false;
         end
@@ -349,7 +324,52 @@ classdef StandardGUI < handle
       end
     end
     
-   
+    
+    % save current simulator parameters to file (opens dialogue)
+    function success = saveParametersToFile(obj)
+      success = false;
+      if exist('savejson', 'file') ~= 2
+        warndlg(['Cannot save parameters to file: File SAVEJSON.M not found. ' ...
+          'Install JSONLAB and add it to the Matlab path to be able to save parameters to file.']);
+      else
+        [paramFile, paramPath] = uiputfile('*.json', 'Save parameter file');
+        if ~(length(paramFile) == 1 && paramFile == 0)
+          if ~saveSettings(obj.simulatorHandle, [paramPath paramFile])
+            warndlg('Could not write to file. Saving of parameters failed.');
+          else
+            success = true;
+          end
+        end
+      end
+      
+    end
+    
+    
+    % load parameters for simulator from file (uses property loadFile or
+    % opens dialogue)
+    function success = loadParametersFromFile(obj)
+      success = false;
+      if exist('loadjson', 'file') ~= 2
+        warndlg(['Cannot load parameters from file: File LOADJSON.M not found. ' ...
+          'Install JSONLAB and add it to the Matlab path to be able to load parameters from file.']);
+      else
+        if isempty(obj.loadFile)
+          [paramFile, paramPath] = uigetfile('*.json', 'Load parameter file');
+          if ~(length(paramFile) == 1 && paramFile == 0)
+            obj.loadFile = fullfile(paramPath, paramFile);
+          end
+        end
+        if ~isempty(obj.loadFile)
+          if ~obj.simulatorHandle.loadSettings(obj.loadFile)
+            warndlg(['Could not read file ' obj.loadFile '. Loading of parmeters failed.'], 'Warning');
+          end
+          success = true;
+        end
+        obj.loadFile = '';
+      end
+    end
+    
+    
     % compute relative position in figure from grid position
     function relPosition = gridToRelPosition(obj, type, positionInGrid, sizeInGrid)
       % note: position information is given in format [x, y, w, h], with origin at

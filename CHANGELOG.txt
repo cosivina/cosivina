@@ -1,5 +1,7 @@
 CHANGELOG
 
+* cleaned up Standard GUI by introducing separate load/save methods
+
 Version 1.1.1
 * fixed bug in MemoryTrace class so that it also works with two-dimensional
   inputs
