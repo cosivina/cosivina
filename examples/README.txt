@@ -15,6 +15,8 @@ launcherOneLayerField and launcherOneLayerField_preset: These create the most ba
 
 launcherOneLayerField_runningHistory: The same architecture as above, but shows a running history of field activations in the bottom plot.
 
+launcherOneLayerFieldMemoryTrace: Creates a single one-dimensional field with a memory trace. The memory trace slowly builds up activation at supra-threshold locations in the field and projects back to it. This can be used as a long-term memory mechanism.
+
 launcherTwoLayerField: Model with separate excitatory (field u, top) and inhibitory layer (field v, bottom). The excitatory layer receives external inputs and can excite itself and the inhibitory layer. The inhibitory layer projects inhibition back to the excitatory layer.
 
 launcherThreeLayerField: Model with two excitatory layers (field u and field w) and a shared inhibitory layer (field v). Can be used to implement a change detection model, in which field w serves as working memory and field and field u as contrast field, that forms peaks only when a novel stimulus is presented.

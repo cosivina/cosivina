@@ -1,5 +1,10 @@
 CHANGELOG
 
+Version 1.1.1
+* fixed bug in MemoryTrace class so that it also works with two-dimensional
+  inputs
+
+
 Version 1.1
 * added comments for command window help to Simulator, StandardGUI, and all 
   visualization and control classes

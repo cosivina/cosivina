@@ -5,9 +5,9 @@
 % Constructor call:
 % MemoryTrace(label, size, tauBuild, tauDecay, threshold)
 %   size - size of memory trace
-%   tauBuild - time constant of activation build-up
-%   tauDecay - time constant for decay of activation
-%   threshold - input threshold for activation build-up
+%   tauBuild - time constant of activation build-up (default = 100)
+%   tauDecay - time constant for decay of activation (default = 1000)
+%   threshold - input threshold for activation build-up (default = 0.5)
 
 
 classdef MemoryTrace < Element
@@ -59,7 +59,7 @@ classdef MemoryTrace < Element
     % step function
     function obj = step(obj, time, deltaT) %#ok<INUSD>
       obj.activeRegions = obj.inputElements{1}.(obj.inputComponents{1}) > obj.threshold;
-      if any(obj.activeRegions)
+      if any(any(obj.activeRegions))
         obj.output = obj.output ...
           + 1/obj.tauBuild * (-obj.output + obj.inputElements{1}.(obj.inputComponents{1})) .* obj.activeRegions ...
           + 1/obj.tauDecay * (-obj.output) .* ~obj.activeRegions;
