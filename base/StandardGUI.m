@@ -283,6 +283,42 @@ classdef StandardGUI < handle
     end
     
     
+    % update all visualizations (for operation of the GUI from code)
+    function obj = updateVisualizations(obj)
+      if ~obj.connected || ~obj.simulatorHandle.initialized
+        warning('StandardGUI:updateVisualizations:noValidSim', ...
+          'Cannot update visualizations when GUI is not connected to an initialized simulator object.');
+        return;
+      end
+      
+      if ~ishandle(obj.figureHandle)
+        init(obj);
+      end
+      
+      for i = 1 : obj.nVisualizations
+        update(obj.visualizations{i});
+      end
+    end
+    
+    
+    % check all controls, then update them (for operation of the GUI from
+    % code)
+    function obj = checkAndUpdateControls(obj)
+      if ~obj.connected || ~obj.simulatorHandle.initialized || ~ishandle(obj.figureHandle)
+        warning('StandardGUI:updateVisualizations:noValidSim', ...
+          'Cannot check controls when GUI is not open or not connected to initialized simulator object.');
+        return;
+      end
+      
+      for i = 1 : obj.nControls
+        check(obj.controls{i});
+      end
+      for i = 1 : obj.nControls
+        update(obj.controls{i});
+      end
+    end
+    
+    
     % add visualization object
     function obj = addVisualization(obj, visualization, positionInGrid, sizeInGrid)
       obj.visualizations{end+1} = visualization;
