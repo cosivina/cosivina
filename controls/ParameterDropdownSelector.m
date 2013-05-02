@@ -173,7 +173,7 @@ classdef ParameterDropdownSelector < Control
           
           if obj.elementHandles{i}.getParamChangeStatus(obj.parameterNames{i}) == ParameterStatus.InitRequired
             obj.elementHandles{i}.init();
-            obj.elementHandles{i}.step();
+            %obj.elementHandles{i}.step();
           end
         end
       else

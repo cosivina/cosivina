@@ -338,16 +338,37 @@ classdef Simulator < handle
     function component = getComponent(obj, elementLabel, componentName)
       i = find(strcmp(elementLabel, obj.elementLabels), 1);
       if isempty(i)
-        warning('Simulation:getComponent:unknownElement', 'No element %s in simulator object.', elementLabel);
-        component = [];
+        error('Simulation:getComponent:unknownElement', 'No element %s in simulator object.', elementLabel);
       else
         if obj.elements{i}.isComponent(componentName)
           component = obj.elements{i}.(componentName);
         else
-          warning('Simulation:getComponent:invalidComponent', ...
+          error('Simulation:getComponent:invalidComponent', ...
             'Invalid component %s for element %s in simulator object.', componentName, elementLabel);
-          component = [];
         end
+      end
+    end
+    
+    
+    % set parameter value of an element, re-initialize and perform step if
+    % necessary
+    function obj = setElementParameter(obj, elementLabel, parameterName, newValue)
+      i = find(strcmp(elementLabel, obj.elementLabels), 1);
+      if isempty(i)
+        error('Simulation:setElementParameter:unknownElement', 'No element %s in simulator object.', elementLabel);
+      end
+      if ~isParameter(obj.elements{i}, parameterName)
+        error('Simulation:setElementParameter:unknownParameter', ...
+          'Invalid parameter %s for element %s in simulator object.', parameterName, elementLabel);
+      end
+      
+      obj.elements{i}.(parameterName) = newValue;
+      
+      if obj.elements{i}.getParamChangeStatus(parameterName) == ParameterStatus.InitRequired
+        init(obj.elements{i});
+      elseif obj.elements{i}.getParamChangeStatus(parameterName) == ParameterStatus.InitStepRequired
+        init(obj.elements{i});
+        step(obj.elements{i}, obj.t, obj.deltaT);
       end
     end
     
