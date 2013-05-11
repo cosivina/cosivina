@@ -157,7 +157,6 @@ classdef Simulator < handle
       obj.t = obj.t + obj.deltaT;
       for i = 1 : obj.nElements
         step(obj.elements{i}, obj.t, obj.deltaT);
-%         obj.elements{i}.step(obj.t, obj.deltaT);
       end
     end
     
@@ -219,8 +218,9 @@ classdef Simulator < handle
           obj.elements{i} %#ok<NOPRT>
           disp('Input components:');
           for j = 1 : obj.elements{i}.nInputs
-            disp(['element ''' obj.elements{i}.inputElements{j}.label ''', component ''' , obj.elements{i}.inputComponents{j}, ...
-              ''', size: [' num2str(size(obj.elements{i}.inputElements{j}.(obj.elements{i}.inputComponents{j}))) ']']);
+            disp(['element ''' obj.elements{i}.inputElements{j}.label ''', component ''' , ...
+              obj.elements{i}.inputComponents{j}, ...
+              ''', size: [', num2str(size(obj.elements{i}.inputElements{j}.(obj.elements{i}.inputComponents{j}))) ']']);
           end
           return;
         end
@@ -350,25 +350,108 @@ classdef Simulator < handle
     end
     
     
-    % set parameter value of an element, re-initialize and perform step if
-    % necessary
-    function obj = setElementParameter(obj, elementLabel, parameterName, newValue)
-      i = find(strcmp(elementLabel, obj.elementLabels), 1);
-      if isempty(i)
-        error('Simulation:setElementParameter:unknownElement', 'No element %s in simulator object.', elementLabel);
+%     % set parameter value of an element, re-initialize and perform step if
+%     % necessary to apply changes
+%     function obj = setElementParameter(obj, elementLabel, parameterName, newValue)
+%       i = find(strcmp(elementLabel, obj.elementLabels), 1);
+%       if isempty(i)
+%         error('Simulation:setElementParameter:unknownElement', 'No element %s in simulator object.', elementLabel);
+%       end
+%       if ~isParameter(obj.elements{i}, parameterName)
+%         error('Simulation:setElementParameter:unknownParameter', ...
+%           'Invalid parameter %s for element %s in simulator object.', parameterName, elementLabel);
+%       end
+%       
+%       obj.elements{i}.(parameterName) = newValue;
+%       
+%       if obj.elements{i}.getParamChangeStatus(parameterName) == ParameterStatus.InitRequired
+%         init(obj.elements{i});
+%       elseif obj.elements{i}.getParamChangeStatus(parameterName) == ParameterStatus.InitStepRequired
+%         init(obj.elements{i});
+%         step(obj.elements{i}, obj.t, obj.deltaT);
+%       end
+%     end
+    
+    
+    % set multiple parameters of one or multiple elements, re-initialize
+    % and perform step if necessary to apply changes
+    function obj = setElementParameters(obj, elementLabels, parameterNames, newValues)
+      if ischar(elementLabels)
+        elementLabels = cellstr(elementLabels);
       end
-      if ~isParameter(obj.elements{i}, parameterName)
-        error('Simulation:setElementParameter:unknownParameter', ...
-          'Invalid parameter %s for element %s in simulator object.', parameterName, elementLabel);
+      if ischar(parameterNames)
+        parameterNames = cellstr(parameterNames);
+      end
+      if ~iscell(newValues)
+        if numel(parameterNames) == 1
+          newValues = {newValues};
+        else
+          newValues = mat2cell(newValues);
+        end
+      end
+      if numel(parameterNames) ~= numel(newValues)
+        error('Simulation:setElementParameter:argumentSizeMismatch', ...
+          ['Arguments ''parameterNames'' and ''newValues'' must be cell arrays of the same size, ' ...
+          'or a single string and a matrix/scalar value']);
+      end
+        
+      % check newValues
+      
+      if numel(elementLabels) == 1
+        nChangedElements = 1;
+        elementLabelsUnique = elementLabels;
+        parameterNamesSorted = {parameterNames};
+        valuesSorted = {newValues};
+      else
+        [elementLabelsUnique, I1, I2] = unique(elementLabels, 'stable'); %#ok<ASGLU>
+        nChangedElements = numel(elementLabelsUnique);
+        parameterNamesSorted = cell(n, 1);
+        valuesSorted = cell(nChangedElements, 1);
+        for i = 1 : nChangedElements
+          parameterNamesSorted{i} = {parameterNames(I2 == i)};
+          valuesSorted = {newValues(I2 == i)};
+        end
       end
       
-      obj.elements{i}.(parameterName) = newValue;
-      
-      if obj.elements{i}.getParamChangeStatus(parameterName) == ParameterStatus.InitRequired
-        init(obj.elements{i});
-      elseif obj.elements{i}.getParamChangeStatus(parameterName) == ParameterStatus.InitStepRequired
-        init(obj.elements{i});
-        step(obj.elements{i}, obj.t, obj.deltaT);
+      for i = 1 : nChangedElements
+        iElement = find(strcmp(elementLabels{i}, obj.elementLabels), 1);
+        if isempty(iElement)
+          error('Simulation:setElementParameter:unknownElement', 'No element %s in simulator object.', elementLabels{i});
+        end
+        elementHandle = obj.elements{iElement};
+        
+        elementStep = false;
+        elementInit = false;
+        
+        for j = 1 : numel(parameterNamesSorted{i})
+          if ~isParameter(elementHandle, parameterNamesSorted{i}{j})
+            error('Simulation:setElementParameter:unknownParameter', ...
+              'Invalid parameter %s for element %s in simulator object.', ...
+              parameterNamesSorted{i}{j}, elementLabelsUnique{i});
+          end
+          
+          changeStatus = getParamChangeStatus(elementHandle, parameterNamesSorted{i}{j});
+          if changeStatus == ParameterStatus.Fixed
+            error('Simulation:setElementParameter:fixedParameter', ...
+              'Parameter %s for element %s cannot be changed because it has ParameterStatus ''Fixed''.', ...
+              parameterNamesSorted{i}{j}, elementLabelsUnique{i});
+          end
+          
+          elementHandle.(parameterNamesSorted{i}{j}) = valuesSorted{i}{j};
+          elementStep = elementStep || changeStatus == ParameterStatus.InitStepRequired;
+          elementInit = elementInit || changeStatus == ParameterStatus.InitRequired;
+        end
+        
+        if obj.initialized
+          if elementInit || elementStep
+            init(elementHandle);
+            disp('initialized');
+          end
+          if elementStep
+            step(elementHandle, obj.t, obj.deltaT);
+            disp('step performed');
+          end
+        end
       end
     end
     
@@ -402,7 +485,6 @@ classdef Simulator < handle
         success = true;
       end
     end
-    
     
     
     % set elements and parameters from json-compatible struct
@@ -503,7 +585,6 @@ classdef Simulator < handle
     
     % convert settings of simulator object to json-compatible struct (for saving)
     function simStruct = toStruct(obj)
-      
       elementsStruct = struct('label', obj.elementLabels, 'class', cell(1, obj.nElements), ...
         'param', cell(1, obj.nElements), 'nInputs', cell(1, obj.nElements), 'input', cell(1, obj.nElements));
       for i = 1 : obj.nElements

@@ -298,6 +298,8 @@ classdef StandardGUI < handle
       for i = 1 : obj.nVisualizations
         update(obj.visualizations{i});
       end
+      
+      drawnow;
     end
     
     
@@ -316,6 +318,8 @@ classdef StandardGUI < handle
       for i = 1 : obj.nControls
         update(obj.controls{i});
       end
+      
+      drawnow;
     end
     
     
