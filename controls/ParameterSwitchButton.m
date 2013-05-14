@@ -43,7 +43,7 @@ classdef ParameterSwitchButton < Control
     toolTip
     
     nParameters
-    elementHandles
+    simulatorHandle
     buttonHandle
     
     lastValue = false;
@@ -89,19 +89,26 @@ classdef ParameterSwitchButton < Control
           ['Arguments elementLabels and parameterNames must be strings or cell arrays of strings ' ...
           'with equal number of elements, and arguments offValues and onValues must be vectors of that same size']);
       end
+      
+      if ~iscell(obj.offValues)
+        obj.offValues = num2cell(obj.offValues);
+      end
+      if ~iscell(obj.onValues)
+        obj.onValues = num2cell(obj.onValues);
+      end
     end
     
     
     % connect to simulator object
     function obj = connect(obj, simulatorHandle)
-      obj.elementHandles = cell(obj.nParameters, 1);
+      obj.simulatorHandle = simulatorHandle;
       for i = 1 : obj.nParameters
-        obj.elementHandles{i} = simulatorHandle.getElement(obj.elementLabels{i});
-        if isempty(obj.elementHandles{i}) || ~obj.elementHandles{i}.isParameter(obj.parameterNames{i})
+        tmpElementHandle = simulatorHandle.getElement(obj.elementLabels{i});
+        if isempty(tmpElementHandle) || ~tmpElementHandle.isParameter(obj.parameterNames{i})
           error('ParameterSlider:connect:invalidParameter', ...
             'No element ''%s'' with parameter ''%s'' in simulator object', obj.elementLabels{i}, obj.parameterNames{i});
         end
-        if obj.elementHandles{i}.getParamChangeStatus(obj.parameterNames{i}) == ParameterStatus.Fixed
+        if tmpElementHandle.getParamChangeStatus(obj.parameterNames{i}) == ParameterStatus.Fixed
           error('ParameterSlider:connect:parameterFixed', ...
             'Parameter ''%s'' in element ''%s'' has change status ''Fixed'' and cannot be changed by a GUI control', ...
             obj.parameterNames{i}, obj.elementLabels{i});
@@ -119,28 +126,13 @@ classdef ParameterSwitchButton < Control
     
     % check control object and update simulator object if required
     function changed = check(obj)
-      
       if get(obj.buttonHandle, 'Value') ~= obj.lastValue
         changed = true;
         obj.lastValue = ~obj.lastValue;
         if obj.lastValue
-          for i = 1 : obj.nParameters
-            obj.elementHandles{i}.(obj.parameterNames{i}) = obj.onValues(i);
-            
-            if obj.elementHandles{i}.getParamChangeStatus(obj.parameterNames{i}) == ParameterStatus.InitRequired
-              obj.elementHandles{i}.init();
-              %obj.elementHandles{i}.step();
-            end
-          end
+          setElementParameters(obj.simulatorHandle, obj.elementLabels, obj.parameterNames, obj.onValues);
         else
-          for i = 1 : obj.nParameters
-            obj.elementHandles{i}.(obj.parameterNames{i}) = obj.offValues(i);
-            
-            if obj.elementHandles{i}.getParamChangeStatus(obj.parameterNames{i}) == ParameterStatus.InitRequired
-              obj.elementHandles{i}.init();
-              %obj.elementHandles{i}.step();
-            end
-          end
+          setElementParameters(obj.simulatorHandle, obj.elementLabels, obj.parameterNames, obj.offValues);
         end
       else
         changed = false;

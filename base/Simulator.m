@@ -42,6 +42,15 @@
 % getComponent(elementLabel, componentName) - returns the specified
 %   component (typically a numeric matrix) of the element identified by
 %   elementLabel (both arguments must be strings)
+% getElementParameter(elementLabel, parameterName) - returns the specified
+%   parameter of the element identified by elementLabel (both arguments
+%   must be strings)
+% setElementParameters(elementLabels, parameterNames, newValues) - sets one
+%   or more parameter values of one or more elements, re-initializes and
+%   calls step-function of element if necessary for changes to take effect;
+%   arguments elementLabels and parameterNames must be strings or cell
+%   arrays of strings, newValues must be variable of approproate type
+%   for the specified parameter, or cell array of such variables
 %
 % Other methods:
 % copy() - create copy of the simulator object and all its elements
@@ -338,39 +347,32 @@ classdef Simulator < handle
     function component = getComponent(obj, elementLabel, componentName)
       i = find(strcmp(elementLabel, obj.elementLabels), 1);
       if isempty(i)
-        error('Simulation:getComponent:unknownElement', 'No element %s in simulator object.', elementLabel);
+        error('Simulation:getComponent:unknownElement', 'No element ''%s'' in simulator object.', elementLabel);
+      end
+      
+      if obj.elements{i}.isComponent(componentName)
+        component = obj.elements{i}.(componentName);
       else
-        if obj.elements{i}.isComponent(componentName)
-          component = obj.elements{i}.(componentName);
-        else
-          error('Simulation:getComponent:invalidComponent', ...
-            'Invalid component %s for element %s in simulator object.', componentName, elementLabel);
-        end
+        error('Simulation:getComponent:invalidComponent', ...
+          'Invalid component %s for element %s in simulator object.', componentName, elementLabel);
       end
     end
     
     
-%     % set parameter value of an element, re-initialize and perform step if
-%     % necessary to apply changes
-%     function obj = setElementParameter(obj, elementLabel, parameterName, newValue)
-%       i = find(strcmp(elementLabel, obj.elementLabels), 1);
-%       if isempty(i)
-%         error('Simulation:setElementParameter:unknownElement', 'No element %s in simulator object.', elementLabel);
-%       end
-%       if ~isParameter(obj.elements{i}, parameterName)
-%         error('Simulation:setElementParameter:unknownParameter', ...
-%           'Invalid parameter %s for element %s in simulator object.', parameterName, elementLabel);
-%       end
-%       
-%       obj.elements{i}.(parameterName) = newValue;
-%       
-%       if obj.elements{i}.getParamChangeStatus(parameterName) == ParameterStatus.InitRequired
-%         init(obj.elements{i});
-%       elseif obj.elements{i}.getParamChangeStatus(parameterName) == ParameterStatus.InitStepRequired
-%         init(obj.elements{i});
-%         step(obj.elements{i}, obj.t, obj.deltaT);
-%       end
-%     end
+    % get parameter value of an element
+    function value = getElementParameter(obj, elementLabel, parameterName)
+      i = find(strcmp(elementLabel, obj.elementLabels), 1);
+      if isempty(i)
+        error('Simulation:getElementParameter:unknownElement', 'No element ''%s'' in simulator object.', elementLabel);
+      end
+      
+      if obj.elements{i}.isParameter(parameterName)
+        value = obj.elements{i}.(parameterName);
+      else
+        error('Simulation:getElementParameter:invalidParameter', ...
+          'Invalid parameter ''%s'' for element ''%''s in simulator object.', parameterName, elementLabel);
+      end
+    end
     
     
     % set multiple parameters of one or multiple elements, re-initialize
@@ -386,7 +388,7 @@ classdef Simulator < handle
         if numel(parameterNames) == 1
           newValues = {newValues};
         else
-          newValues = mat2cell(newValues);
+          newValues = num2cell(newValues);
         end
       end
       if numel(parameterNames) ~= numel(newValues)
@@ -403,18 +405,18 @@ classdef Simulator < handle
         parameterNamesSorted = {parameterNames};
         valuesSorted = {newValues};
       else
-        [elementLabelsUnique, I1, I2] = unique(elementLabels, 'stable'); %#ok<ASGLU>
+        [elementLabelsUnique, I1, I2] = unique(elementLabels); %#ok<ASGLU>
         nChangedElements = numel(elementLabelsUnique);
-        parameterNamesSorted = cell(n, 1);
+        parameterNamesSorted = cell(nChangedElements, 1);
         valuesSorted = cell(nChangedElements, 1);
         for i = 1 : nChangedElements
-          parameterNamesSorted{i} = {parameterNames(I2 == i)};
-          valuesSorted = {newValues(I2 == i)};
+          parameterNamesSorted{i} = parameterNames(I2 == i);
+          valuesSorted{i} = newValues(I2 == i);
         end
       end
       
       for i = 1 : nChangedElements
-        iElement = find(strcmp(elementLabels{i}, obj.elementLabels), 1);
+        iElement = find(strcmp(elementLabelsUnique{i}, obj.elementLabels), 1);
         if isempty(iElement)
           error('Simulation:setElementParameter:unknownElement', 'No element %s in simulator object.', elementLabels{i});
         end
@@ -445,11 +447,9 @@ classdef Simulator < handle
         if obj.initialized
           if elementInit || elementStep
             init(elementHandle);
-            disp('initialized');
           end
           if elementStep
             step(elementHandle, obj.t, obj.deltaT);
-            disp('step performed');
           end
         end
       end

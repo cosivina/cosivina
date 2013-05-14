@@ -18,7 +18,10 @@ classdef ParameterPanel < handle
     elementGroups
     nElementsInGroups
     elementsInGroups
-    elementHandlesInGroups
+    refElementHandles
+    % elementHandlesInGroups
+    
+    simulatorHandle
     
     nParams
     parameters
@@ -46,13 +49,12 @@ classdef ParameterPanel < handle
       end
       
       obj.nElementGroups = numel(obj.elementGroups);
-      obj.elementHandlesInGroups = cell(obj.nElementGroups, 1);
+      obj.refElementHandles = cell(obj.nElementGroups, 1);
       obj.nElementsInGroups = nan(obj.nElementGroups, 1);
       for i = 1 : obj.nElementGroups
         if ~iscell(obj.elementsInGroups{i})
           obj.elementsInGroups{i} = obj.elementsInGroups(i);
         end
-        obj.elementHandlesInGroups{i} = cell(1, numel(obj.elementsInGroups{i}));
         obj.nElementsInGroups(i) = numel(obj.elementsInGroups{i});
       end
       
@@ -64,15 +66,25 @@ classdef ParameterPanel < handle
     
     % connect to a simulator object
     function obj = connect(obj, simulatorHandle)
+      obj.simulatorHandle = simulatorHandle;
       for i = 1 : obj.nElementGroups
         for j = 1 : obj.nElementsInGroups(i)
-          obj.elementHandlesInGroups{i}{j} = simulatorHandle.getElement(obj.elementsInGroups{i}{j});
-          if isempty(obj.elementHandlesInGroups{i}{j})
-            error('ParameterPanel:contructor:elementNotFound', ...
+          if ~isElement(simulatorHandle, obj.elementsInGroups{i}{j});
+            error('ParameterPanel:connect:elementNotFound', ...
               'Element ''%s'' listed for grouping in the parameter panel not found in simulator object.', ...
               obj.elementsInGroups{i}{j});
           end
         end
+        obj.refElementHandles{i} = getElement(simulatorHandle, obj.elementsInGroups{i}{1});
+        elementClass = class(obj.refElementHandles{i});
+        for j = 2 : obj.nElementsInGroups(i)
+          if ~strcmp(elementClass, class(getElement(simulatorHandle, obj.elementsInGroups{i}{j})))
+            error('ParameterPanel:connect:classMismatch', ...
+              'Elements ''%s'' and ''%s'' listed for grouping in the parameter panel are not of the same class.', ...
+              obj.elementsInGroups{i}{j});
+          end
+        end
+        
       end
       obj.connected = true;
     end
@@ -119,7 +131,7 @@ classdef ParameterPanel < handle
     
     % update element selection
     function obj = updateSelection(obj)
-      obj.parameters = obj.elementHandlesInGroups{obj.currentSelection}{1}.getParameterList();
+      obj.parameters = obj.refElementHandles{obj.currentSelection}.getParameterList();
       obj.nParams = numel(obj.parameters);
       
       cellHeightRel = obj.cellHeightAbs / obj.figurePosition(4);
@@ -147,7 +159,7 @@ classdef ParameterPanel < handle
       
       for i = 1 : obj.nParams
         obj.paramChangeStatus(i) = ...
-          obj.elementHandlesInGroups{obj.currentSelection}{1}.getParamChangeStatus(obj.parameters{i});
+          obj.refElementHandles{obj.currentSelection}.getParamChangeStatus(obj.parameters{i});
         set(obj.captionHandles(i), 'String', obj.parameters{i});
         if obj.paramChangeStatus(i) == ParameterStatus.Fixed
           set(obj.editHandles(i), 'Enable', 'off');
@@ -164,25 +176,24 @@ classdef ParameterPanel < handle
     function changed = check(obj)
       
       if ~ishandle(obj.figureHandle)
-        changed = obj.panelOpen; % if panel was supposed to be open, change is true (to updateControls)
+        changed = obj.panelOpen; % if panel was supposed to be open, change is true (to set updateControls true)
         obj.panelOpen = false;
         return;
       end
       
       if get(obj.buttonHandle, 'Value')
-        for m = 1 : obj.nElementsInGroups(obj.currentSelection)
-          init = false;
-          for i = 1 : obj.nParams
-            if obj.paramChangeStatus(i) ~= ParameterStatus.Fixed
-              obj.elementHandlesInGroups{obj.currentSelection}{m}.(obj.parameters{i}) = ...
-                str2double(get(obj.editHandles(i), 'String'));
-              init = init || obj.paramChangeStatus(i) == ParameterStatus.InitRequired;
-            end
-          end
-          if init
-            obj.elementHandlesInGroups{obj.currentSelection}{m}.init();
-          end
+        iParametersSettable = find(obj.paramChangeStatus ~= ParameterStatus.Fixed);
+        nParametersSettable = numel(iParametersSettable);
+        parametersSettable = obj.parameters(iParametersSettable);
+        newValues = cell(1, nParametersSettable);
+        for i = 1 : nParametersSettable
+          newValues{i} = str2double(get(obj.editHandles(iParametersSettable(i)), 'String'));
         end
+        for m = 1 : obj.nElementsInGroups(obj.currentSelection)
+          setElementParameters(obj.simulatorHandle, obj.elementsInGroups{obj.currentSelection}{m}, ...
+            parametersSettable, newValues);
+        end
+        
         set(obj.buttonHandle, 'Value', false);
         changed = true;
       else
@@ -203,18 +214,18 @@ classdef ParameterPanel < handle
       if obj.panelOpen
         for i = 1 : obj.nParams
           if obj.paramChangeStatus(i) == ParameterStatus.Fixed 
-            s = size(obj.elementHandlesInGroups{obj.currentSelection}{1}.(obj.parameters{i}));
-            if isnumeric(obj.elementHandlesInGroups{obj.currentSelection}{1}.(obj.parameters{i})) ...
+            s = size(obj.refElementHandles{obj.currentSelection}.(obj.parameters{i}));
+            if isnumeric(obj.refElementHandles{obj.currentSelection}.(obj.parameters{i})) ...
                 && s(1) == 1 && s(2) <= 4
               set(obj.editHandles(i), 'String', ...
-                num2str(obj.elementHandlesInGroups{obj.currentSelection}{1}.(obj.parameters{i})));
+                num2str(obj.refElementHandles{obj.currentSelection}.(obj.parameters{i})));
             else
               set(obj.editHandles(i), 'String', ...
-                class(obj.elementHandlesInGroups{obj.currentSelection}{1}.(obj.parameters{i})));
+                class(obj.refElementHandles{obj.currentSelection}.(obj.parameters{i})));
             end
           else
             set(obj.editHandles(i), 'String', ...
-              num2str(obj.elementHandlesInGroups{obj.currentSelection}{1}.(obj.parameters{i})));
+              num2str(obj.refElementHandles{obj.currentSelection}.(obj.parameters{i})));
           end
         end
       end
@@ -222,3 +233,4 @@ classdef ParameterPanel < handle
     
   end
 end
+

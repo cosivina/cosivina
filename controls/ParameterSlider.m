@@ -47,7 +47,8 @@ classdef ParameterSlider < Control
     toolTip
     
     nParameters
-    elementHandles
+    simulatorHandle
+    refElementHandle
     sliderHandle
     captionHandle
     
@@ -107,19 +108,24 @@ classdef ParameterSlider < Control
     
     % connect to simulator object
     function obj = connect(obj, simulatorHandle)
-      obj.elementHandles = cell(obj.nParameters, 1);
+      obj.simulatorHandle = simulatorHandle;
+      
+      % check whether elements and parameters exist (and not fixed) in simulator object
       for i = 1 : obj.nParameters
-        obj.elementHandles{i} = simulatorHandle.getElement(obj.elementLabels{i});
-        if isempty(obj.elementHandles{i}) || ~obj.elementHandles{i}.isParameter(obj.parameterNames{i})
+        tmpElementHandle = simulatorHandle.getElement(obj.elementLabels{i});
+        if isempty(tmpElementHandle) || ~tmpElementHandle.isParameter(obj.parameterNames{i})
           error('ParameterSlider:connect:invalidParameter', ...
             'No element ''%s'' with parameter ''%s'' in simulator object', obj.elementLabels{i}, obj.parameterNames{i});
         end
-        if obj.elementHandles{i}.getParamChangeStatus(obj.parameterNames{i}) == ParameterStatus.Fixed
+        if tmpElementHandle.getParamChangeStatus(obj.parameterNames{i}) == ParameterStatus.Fixed
           error('ParameterSlider:connect:parameterFixed', ...
             'Parameter ''%s'' in element ''%s'' has change status ''Fixed'' and cannot be changed by a GUI control', ...
             obj.parameterNames{i}, obj.elementLabels{i});
         end
       end
+      
+      % first element/parameter is used as reference to set the slider position
+      obj.refElementHandle = simulatorHandle.getElement(obj.elementLabels{1}); % this element is used to set the sliced
     end
     
     
@@ -129,7 +135,7 @@ classdef ParameterSlider < Control
         obj.position(3) * obj.relCaptionWidth, obj.position(4)];
       sliderPosition = [obj.position(1) + (obj.relCaptionWidth + 2*obj.relPaddingWidth) * obj.position(3), ...
         obj.position(2), (1 - obj.relCaptionWidth - 2*obj.relPaddingWidth) * obj.position(3), obj.position(4)];
-      obj.lastValue = obj.scalingFactor * obj.elementHandles{1}.(obj.parameterNames{1});
+      obj.lastValue = obj.scalingFactor * obj.refElementHandle.(obj.parameterNames{1});
       
       obj.captionHandle = uicontrol('Parent', figureHandle, 'Style', 'text', 'Units', 'norm', ...
         'HorizontalAlignment', 'left', 'String', [obj.controlLabel '=' num2str(obj.lastValue, obj.valueFormat)], ...
@@ -142,19 +148,13 @@ classdef ParameterSlider < Control
     
     % check control object and update simulator object if required
     function changed = check(obj)
-      
       if get(obj.sliderHandle, 'Value') ~= obj.lastValue
         changed = true;
         obj.lastValue = get(obj.sliderHandle, 'Value');
         set(obj.captionHandle, 'String', sprintf(['%s=' obj.valueFormat], obj.controlLabel,  obj.lastValue));
-        for i = 1 : obj.nParameters
-          obj.elementHandles{i}.(obj.parameterNames{i}) = 1/obj.scalingFactor * obj.lastValue;
-          
-          if obj.elementHandles{i}.getParamChangeStatus(obj.parameterNames{i}) == ParameterStatus.InitRequired
-            obj.elementHandles{i}.init();
-            % obj.elementHandles{i}.step();
-          end
-        end
+        
+        newValues = num2cell(repmat(1/obj.scalingFactor * obj.lastValue, [obj.nParameters, 1]));
+        setElementParameters(obj.simulatorHandle, obj.elementLabels, obj.parameterNames, newValues);
       else
         changed = false;
       end
@@ -163,7 +163,7 @@ classdef ParameterSlider < Control
     
     % update control object (e.g. after parameters have been changed in parameter panel)
     function obj = update(obj) % updates the control eleme
-      obj.lastValue = obj.scalingFactor * obj.elementHandles{1}.(obj.parameterNames{1});
+      obj.lastValue = obj.scalingFactor * obj.refElementHandle.(obj.parameterNames{1});
       set(obj.captionHandle, 'String', sprintf(['%s=' obj.valueFormat], obj.controlLabel,  obj.lastValue));
       set(obj.sliderHandle, 'Value', min(max(obj.lastValue, obj.sliderRange(1)), obj.sliderRange(2)));
     end

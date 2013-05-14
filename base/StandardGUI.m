@@ -40,15 +40,28 @@
 % addControl(visualization, positionInGrid, sizeInGrid) - adds a
 %   new control element to the GUI, analogous to addVisualization
 %
-% Methods to run the GUI:
+% Methods to prepare the GUI for use:
+% connect(simulatorHandle) - connect GUI with a simulator object (if not
+%   done during creation, or to change connected simulator object)
+% 
+% Methods to run the GUI (online mode):
 % run(tMax, initializeSimulator, simulatorHandle) - runs the
 %   simulation in the GUI until simulation time tMax (optional, default is
 %   inf) is reached or GUI is quit manually; optional boolean argument
 %   initializeSimulator forces re-initialization of the simulator at the
 %   start of the GUI, optional argument simulatorHandle can specify the
 %   simulator object that is run in the GUI (if not specified at creation)
-% connect(simulatorHandle) - connect GUI with a simulator object (if not
-%   done during creation, or to change connected simulator object)
+% 
+% Methods to use the GUI in offline mode:
+% init() - initializes the GUI, creating the main figure window with
+%   visualizations and controls
+% updateVisualizations() - update all visualizations to reflect current
+%   state of the connected simulator object
+% checkAndUpdateControls - check all controls for changes and apply these,
+%   update state of control elements (like slider positions); NOTE: Control
+%   buttons (like pause, save, and quit) will set the appropriate flags in
+%   the StandardGUI object, but have no further effects; effects have to be
+%   implemented manually in the code calling this method
 
 
 classdef StandardGUI < handle
@@ -197,14 +210,14 @@ classdef StandardGUI < handle
         end
         
         % checking for changes in controls and param panel
-        updatePanel = false;
-        for i = 1 : obj.nControls
-          updatePanel = check(obj.controls{i}) || updatePanel;
-        end
         updateControls = false;
         if obj.paramPanelActive
           updateControls = check(obj.paramPanelHandle);
         end
+        for i = 1 : obj.nControls
+          updateControls = check(obj.controls{i}) || updateControls;
+        end
+        
         
         % opening and closing param panel
         if obj.paramPanelActive && ~obj.paramPanelHandle.panelOpen % panel figure was closed manually
@@ -236,7 +249,6 @@ classdef StandardGUI < handle
           if loadParametersFromFile(obj);
             init(obj.simulatorHandle);
             updateControls = true;
-            updatePanel = true;
           end
           obj.loadParameters = false;
         end
@@ -250,10 +262,10 @@ classdef StandardGUI < handle
         for i = 1 : obj.nVisualizations
           update(obj.visualizations{i});
         end
-        if updatePanel && obj.paramPanelActive
-          update(obj.paramPanelHandle);
-        end
         if updateControls
+          if obj.paramPanelActive
+            update(obj.paramPanelHandle);
+          end
           for i = 1 : obj.nControls
             update(obj.controls{i});
           end

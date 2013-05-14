@@ -45,24 +45,25 @@
 
 classdef ParameterDropdownSelector < Control
   properties
-    controlLabel = '';
-    elementLabels = {};
-    parameterNames = {};
-    dropdownValues = {};
-    dropdownLabels = {};
-    nEntries = 0;
-    toolTip = '';
+    controlLabel
+    elementLabels
+    parameterNames
+    dropdownValues
+    dropdownLabels
+    nEntries
+    toolTip
     
-    nParameters = 0;
-    elementHandles = {};
-    dropdownHandle = 0;
-    captionHandle = 0;
+    simulatorHandle
+    nParameters
+    dropdownHandle
+    captionHandle
     
     relCaptionWidth = 0.2; % size of the caption relative to slider
     relPaddingWidth = 0.025; % padding on both sides of the caption
     
     lastValue = 1;
   end
+  
   
   methods
     % constructor
@@ -95,17 +96,23 @@ classdef ParameterDropdownSelector < Control
         obj.parameterNames = {obj.parameterNames};
       end
       obj.nParameters = length(obj.parameterNames);
-      
-      if ~iscellstr(obj.elementLabels) || ~iscellstr(obj.parameterNames) ...
-          || numel(obj.elementLabels) ~= obj.nParameters
-        error('ParameterDropdownSelector:ParameterDropdownSelector:invalidArguments', ...
-          'Arguments elementLabels and parameter names must be strings or cell arrays of strings with equal number of elements');
-      end
-      
-      % check consistency of arguments specifying the dropdown menu entries
       if ~iscell(obj.dropdownValues)
         obj.dropdownValues = {obj.dropdownValues};
       end
+      
+      if ~iscellstr(obj.elementLabels) || ~iscellstr(obj.parameterNames) ...
+          || numel(obj.elementLabels) ~= obj.nParameters
+        error('ParameterDropdownSelector:ParameterDropdownSelector:argumentMismatch', ...
+          ['Arguments elementLabels and parameterNames must be strings or cell arrays of strings '...
+          'with equal number of elements.']);
+      end
+      if numel(obj.dropdownValues) ~= obj.nParameters
+        error('ParameterDropdownSelector:ParameterDropdownSelector:argumentMismatch', ...
+          ['Number of vectors in argument dropdownValues must match number of parameters specified' ...
+          'in argument parameterNames']);
+      end
+      
+      % determine entries of dropdown menu, fill in labels if necessary
       obj.nEntries = numel(obj.dropdownValues{1});
       if isempty(obj.dropdownLabels)
         obj.dropdownLabels = cell(1, obj.nEntries);
@@ -114,33 +121,41 @@ classdef ParameterDropdownSelector < Control
         end
       end
       
-      mismatch = false;
-      for i = 1 : numel(obj.dropdownValues)
+      % check consistency of dropdownValues vectors, reformat for use in
+      % setElementParameters method
+      tmpValues = cell(obj.nEntries);
+      tmpValues(:) = cell(obj.nParameters);
+      for i = 1 : obj.nParameters
         if numel(obj.dropdownValues{i}) ~= obj.nEntries
-          mismatch = true;
-          break;
+          error('ParameterDropdownSelector:ParameterDropdownSelector:argumentMismatch', ...
+            'If argument dropdownValues is a cell array, all entries must be of the same size.');
+        end
+        for j = 1 : obj.nEntries
+          tmpValues{j}{i} = obj.dropdownValues{i}(j);
         end
       end
-      if mismatch || obj.nEntries == 0
-        error('ParameterDropdownSelector:ParameterDropdownSelector:invalidArguments', ...
-          ['Argument dropdownValues must be a vector matching argument dropdownLabels in size, ', ...
-          'or be a cell array of such vectors']);
+      obj.dropdownValues = tmpValues;
+      
+      % check consistency of dropdownValues with dropdownLabels
+      if numel(obj.dropdownLabels) ~= obj.nEntries
+        error('ParameterDropdownSelector:ParameterDropdownSelector:argumentMismatch', ...
+          'Size of argument dropdownLabels must match size of each vector in argument dropdownValues.');
       end
     end
     
     
     % connect to simulator object
     function obj = connect(obj, simulatorHandle)
-      obj.elementHandles = cell(obj.nParameters, 1);
+      obj.simulatorHandle = simulatorHandle;
       for i = 1 : obj.nParameters
-        obj.elementHandles{i} = simulatorHandle.getElement(obj.elementLabels{i});
-        if isempty(obj.elementHandles{i}) || ~obj.elementHandles{i}.isParameter(obj.parameterNames{i})
+        tmpElementHandle = simulatorHandle.getElement(obj.elementLabels{i});
+        if isempty(tmpElementHandle) || ~tmpElementHandle.isParameter(obj.parameterNames{i})
           error('ParameterDropdownSelector:connect:invalidParameter', ...
-            'No element ''%s'' with parameter ''%s'' in simulator object', obj.elementLabels{i}, obj.parameterNames{i});
+            'No element ''%s'' with parameter ''%s'' in simulator object.', obj.elementLabels{i}, obj.parameterNames{i});
         end
-        if obj.elementHandles{i}.getParamChangeStatus(obj.parameterNames{i}) == ParameterStatus.Fixed
+        if tmpElementHandle.getParamChangeStatus(obj.parameterNames{i}) == ParameterStatus.Fixed
           error('ParameterDropdownSelector:connect:parameterFixed', ...
-            'Parameter ''%s'' in element ''%s'' has change status ''Fixed'' and cannot be changed by a GUI control', ...
+            'Parameter ''%s'' in element ''%s'' has change status ''Fixed'' and cannot be changed by a GUI control.', ...
             obj.parameterNames{i}, obj.elementLabels{i});
         end
       end
@@ -164,18 +179,12 @@ classdef ParameterDropdownSelector < Control
     
     % check control object and update simulator object if required
     function changed = check(obj)
-      
       if get(obj.dropdownHandle, 'Value') ~= obj.lastValue
         changed = true;
         obj.lastValue = get(obj.dropdownHandle, 'Value');
-        for i = 1 : obj.nParameters
-          obj.elementHandles{i}.(obj.parameterNames{i}) = obj.dropdownValues{i}(obj.lastValue);
-          
-          if obj.elementHandles{i}.getParamChangeStatus(obj.parameterNames{i}) == ParameterStatus.InitRequired
-            obj.elementHandles{i}.init();
-            %obj.elementHandles{i}.step();
-          end
-        end
+
+        setElementParameters(obj.simulatorHandle, obj.elementLabels, obj.parameterNames, ...
+          obj.dropdownValues{obj.lastValue});
       else
         changed = false;
       end
