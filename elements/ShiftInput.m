@@ -18,7 +18,7 @@ classdef ShiftInput < Element
   properties (Constant)
     parameters = struct('size', ParameterStatus.Fixed, 'shiftValue', ParameterStatus.Fixed, ...
       'amplitude', ParameterStatus.Changeable, 'circular', ParameterStatus.Changeable, ...
-      'fillValue', ParameterStatus.InitRequired);
+      'fillValue', ParameterStatus.InitStepRequired);
     components = {'output'};
     defaultOutputComponent = 'output';
   end
