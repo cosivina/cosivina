@@ -108,8 +108,8 @@ classdef ParameterDropdownSelector < Control
       end
       if numel(obj.dropdownValues) ~= obj.nParameters
         error('ParameterDropdownSelector:ParameterDropdownSelector:argumentMismatch', ...
-          ['Number of vectors in argument dropdownValues must match number of parameters specified' ...
-          'in argument parameterNames']);
+          ['Number of vectors in argument dropdownValues must match number of parameters specified ' ...
+          'in argument parameterNames.']);
       end
       
       % determine entries of dropdown menu, fill in labels if necessary
@@ -123,8 +123,8 @@ classdef ParameterDropdownSelector < Control
       
       % check consistency of dropdownValues vectors, reformat for use in
       % setElementParameters method
-      tmpValues = cell(obj.nEntries);
-      tmpValues(:) = cell(obj.nParameters);
+      tmpValues = cell(obj.nEntries, 1);
+      tmpValues(:) = {cell(1, obj.nParameters)};
       for i = 1 : obj.nParameters
         if numel(obj.dropdownValues{i}) ~= obj.nEntries
           error('ParameterDropdownSelector:ParameterDropdownSelector:argumentMismatch', ...
