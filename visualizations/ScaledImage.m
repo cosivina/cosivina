@@ -112,13 +112,13 @@ classdef ScaledImage < Visualization
       colormap(jet(256));
       
       if ~isempty(obj.title)
-        obj.titleHandle = title(obj.title); %#ok<PROP,CPROP>
+        obj.titleHandle = title(obj.title); %#ok<CPROP>
       end
       if ~isempty(obj.xlabel)
-        obj.xlabelHandle = xlabel(obj.xlabel); %#ok<PROP,CPROP>
+        obj.xlabelHandle = xlabel(obj.xlabel); %#ok<CPROP>
       end
       if ~isempty(obj.ylabel)
-        obj.ylabelHandle = ylabel(obj.ylabel); %#ok<PROP,CPROP>
+        obj.ylabelHandle = ylabel(obj.ylabel); %#ok<CPROP>
       end
       
     end

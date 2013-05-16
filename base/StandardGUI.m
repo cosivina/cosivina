@@ -33,12 +33,17 @@
 %     cell array of strings or cell array of cell arrays of strings
 %
 % Methods to design the GUI:
-% addVisualization(visualization, positionInGrid, sizeInGrid) - adds a
-%   new visualization element to the GUI at positionInGrid (two-element
-%   vector [row, col]) that extends over sizeInGrid (two-element vector
-%   [rows, cols]; optional, default is [1, 1])
-% addControl(visualization, positionInGrid, sizeInGrid) - adds a
-%   new control element to the GUI, analogous to addVisualization
+% addVisualization(visualization, positionInGrid, sizeInGrid,
+%     gridSelection) - adds a new visualization element to the GUI at
+%   positionInGrid (two-element vector [row, col]) that extends over
+%   sizeInGrid (two-element vector [rows, cols]; optional, default is [1,
+%   1]); optional parameter gridSelection allows selection of a grid for
+%   positioning, either 'visualization' (default) or 'control'; position
+%   may also be specified explicitly in the visualization element itself,
+%   then all other arguments may be omitted
+% addControl(visualization, positionInGrid, sizeInGrid, gridSelection) -
+%   adds a new control element to the GUI (by default in the controls
+%   grid), analogous to addVisualization
 %
 % Methods to prepare the GUI for use:
 % connect(simulatorHandle) - connect GUI with a simulator object (if not
@@ -343,7 +348,7 @@ classdef StandardGUI < handle
       if obj.connected
         connect(obj.visualizations{end}, obj.simulatorHandle);
       end
-      if nargin < 4
+      if nargin < 4 || isempty(sizeInGrid)
         sizeInGrid = [1, 1];
       end
       if nargin < 5 || isempty(gridSelection)
@@ -372,7 +377,7 @@ classdef StandardGUI < handle
       if obj.connected
         connect(obj.controls{end}, obj.simulatorHandle);
       end
-      if nargin < 4
+      if nargin < 4 || isempty(sizeInGrid)
         sizeInGrid = [1, 1];
       end
       if nargin < 5 || isempty(gridSelection)
