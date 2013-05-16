@@ -336,7 +336,7 @@ classdef StandardGUI < handle
     
     
     % add visualization object
-    function obj = addVisualization(obj, visualization, positionInGrid, sizeInGrid)
+    function obj = addVisualization(obj, visualization, positionInGrid, sizeInGrid, gridSelection)
       obj.visualizations{end+1} = visualization;
       obj.nVisualizations = obj.nVisualizations + 1;
       
@@ -346,8 +346,16 @@ classdef StandardGUI < handle
       if nargin < 4
         sizeInGrid = [1, 1];
       end
+      if nargin < 5 || isempty(gridSelection)
+        gridSelection = 'v';
+      elseif ~(strncmp(gridSelection, 'visualization', length(gridSelection)) ...
+          || strncmp(gridSelection, 'control', length(gridSelection)))
+        error('StandardGUI:addVisualization:invalidGridSelection', ...
+          'Argument gridSelection must be either ''control'' or ''visualization'' (default).');
+      end
+      
       if nargin >= 3 && ~isempty(positionInGrid)
-        obj.visualizations{end}.position = obj.gridToRelPosition('visualization', positionInGrid, sizeInGrid);
+        obj.visualizations{end}.position = obj.gridToRelPosition(gridSelection, positionInGrid, sizeInGrid);
       end
       if isempty(obj.visualizations{end}.position)
         error('StandardGUI:addVisualization:noPosition', ...
@@ -357,7 +365,7 @@ classdef StandardGUI < handle
     
     
     % add control object and connect it to the simulator object
-    function obj = addControl(obj, control, positionInGrid, sizeInGrid)
+    function obj = addControl(obj, control, positionInGrid, sizeInGrid, gridSelection)
       obj.controls{end+1} = control;
       obj.nControls = obj.nControls + 1;
       
@@ -367,8 +375,16 @@ classdef StandardGUI < handle
       if nargin < 4
         sizeInGrid = [1, 1];
       end
+      if nargin < 5 || isempty(gridSelection)
+        gridSelection = 'c';
+      elseif ~(strncmp(gridSelection, 'visualization', length(gridSelection)) ...
+          || strncmp(gridSelection, 'control', length(gridSelection)))
+        error('StandardGUI:addVisualization:invalidGridSelection', ...
+          'Argument gridSelection must be either ''control'' or ''visualization'' (default).');
+      end
+      
       if nargin >= 3
-        obj.controls{end}.position = obj.gridToRelPosition('control', positionInGrid, sizeInGrid);
+        obj.controls{end}.position = obj.gridToRelPosition(gridSelection, positionInGrid, sizeInGrid);
       end
       if isempty(obj.controls{end}.position)
         error('StandardGUI:addControl:noPosition', ...
@@ -422,14 +438,16 @@ classdef StandardGUI < handle
     end
     
     
-    % compute relative position in figure from grid position
+    % compute relative position in figure from grid position (result is in
+    % format [x, y, w, h], with origin at the lower left corner of the
+    % figure window / graphics element)
     function relPosition = gridToRelPosition(obj, type, positionInGrid, sizeInGrid)
-      % note: position information is given in format [x, y, w, h], with origin at
-      if strcmp(type, 'control')
+      n = length(type);
+      if n > 0 && strncmp(type, 'control', n)
         gridSize = obj.controlGridSize;
         gridPosition = obj.controlGridPosition;
         padding = [0, 0];
-      elseif strcmp(type, 'vis') || strcmp(type, 'visualization')
+      elseif n > 0 && strncmp(type, 'visualization', n)
         gridSize = obj.visGridSize;
         gridPosition = obj.visGridPosition;
         padding = obj.visGridPadding;
