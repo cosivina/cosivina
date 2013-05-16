@@ -1,5 +1,5 @@
 % GaussStimulus2D (COSIVINA toolbox)
-%   Connective element that performs a 2D convolution with a Gaussian kernel.
+%   Creates a two-dimensional Gaussian stimulus.
 %
 % Constructor call:
 % GaussStimulus2D(label, size, sigmaY, sigmaX, amplitude, positionY, ...

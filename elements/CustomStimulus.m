@@ -5,6 +5,9 @@
 % CustomStimulus(label, stimulusPattern)
 %   label - element label
 %   stimulusPattern - full stimulus matrix
+%
+% NOTE: The full stimulus pattern will be stored in the parameter file when
+% saving parameters. This may lead to bulky parameter files.
 
 
 classdef CustomStimulus < Element
@@ -48,3 +51,4 @@ classdef CustomStimulus < Element
   end
   
 end
+
