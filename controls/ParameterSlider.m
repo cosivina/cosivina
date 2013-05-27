@@ -162,7 +162,7 @@ classdef ParameterSlider < Control
     
     
     % update control object (e.g. after parameters have been changed in parameter panel)
-    function obj = update(obj) % updates the control eleme
+    function obj = update(obj)
       obj.lastValue = obj.scalingFactor * obj.refElementHandle.(obj.parameterNames{1});
       set(obj.captionHandle, 'String', sprintf(['%s=' obj.valueFormat], obj.controlLabel,  obj.lastValue));
       set(obj.sliderHandle, 'Value', min(max(obj.lastValue, obj.sliderRange(1)), obj.sliderRange(2)));

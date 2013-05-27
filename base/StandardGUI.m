@@ -50,12 +50,14 @@
 %   done during creation, or to change connected simulator object)
 % 
 % Methods to run the GUI (online mode):
-% run(tMax, initializeSimulator, simulatorHandle) - runs the
-%   simulation in the GUI until simulation time tMax (optional, default is
-%   inf) is reached or GUI is quit manually; optional boolean argument
+% run(tMax, initializeSimulator, closeSimulator, simulatorHandle) - runs
+%   the simulation in the GUI until simulation time tMax (optional, default
+%   is inf) is reached or GUI is quit manually; optional boolean argument
 %   initializeSimulator forces re-initialization of the simulator at the
-%   start of the GUI, optional argument simulatorHandle can specify the
-%   simulator object that is run in the GUI (if not specified at creation)
+%   start of the GUI, optional boolean argument closeSimulator adds call to
+%   simulator close method upon closing GUI, optional argument
+%   simulatorHandle can specify the simulator object that is run in the GUI
+%   (if not specified at creation)
 % 
 % Methods to use the GUI in offline mode:
 % init() - initializes the GUI, creating the main figure window with
@@ -170,11 +172,13 @@ classdef StandardGUI < handle
     
     % initialization
     function obj = init(obj)
-      if ~obj.connected
+      if ~obj.connected || ~obj.simulatorHandle.initialized
         error('StandardGUI:init:notConnected', ...
-          'Cannot initialize StandardGUI object before it has been connected to a Simulator object');
+          ['Cannot initialize StandardGUI object if it is not connected to a Simulator object, ' ...
+          'or if Simulator object is not initialized.']);
       end
       
+      obj.quitSimulation = false;
       obj.figureHandle = figure('Position', obj.figurePosition, 'Color', 'w');
       for i = 1 : obj.nVisualizations
         init(obj.visualizations{i}, obj.figureHandle);
@@ -185,13 +189,29 @@ classdef StandardGUI < handle
     end
     
     
+    % close all figure windows
+    function obj = close(obj)
+      if obj.paramPanelActive
+        obj.paramPanelHandle.close();
+        obj.paramPanelActive = false;
+        obj.paramPanelRequest = false;
+      end
+      if ishandle(obj.figureHandle)
+        delete(obj.figureHandle);
+      end
+    end
+    
+    
     % run simulation in GUI
-    function obj = run(obj, tMax, initializeSimulator, simulatorHandle)      
+    function obj = run(obj, tMax, initializeSimulator, closeSimulator, simulatorHandle)      
       if nargin < 2 || isempty(tMax)
         tMax = inf;
       end
       if nargin < 3 || isempty(initializeSimulator)
         initializeSimulator = false;
+      end
+      if nargin < 4 || isempty(closeSimulator)
+        closeSimulator = false;
       end
       if nargin >= 4
         connect(obj, simulatorHandle);
@@ -284,31 +304,22 @@ classdef StandardGUI < handle
         end
       end
       
-      obj.quitSimulation = false;
-      
       % close everything
-      obj.simulatorHandle.close();
-      if obj.paramPanelActive
-        obj.paramPanelHandle.close();
-        obj.paramPanelActive = false;
-        obj.paramPanelRequest = false;
+      if closeSimulator
+        close(obj.simulatorHandle);
       end
-      if ishandle(obj.figureHandle)
-        delete(obj.figureHandle);
-      end
-      
+      close(obj);
     end
     
     
     % update all visualizations (for operation of the GUI from code)
     function obj = updateVisualizations(obj)
       if ~obj.connected || ~obj.simulatorHandle.initialized
-        warning('StandardGUI:updateVisualizations:noValidSim', ...
+        error('StandardGUI:updateVisualizations:noValidSim', ...
           'Cannot update visualizations when GUI is not connected to an initialized simulator object.');
-        return;
       end
       
-      if ~ishandle(obj.figureHandle)
+      if isempty(obj.figureHandle) || ~ishandle(obj.figureHandle)
         init(obj);
       end
       
@@ -324,9 +335,8 @@ classdef StandardGUI < handle
     % code)
     function obj = checkAndUpdateControls(obj)
       if ~obj.connected || ~obj.simulatorHandle.initialized || ~ishandle(obj.figureHandle)
-        warning('StandardGUI:updateVisualizations:noValidSim', ...
+        error('StandardGUI:updateVisualizations:noValidSim', ...
           'Cannot check controls when GUI is not open or not connected to initialized simulator object.');
-        return;
       end
       
       for i = 1 : obj.nControls

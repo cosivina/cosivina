@@ -8,10 +8,11 @@
 %   stimulusPatterns - matrix of custom stimulus patterns, either a [KxN]
 %     matrix of K one-dimensional stimuli with size N, or a [MxNxK] matrix
 %     of K two-dimensional stimuli with size [MxN]
-%   startTimes - vector of start times for the specified stimuli; the index
-%     of the active stimulus at simulation time t is determined as 
-%     max_i(t >= startTime_i); values in startTimes must be monotonically
-%     increasing
+%   startTimes - optional vector of start times for the specified stimuli;
+%     the index of the active stimulus at simulation time t is determined
+%     as max_i(t >= startTime_i); values in startTimes must be
+%     monotonically increasing; if not specified, startTimes will be set to
+%     1:K
 %
 % NOTE: The full stimulus patterns will be stored in the parameter file when
 % saving parameters. This may lead to bulky parameter files.
