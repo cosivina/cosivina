@@ -1,6 +1,19 @@
 CHANGELOG
 
-* cleaned up Standard GUI by introducing separate load/save methods
+Version 1.2
+* StandardGUI expanded (and cleaned up) for use in offline mode, with methods 
+  init, close, updateVisualizations, and checkAndUpdateControls, and separate 
+  methods load and save
+* method setElementParameters added to Simulator class as standard interface for
+  parameter changes in running simulation (with automatic initialization and 
+  step of element if required), all controls adjusted to use use this method
+* new ParameterStatus value InitStepRequired introduced, element classes updated
+  to use this where appropriate
+* added time-dependent stimulus classes added
+* added text-based visualizations StaticText and TimeDisplay
+* updated examples and reworked examples part in documentation
+* added part on expanding the framework in documentation
+
 
 Version 1.1.1
 * fixed bug in MemoryTrace class so that it also works with two-dimensional

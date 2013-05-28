@@ -16,7 +16,7 @@
 %   in the GUI’s addVisualization function)
 %
 % Example:
-% h = TimeDisplay();
+% h = TimeDisplay('Time: ', ' s', '%0.1f');
 %
 % To place this visualization in the controls grid of a GUI:
 % gui.addVisualization(TimeDisplay(), [1, 1], [1, 1], 'control');
