@@ -5,12 +5,12 @@
 %
 % Arguments:
 % caption - string printed before the simulation time (optional, default
-%   is 'Simulation time:'
+%   is 'Simulation time: '
 % units - string printed after the simulation time (optional, empty by
 %   default)
-% valueFormat - string specifying the format of the parameter value
-%   displayed next to the slider (optional, see the Matlab documentation of
-%   the fprintf function on construction of that string)
+% valueFormat - string specifying the number format in which the simulation
+%   time is displayed (optional, see the Matlab documentation of the
+%   fprintf function for help on constructing that string)
 % position - position of the control in the GUI figure window in relative
 %   coordinates (optional, is overwritten when specifying a grid position
 %   in the GUI’s addVisualization function)
