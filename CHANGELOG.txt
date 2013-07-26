@@ -9,7 +9,7 @@ Version 1.2
   step of element if required), all controls adjusted to use use this method
 * new ParameterStatus value InitStepRequired introduced, element classes updated
   to use this where appropriate
-* added time-dependent stimulus classes added
+* added time-dependent stimulus classes
 * added text-based visualizations StaticText and TimeDisplay
 * updated examples and reworked examples part in documentation
 * added part on expanding the framework in documentation
