@@ -38,9 +38,9 @@
 				"class": "GaussStimulus1D",
 				"param": {
 					"size": [1,180],
-					"sigma": 5,
+					"sigma": 3,
 					"amplitude": 0,
-					"position": 45,
+					"position": 70.2,
 					"circular": 1,
 					"normalized": 0
 				},
@@ -52,8 +52,8 @@
 				"class": "GaussStimulus1D",
 				"param": {
 					"size": [1,180],
-					"sigma": 5,
-					"amplitude": 0,
+					"sigma": 3,
+					"amplitude": 6.01538,
 					"position": 90,
 					"circular": 1,
 					"normalized": 0
@@ -66,9 +66,9 @@
 				"class": "GaussStimulus1D",
 				"param": {
 					"size": [1,180],
-					"sigma": 5,
+					"sigma": 3,
 					"amplitude": 0,
-					"position": 135,
+					"position": 70.2,
 					"circular": 1,
 					"normalized": 0
 				},
@@ -178,7 +178,7 @@
 				"param": {
 					"size": [1,180],
 					"tau": 20,
-					"h": -4,
+					"h": -4.2,
 					"beta": 5
 				},
 				"nInputs": 6,
@@ -251,7 +251,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 3,
-					"amplitude": 6.88,
+					"amplitude": 9.5,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -268,7 +268,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 5,
-					"amplitude": 24.1,
+					"amplitude": 15,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -285,7 +285,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 3,
-					"amplitude": 9,
+					"amplitude": 6.5,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -318,8 +318,8 @@
 				"class": "GaussKernel1D",
 				"param": {
 					"size": [1,180],
-					"sigma": 38,
-					"amplitude": -5,
+					"sigma": 35,
+					"amplitude": -30,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -349,7 +349,7 @@
 				"class": "ScaleInput",
 				"param": {
 					"size": [1,180],
-					"amplitude": -0.275
+					"amplitude": -0.05
 				},
 				"nInputs": 1,
 				"input": {
@@ -362,7 +362,7 @@
 				"class": "ScaleInput",
 				"param": {
 					"size": [1,180],
-					"amplitude": -0.275
+					"amplitude": -0.05
 				},
 				"nInputs": 1,
 				"input": {
@@ -393,7 +393,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 6,
-					"amplitude": 12,
+					"amplitude": 7.5,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -410,7 +410,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 5,
-					"amplitude": 15,
+					"amplitude": 16,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -436,8 +436,8 @@
 				"class": "GaussKernel1D",
 				"param": {
 					"size": [1,180],
-					"sigma": 0,
-					"amplitude": 0,
+					"sigma": 1,
+					"amplitude": 2,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -463,8 +463,8 @@
 				"class": "GaussKernel1D",
 				"param": {
 					"size": [1,180],
-					"sigma": 0,
-					"amplitude": 0,
+					"sigma": 1,
+					"amplitude": 2,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -490,8 +490,8 @@
 				"class": "GaussKernel1D",
 				"param": {
 					"size": [1,180],
-					"sigma": 0,
-					"amplitude": 0,
+					"sigma": 1,
+					"amplitude": 2,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
