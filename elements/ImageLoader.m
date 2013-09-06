@@ -62,7 +62,7 @@ classdef ImageLoader < Element
       if mod(obj.currentSelection, 1) == 0 && obj.currentSelection > 0 && obj.currentSelection <= numel(obj.fileNames)
         obj.image = imread(obj.fileNames{obj.currentSelection});
         if size(obj.image, 1) ~= obj.size(1) || size(obj.image, 2) ~= obj.size(2) %#ok<CPROP>
-          obj.image = imresize(obj.image, obj.size);
+          obj.image = resizeImage(obj.image, obj.size);
         end
       else
         obj.image = zeros(obj.size(1), obj.size(2), 3);

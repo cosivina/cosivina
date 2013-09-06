@@ -48,7 +48,7 @@ classdef CameraGrabber < Element
     % step function
     function obj = step(obj, time, deltaT) %#ok<INUSD>
       obj.image = grab_frame(obj.cameraHandle);
-      if size(obj.image, 1) ~= obj.size(1) || size(obj.image(2)) ~= obj.size(2) %#ok<CPROP>
+      if size(obj.image, 1) ~= obj.size(1) || size(obj.image, 2) ~= obj.size(2) %#ok<CPROP>
         obj.image = imresize(obj.image, obj.size);
       end
     end
@@ -65,8 +65,10 @@ classdef CameraGrabber < Element
     
     % close camera conenction
     function obj = close(obj)
-      close_camera(obj.cameraHandle);
-      obj.cameraHandle = 0;
+      if obj.cameraHandle ~= 0
+        close_camera(obj.cameraHandle);
+        obj.cameraHandle = 0;
+      end
     end
 
   end

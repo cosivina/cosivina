@@ -101,26 +101,20 @@ classdef GaussKernel2D < Element
     % initialization
     function obj = init(obj)
       % determine kernel range and extended index depending on circularity
+      obj.kernelRangeX = computeKernelRange(obj.sigmaX, obj.cutoffFactor, obj.size(2), obj.circularX);
+      obj.kernelRangeY = computeKernelRange(obj.sigmaY, obj.cutoffFactor, obj.size(1), obj.circularY);
+      
       if obj.circularX
-        obj.kernelRangeX = min(ceil(obj.sigmaX * obj.cutoffFactor), ...
-          [floor((obj.size(2)-1)/2), ceil((obj.size(2)-1)/2)]);
-        obj.extIndexX = [obj.size(2) - obj.kernelRangeX(2) + 1 : obj.size(2), ...
-          1:obj.size(2), 1 : obj.kernelRangeX(1)];
+        obj.extIndexX = createExtendedIndex(obj.size(2), obj.kernelRangeX);
       else
-        obj.kernelRangeX = repmat(min(ceil(obj.sigmaX * obj.cutoffFactor), (obj.size(2)-1)), [1, 2]);
         obj.extIndexX = [];
       end
       
       if obj.circularY
-        obj.kernelRangeY = min(ceil(obj.sigmaY * obj.cutoffFactor), ...
-          [floor((obj.size(1)-1)/2), ceil((obj.size(1)-1)/2)]);
-        obj.extIndexY = [obj.size(1) - obj.kernelRangeY(2) + 1 : obj.size(1), ...
-          1:obj.size(1), 1 : obj.kernelRangeY(1)];
+        obj.extIndexY = createExtendedIndex(obj.size(1), obj.kernelRangeY);
       else
-        obj.kernelRangeY = repmat(min(ceil(obj.sigmaY * obj.cutoffFactor), (obj.size(1)-1)), [1, 2]);
         obj.extIndexY = [];
       end
-      
       
       % calculate kernel depending on normalization
       if obj.normalized

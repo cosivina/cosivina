@@ -52,6 +52,10 @@ classdef ColorExtraction < Element
       if nargin >= 7
         obj.valueThreshold = valueThreshold;
       end
+      
+      if numel(obj.size) == 1
+        obj.size = [1, obj.size];
+      end
     end
     
     

@@ -38,8 +38,7 @@ classdef GaussKernel1D < Element
   end
   
   properties (SetAccess = private)
-    kernelRangeLeft
-    kernelRangeRight
+    kernelRange
     extIndex
   end
   
@@ -84,20 +83,17 @@ classdef GaussKernel1D < Element
     
     % initialization
     function obj = init(obj)
+      obj.kernelRange = computeKernelRange(obj.sigma, obj.cutoffFactor, obj.size(2), obj.circular);
       if obj.circular
-        obj.kernelRangeLeft = min(ceil(obj.sigma * obj.cutoffFactor), floor((obj.size(2)-1)/2));
-        obj.kernelRangeRight = min(ceil(obj.sigma * obj.cutoffFactor), ceil((obj.size(2)-1)/2));
-        obj.extIndex = [obj.size(2) - obj.kernelRangeRight + 1 : obj.size(2), 1 : obj.size(2), 1 : obj.kernelRangeLeft];
+        obj.extIndex = createExtendedIndex(obj.size(2), obj.kernelRange);
       else
-        obj.kernelRangeLeft = min(ceil(obj.sigma * obj.cutoffFactor), (obj.size(2)-1));
-        obj.kernelRangeRight = obj.kernelRangeLeft;
         obj.extIndex = [];
       end
       
       if obj.normalized
-        obj.kernel = obj.amplitude * gaussNorm(-obj.kernelRangeLeft : obj.kernelRangeRight, 0, obj.sigma);
+        obj.kernel = obj.amplitude * gaussNorm(-obj.kernelRange(1) : obj.kernelRange(2), 0, obj.sigma);
       else
-        obj.kernel = obj.amplitude * gauss(-obj.kernelRangeLeft : obj.kernelRangeRight, 0, obj.sigma);
+        obj.kernel = obj.amplitude * gauss(-obj.kernelRange(1) : obj.kernelRange(2), 0, obj.sigma);
       end
       obj.output = zeros(obj.size);
     end

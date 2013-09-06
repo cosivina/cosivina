@@ -94,9 +94,10 @@ classdef DynamicRobotController < Element
     end
     
     function obj = close(obj)
-      kStop(obj.robotHandle);
       if obj.robotHandle ~= 0
+        kStop(obj.robotHandle);
         kClose(obj.robotHandle);
+        obj.robotHandle = 0;
       end
     end
   end
