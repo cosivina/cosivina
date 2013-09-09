@@ -1,14 +1,15 @@
 % LateralInteractionsDiscrete (COSIVINA toolbox)
 %   Connective element that computes self-excitation and global inhibition
 %   as typical lateral interaction pattern for sets of discrete nodes.
-%   Output is computed as amplitudeExc * input + amplitudeGlobal *
+%   The output is computed as amplitudeExc * input + amplitudeGlobal *
 %   sum(input), where the sum is taken over all dimensions of the input.
 %
 % Constructor call:
 % LateralInteractionsDiscrete(label, size, amplitudeExc, amplitudeGlobal)
 %   size - size of input and output (may be of any dimensionality)
 %   amplitudeExc - amplitude of self-excitation
-%   amplitudeGlobal - amplitude of global component
+%   amplitudeGlobal - amplitude of global component (set to a negative
+%     value to obtain global inhibition)
 
 
 classdef LateralInteractionsDiscrete < Element
