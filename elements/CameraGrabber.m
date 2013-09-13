@@ -12,7 +12,7 @@
 classdef CameraGrabber < Element
   
   properties (Constant)
-    parameters = struct('device', ParameterStatus.Fixed, 'size', ParameterStatus.Fixed);
+    parameters = struct('deviceNumber', ParameterStatus.Fixed, 'size', ParameterStatus.Fixed);
     components = {'image'};
     defaultOutputComponent = 'image';
   end
