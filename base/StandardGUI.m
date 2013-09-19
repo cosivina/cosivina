@@ -213,7 +213,7 @@ classdef StandardGUI < handle
       if nargin < 4 || isempty(closeSimulator)
         closeSimulator = false;
       end
-      if nargin >= 4
+      if nargin >= 5
         connect(obj, simulatorHandle);
       end
       
