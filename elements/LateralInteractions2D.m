@@ -1,6 +1,10 @@
-% MexicanHatKernel2D (COSIVINA toolbox)
+% LateralInteractions2D (COSIVINA toolbox)
 %   Connective element that performs a 2D convolution with a Mexican hat
-%   kernel (difference of two Gaussians).
+%   kernel (difference of two Gaussians) with a global component. The
+%   element also provides the sum of the element's input (typically the
+%   output of a neural field) along the horizontal, vertical, and both
+%   dimensions, to be used for projections onto lower-dimensional
+%   structures.
 %
 % Constructor call:
 % MexicanHatKernel2D(label, size, sigmaExcY, sigmaExcX, amplitudeExc, ...
@@ -20,16 +24,17 @@
 %   cutoffFactor - multiple of sigma at which each kernel is cut off
 
 
-classdef MexicanHatKernel2D < Element
+classdef LateralInteractions2D < Element
   
   properties (Constant)
     parameters = struct('size', ParameterStatus.Fixed, 'sigmaExcY', ParameterStatus.InitStepRequired, ...
       'sigmaExcX', ParameterStatus.InitStepRequired, 'amplitudeExc', ParameterStatus.InitStepRequired, ...
       'sigmaInhY', ParameterStatus.InitStepRequired, 'sigmaInhX', ParameterStatus.InitStepRequired, ...
-      'amplitudeInh', ParameterStatus.InitStepRequired, ...
+      'amplitudeInh', ParameterStatus.InitStepRequired, 'amplitudeGlobal', ParameterStatus.Changeable, ...
       'circularY', ParameterStatus.InitStepRequired, 'circularX', ParameterStatus.InitStepRequired, ...
       'normalized', ParameterStatus.InitStepRequired, 'cutoffFactor', ParameterStatus.InitStepRequired);
-    components = {'kernelExcY', 'kernelExcX', 'kernelInhY', 'kernelInhX', 'output'};
+    components = {'kernelExcY', 'kernelExcX', 'kernelInhY', 'kernelInhX', ...
+      'output', 'horizontalSum', 'verticalSum', 'fullSum'};
     defaultOutputComponent = 'output';
   end
   
@@ -42,10 +47,13 @@ classdef MexicanHatKernel2D < Element
     sigmaInhY = 1;
     sigmaInhX = 1;
     amplitudeInh = 0;
+    amplitudeGlobal = 0;
     circularY = true;
     circularX = true;
     normalized = true;
     cutoffFactor = 5;
+    
+    computeHorizontalSum = true;
     
     % accessible structures
     kernelExcY
@@ -53,6 +61,9 @@ classdef MexicanHatKernel2D < Element
     kernelInhY
     kernelInhX
     output
+    verticalSum
+    horizontalSum
+    fullSum
   end
   
   properties (SetAccess = private)
@@ -68,8 +79,8 @@ classdef MexicanHatKernel2D < Element
   
   methods
     % constructor
-    function obj = MexicanHatKernel2D(label, size, sigmaExcY, sigmaExcX, amplitudeExc, ...
-        sigmaInhY, sigmaInhX, amplitudeInh, circularY, circularX, normalized, cutoffFactor)
+    function obj = LateralInteractions2D(label, size, sigmaExcY, sigmaExcX, amplitudeExc, ...
+        sigmaInhY, sigmaInhX, amplitudeInh, amplitudeGlobal, circularY, circularX, normalized, cutoffFactor)
       if nargin > 0
         obj.label = label;
         obj.size = size;
@@ -88,14 +99,18 @@ classdef MexicanHatKernel2D < Element
       if nargin >= 8
         obj.amplitudeInh = amplitudeInh;
       end
-      if nargin >= 10
+      if nargin >= 9
+        obj.amplitudeGlobal = amplitudeGlobal;
+      end
+      
+      if nargin >= 11
         obj.circularY = circularY;
         obj.circularX = circularX;
       end
-      if nargin >= 11
+      if nargin >= 12
         obj.normalized = normalized;
       end
-      if nargin >= 12
+      if nargin >= 13
         obj.cutoffFactor = cutoffFactor;
       end
       
@@ -125,7 +140,12 @@ classdef MexicanHatKernel2D < Element
         outputExc = conv2(obj.kernelExcY, 1, outputExc, 'same');
         outputInh = conv2(obj.kernelInhY, 1, outputInh, 'same');
       end
-      obj.output = outputExc - outputInh;
+      
+      obj.verticalSum = sum(input, 1);
+      obj.horizontalSum = sum(input, 2)';
+      obj.fullSum = sum(obj.verticalSum);
+      
+      obj.output = outputExc - outputInh + obj.amplitudeGlobal * obj.fullSum;
     end
     
     
@@ -166,7 +186,11 @@ classdef MexicanHatKernel2D < Element
         obj.kernelInhX = obj.amplitudeInh * gauss(-obj.kernelRangeInhX(1) : obj.kernelRangeInhX(2), 0, obj.sigmaInhX);
         obj.kernelInhY = gauss(-obj.kernelRangeInhY(1) : obj.kernelRangeInhY(2), 0, obj.sigmaInhY);
       end
+      
       obj.output = zeros(obj.size);
+      obj.verticalSum = zeros(1, obj.size(2));
+      obj.horizontalSum = zeros(1, obj.size(1));
+      obj.fullSum = 0;
     end
       
   end

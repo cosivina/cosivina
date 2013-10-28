@@ -89,7 +89,7 @@ classdef GaussKernel2D < Element
         obj.output = conv2(1, obj.kernelX, obj.inputElements{1}.(obj.inputComponents{1}), 'same');
       end
       if obj.circularY
-        % use double transpose since vertical expansion is slow in current matlab version (2011a)
+        % use double transpose since vertical expansion is slow in current matlab version (2013a)
         obj.output = obj.output';
         obj.output = conv2(1, obj.kernelY, obj.output(:, obj.extIndexY), 'valid')';
       else

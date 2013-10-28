@@ -102,7 +102,7 @@ classdef Simulator < handle
         fid = fopen(values{iFile}, 'r');
         if fid == -1
           warning('Simulator:Constructor:cannotReadFile', ...
-            'File ''%s%'' cannot be opened for reading simulator settings. Simulator object will be empty.', ...
+            'File ''%s'' cannot be opened for reading simulator settings. Simulator object will be empty.', ...
             values{iFile});
         else
           str = fscanf(fid, '%c');
@@ -164,8 +164,14 @@ classdef Simulator < handle
     % perform one step of the simulation
     function obj = step(obj)
       obj.t = obj.t + obj.deltaT;
+      
+      % access to properties slow, faster to copy into tmp variables
+      tmpElements = obj.elements;
+      tmpT = obj.t;
+      tmpDeltaT = obj.deltaT;
+      
       for i = 1 : obj.nElements
-        step(obj.elements{i}, obj.t, obj.deltaT);
+        step(tmpElements{i}, tmpT, tmpDeltaT);
       end
     end
     

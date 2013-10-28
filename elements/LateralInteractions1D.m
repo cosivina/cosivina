@@ -28,7 +28,7 @@ classdef LateralInteractions1D < Element
       'amplitudeInh', ParameterStatus.InitStepRequired, 'amplitudeGlobal', ParameterStatus.Changeable, ...
       'circular', ParameterStatus.InitStepRequired, 'normalized', ParameterStatus.InitStepRequired, ...
       'cutoffFactor', ParameterStatus.InitStepRequired);
-    components = {'kernel', 'amplitudeGlobal', 'output'};
+    components = {'kernel', 'amplitudeGlobal', 'fullSum', 'output'};
     defaultOutputComponent = 'output';
   end
   
@@ -47,6 +47,7 @@ classdef LateralInteractions1D < Element
     % accessible structures
     kernel
     output
+    fullSum
   end
   
   properties (SetAccess = protected)
@@ -96,12 +97,15 @@ classdef LateralInteractions1D < Element
     
     % step function
     function obj = step(obj, time, deltaT) %#ok<INUSD>
+      input = obj.inputElements{1}.(obj.inputComponents{1});
+      obj.fullSum = sum(input, 2);
+      
       if obj.circular
-        obj.output = conv2(1, obj.kernel, obj.inputElements{1}.(obj.inputComponents{1})(obj.extIndex), 'valid') ...
-          + obj.amplitudeGlobal * sum(obj.inputElements{1}.(obj.inputComponents{1}), 2);
+        obj.output = conv2(1, obj.kernel, input(obj.extIndex), 'valid') ...
+          + obj.amplitudeGlobal * obj.fullSum;
       else
-        obj.output = conv2(1, obj.kernel, obj.inputElements{1}.(obj.inputComponents{1}), 'same') ...
-          + obj.amplitudeGlobal * sum(obj.inputElements{1}.(obj.inputComponents{1}), 2);
+        obj.output = conv2(1, obj.kernel, input, 'same') ...
+          + obj.amplitudeGlobal * obj.fullSum;
       end
     end
     
@@ -127,7 +131,9 @@ classdef LateralInteractions1D < Element
         obj.kernel = obj.amplitudeExc * gauss(-obj.kernelRangeLeft : obj.kernelRangeRight, 0, obj.sigmaExc) ...
           - obj.amplitudeInh * gauss(-obj.kernelRangeLeft : obj.kernelRangeRight, 0, obj.sigmaInh);
       end
+      obj.fullSum = 0;
       obj.output = zeros(obj.size);
+      
     end
 
   end
