@@ -8,7 +8,7 @@
 %   shiftValue - integer value by which array is shifted (two-element
 %     vector for two-dimensional shift)
 %   amplitude - scaling factor for output
-%   circular - flag indicating whether the shift should circular
+%   circular - flag indicating whether the shift should be circular
 %   fillValue - value to fill in empty parts of the output array in
 %     non-circular shifts
 
@@ -27,7 +27,7 @@ classdef ShiftInput < Element
     % parameters
     size = [1, 1];
     shiftValue = [0, 0];
-    amplitude = 0;
+    amplitude = 1.0;
     circular = false;
     fillValue = 0;
         
@@ -63,7 +63,7 @@ classdef ShiftInput < Element
       if numel(obj.size) == 1
         obj.size = [1, obj.size];
       end
-      if numel(obj.shiftValue == 1)
+      if numel(obj.shiftValue) == 1
         obj.shiftValue = [0, obj.shiftValue];
       end
     end
@@ -72,11 +72,11 @@ classdef ShiftInput < Element
     % step function
     function obj = step(obj, time, deltaT) %#ok<INUSD>
       if obj.circular
-        obj.output = ...
+        obj.output = obj.amplitude * ...
           circshift(obj.inputElements{1}.(obj.inputComponents{1}), round(obj.shiftValue));
       else
         obj.output(obj.leftBoundOut(1) : obj.rightBoundOut(1), obj.leftBoundOut(2) : obj.rightBoundOut(2)) ...
-          = obj.inputElements{1}.(obj.inputComponents{1})(obj.leftBoundIn(1) : obj.rightBoundIn(1), ...
+          = obj.amplitude * obj.inputElements{1}.(obj.inputComponents{1})(obj.leftBoundIn(1) : obj.rightBoundIn(1), ...
           obj.leftBoundIn(2) : obj.rightBoundIn(2));
       end
     end
