@@ -6,7 +6,8 @@
 % Constructor call:
 % StandardGUI(simulatorHandle, figurePosition, pauseDuration, ...
 %   visGridPosition, visGridSize, visGridPadding, 
-%   controlGridPosition, controlGridSize, elementGroups, elementsInGroups)
+%   controlGridPosition, controlGridSize, elementGroups, ...
+%   elementsInGroups, figureTitle)
 % Arguments (all optional except for the first two):
 %   simulatorHandle - handle to the simulator object which should be run in
 %     the GUI (maybe 0, then simulator has to be connected at a later time)
@@ -31,6 +32,7 @@
 %     panel dropdown menu; each list item may access a single element or a
 %     group of elements of the same type that share parameters; given as
 %     cell array of strings or cell array of cell arrays of strings
+%   figureTitle - string displayed in the title bar of the figure window
 %
 % Methods to design the GUI:
 % addVisualization(visualization, positionInGrid, sizeInGrid,
@@ -91,6 +93,7 @@ classdef StandardGUI < handle
   
   properties (SetAccess = public)  
     figurePosition = [];
+    figureTitle = 'Simulation';
     pauseDuration = 0.01;
     pauseDurationWhilePaused = 0.1;
 
@@ -115,7 +118,7 @@ classdef StandardGUI < handle
     % constructor
     function obj = StandardGUI(simulatorHandle, figurePosition, pauseDuration, ...
         visGridPosition, visGridSize, visGridPadding, controlGridPosition, controlGridSize, ...
-        elementGroups, elementsInGroups)
+        elementGroups, elementsInGroups, figureTitle)
       
       if ~isempty(simulatorHandle) && simulatorHandle ~= 0
         obj.simulatorHandle = simulatorHandle;
@@ -138,12 +141,18 @@ classdef StandardGUI < handle
         obj.controlGridPosition = controlGridPosition;
         obj.controlGridSize = controlGridSize;
       end
-      
-      if nargin < 10
+      if nargin < 10 || isempty(elementGroups) && isempty(elementsInGroups)
         elementGroups = {};
         elementsInGroups = {};
       end
+      if nargin >= 11
+        obj.figureTitle = figureTitle;
+      end
+      
+      
       obj.paramPanelHandle = ParameterPanel(simulatorHandle, elementGroups, elementsInGroups, obj.figurePosition);
+      
+      
     end
     
     
@@ -179,7 +188,8 @@ classdef StandardGUI < handle
       end
       
       obj.quitSimulation = false;
-      obj.figureHandle = figure('Position', obj.figurePosition, 'Color', 'w');
+      obj.figureHandle = figure('Position', obj.figurePosition, 'Color', 'w', 'NumberTitle', 'off', ...
+        'Name', obj.figureTitle);
       for i = 1 : obj.nVisualizations
         init(obj.visualizations{i}, obj.figureHandle);
       end

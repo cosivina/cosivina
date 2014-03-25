@@ -1,5 +1,18 @@
 CHANGELOG
 
+* fixed bugs in ShiftInput, StandardGUI (method run could not be called with 4
+  arguments), and CameraGrabber
+* added new interaction element LateralInteractionsDiscrete for groups of
+  discrete nodes (self-excitation and global inhibition)
+* added new interaction elements for 2D fields: MexicanHatKernel2D and 
+  LateralInteractions2D
+* implementation of Gauss kernel computations sourced out from elements to new
+  functions in mathTools
+* added preset versions of two-layer and three-layer simulators to examples
+* redundant copy of SingleLinkageClustering removed from folder mathTools (file 
+  is still found in folder auxiliary)
+
+
 Version 1.2
 * StandardGUI expanded (and cleaned up) for use in offline mode, with methods 
   init, close, updateVisualizations, and checkAndUpdateControls, and separate 

@@ -101,7 +101,8 @@ classdef ParameterPanel < handle
           'Cannot open parameter panel before it has been connected to a Simulator object');
       end
       
-      obj.figureHandle = figure('Position', obj.figurePosition, 'MenuBar', 'none', 'Name', 'Parameter panel');
+      obj.figureHandle = figure('Position', obj.figurePosition, 'MenuBar', 'none', ...
+        'NumberTitle', 'off', 'Name', 'Parameters');
       cellHeightRel = obj.cellHeightAbs / obj.figurePosition(4);
       
       obj.selectorHandle = uicontrol('Parent', obj.figureHandle, ...

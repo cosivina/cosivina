@@ -34,7 +34,9 @@ toolbox JSONlab (you can use all other functionality of COSIVINA without
 JSONlab, but will only receive a warning message when trying to save or load a 
 parameter file). You can download JSONlab for free e.g. from here:
 http://sourceforge.net/projects/iso2mesh/files/jsonlab/
-COSIVINA has been tested with JSONlab versions 0.9.0 and 0.9.1.
+COSIVINA has been tested with JSONlab versions 0.9.1 and 0.9.8. (Note: Using 
+version 0.9.0 or earlier can cause errors when loading parameters for certain
+architecture elements.)
 
 
 COMPATIBILITY WITH EARLIER VERSIONS OF MATLAB

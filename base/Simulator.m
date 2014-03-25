@@ -49,7 +49,7 @@
 %   or more parameter values of one or more elements, re-initializes and
 %   calls step-function of element if necessary for changes to take effect;
 %   arguments elementLabels and parameterNames must be strings or cell
-%   arrays of strings, newValues must be variable of approproate type
+%   arrays of strings, newValues must be variable of appropriate type
 %   for the specified parameter, or cell array of such variables
 %
 % Other methods:
