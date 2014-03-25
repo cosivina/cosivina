@@ -2,6 +2,10 @@
 %   Control that creates a dropdown menu with an accompanying text field in
 %   the GUI. The menu allows to change the values of one or more parameters
 %   between a number of presets.
+%   Note: If parameters are initialized or changed via other controls to
+%   take values that do not match any of the control's presets, the
+%   dropdown selector is set to a newly added entry with label
+%   [no matching entry].
 % 
 % Constructor call:
 % ParameterDropdownSelector(controlLabel, elementLabels, ...
@@ -58,10 +62,12 @@ classdef ParameterDropdownSelector < Control
     dropdownHandle
     captionHandle
     
-    relCaptionWidth = 0.2; % size of the caption relative to slider
+    noMatchingEntry = false; % the current parameter values do not match any presets of the dropdown menu
+    
+    relCaptionWidth = 0.2; % width of the caption field relative to total control width 
     relPaddingWidth = 0.025; % padding on both sides of the caption
     
-    lastValue = 1;
+    currentValue = 1;
   end
   
   
@@ -82,7 +88,7 @@ classdef ParameterDropdownSelector < Control
         obj.toolTip = obj.controlLabel;
       end
       if nargin >= 7
-        obj.lastValue = initialSelection;
+        obj.currentValue = initialSelection;
       end
       if nargin >= 8
         obj.position = position;
@@ -100,6 +106,7 @@ classdef ParameterDropdownSelector < Control
         obj.dropdownValues = {obj.dropdownValues};
       end
       
+      
       if ~iscellstr(obj.elementLabels) || ~iscellstr(obj.parameterNames) ...
           || numel(obj.elementLabels) ~= obj.nParameters
         error('ParameterDropdownSelector:ParameterDropdownSelector:argumentMismatch', ...
@@ -115,7 +122,7 @@ classdef ParameterDropdownSelector < Control
       % determine entries of dropdown menu, fill in labels if necessary
       obj.nEntries = numel(obj.dropdownValues{1});
       if isempty(obj.dropdownLabels)
-        obj.dropdownLabels = cell(1, obj.nEntries);
+        obj.dropdownLabels = cell(obj.nEntries, 1);
         for i = 1 : obj.nEntries
           obj.dropdownLabels{i} = num2str(obj.dropdownValues{1}(i));
         end
@@ -136,11 +143,13 @@ classdef ParameterDropdownSelector < Control
       end
       obj.dropdownValues = tmpValues;
       
-      % check consistency of dropdownValues with dropdownLabels
+      % check consistency of dropdownValues with dropdownLabels and
+      % standardize shape of cell array dropdownLabels
       if numel(obj.dropdownLabels) ~= obj.nEntries
         error('ParameterDropdownSelector:ParameterDropdownSelector:argumentMismatch', ...
           'Size of argument dropdownLabels must match size of each vector in argument dropdownValues.');
       end
+      obj.dropdownLabels = reshape(obj.dropdownLabels, [obj.nEntries, 1]);
     end
     
     
@@ -173,18 +182,24 @@ classdef ParameterDropdownSelector < Control
         'HorizontalAlignment', 'left', 'String', [obj.controlLabel], ...
         'Position', captionPosition, 'Tooltip', obj.toolTip, 'BackgroundColor', 'w');
       obj.dropdownHandle = uicontrol('Parent', figureHandle, 'Style', 'popupmenu', 'Units', 'norm', ...
-        'Position', dropdownPosition, 'String', obj.dropdownLabels, 'ToolTip', obj.toolTip, 'Value', obj.lastValue);
+        'Position', dropdownPosition, 'String', obj.dropdownLabels, 'ToolTip', obj.toolTip, 'Value', obj.currentValue);
+      
+      update(obj);
     end
     
     
     % check control object and update simulator object if required
     function changed = check(obj)
-      if get(obj.dropdownHandle, 'Value') ~= obj.lastValue
+      if get(obj.dropdownHandle, 'Value') ~= obj.currentValue
         changed = true;
-        obj.lastValue = get(obj.dropdownHandle, 'Value');
-
+        obj.currentValue = get(obj.dropdownHandle, 'Value');
         setElementParameters(obj.simulatorHandle, obj.elementLabels, obj.parameterNames, ...
-          obj.dropdownValues{obj.lastValue});
+          obj.dropdownValues{obj.currentValue});
+        
+        if obj.noMatchingEntry
+          set(obj.dropdownHandle, 'String', obj.dropdownLabels, 'Value', obj.currentValue);
+          obj.noMatchingEntry = false;
+        end
       else
         changed = false;
       end
@@ -192,8 +207,38 @@ classdef ParameterDropdownSelector < Control
     
     
     % update control object (e.g. after parameters have been changed in parameter panel)
-    function obj = update(obj) % updates the control eleme
-      % state of ParameterSwitchButton is not updated on external parameter change
+    function obj = update(obj) % updates the control element
+      currentParameterValues = cell(1, obj.nParameters);
+      valuesScalar = false(1, obj.nParameters);
+      for i = 1 : obj.nParameters
+        currentParameterValues{i} = getElementParameter(obj.simulatorHandle, obj.elementLabels{i}, obj.parameterNames{i});
+        valuesScalar(i) = isscalar(currentParameterValues{i});
+      end
+      valuesScalar = find(valuesScalar);
+      
+      dropdownValuesTmp = obj.dropdownValues;
+      for k = 1 : obj.nEntries
+        match = true;
+        for i = valuesScalar
+          if isscalar(dropdownValuesTmp{k}{i}) && dropdownValuesTmp{k}{i} ~= currentParameterValues{i}
+            match = false;
+            break;
+          end
+        end
+        if match
+          obj.currentValue = k;
+          break;
+        end
+      end
+      
+      if ~match && ~obj.noMatchingEntry
+        obj.currentValue = obj.nEntries + 1;
+        set(obj.dropdownHandle, 'String', [obj.dropdownLabels; {'[no matching entry]'}], 'Value', obj.currentValue);
+        obj.noMatchingEntry = true;
+      elseif match && obj.noMatchingEntry
+        set(obj.dropdownHandle, 'String', obj.dropdownLabels, 'Value', obj.currentValue);
+        obj.noMatchingEntry = false;
+      end
     end
 
   end
