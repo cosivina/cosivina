@@ -11,7 +11,7 @@
 %% setting up the simulator
 
 % shared parameters
-fieldRange = 50;
+fieldRange = 60;
 sigma_exc = 5;
 sigma_inh = 12.5;
 
@@ -86,7 +86,7 @@ gui = StandardGUI(sim, [50, 50, figureWidth, figureHeight], 0.01, [0.0, 0.0, 0.8
 
 
 w = 0.4; h = 0.125; m = 0.05;
-gui.addVisualization(ScaledImage('t', 'activation', [-10, 10], ...
+gui.addVisualization(ScaledImage('t', 'activation', [-7.5, 7.5], ...
   {'YAxisLocation', 'right', 'YDir', 'normal', 'XTick', -40:20:40, 'YTick', -40:20:40}, ...
   {'XData', -fieldRange:fieldRange, 'YData', -fieldRange:fieldRange}, ...
   '', 'retinal position', 'gaze direction', [h+2*m, 1-w-h-2*m, w, w] * S));
