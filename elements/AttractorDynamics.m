@@ -13,7 +13,8 @@
 classdef AttractorDynamics < Element
   
   properties (Constant)
-    parameters = struct('size', ParameterStatus.Fixed, 'amplitude', ParameterStatus.Changeable);
+    parameters = struct('size', ParameterStatus.Fixed, 'amplitude', ParameterStatus.Changeable, ...
+      'zeroPosition', ParameterStatus.InitRequired);
     components = {'phiDot', 'phiDotAll'};
     defaultOutputComponent = 'phiDot';
   end
@@ -22,6 +23,7 @@ classdef AttractorDynamics < Element
     % parameters
     size = [1, 1];
     amplitude = 0;
+    zeroPosition
         
     % accessible structures
     phiDot = 0;
@@ -35,22 +37,30 @@ classdef AttractorDynamics < Element
   
   methods
     % constructor
-    function obj = AttractorDynamics(label, inputSize, amplitude)
+    function obj = AttractorDynamics(label, inputSize, amplitude, zeroPosition)
       if nargin > 0
         obj.label = label;
         obj.size = inputSize;
-        obj.amplitude = amplitude;
       end
-      
       if numel(obj.size) == 1
         obj.size = [1, obj.size];
+      end
+      
+      if nargin >= 3
+        obj.amplitude = amplitude;
+      end
+      if nargin >= 4
+        obj.zeroPosition = zeroPosition;
+      else
+        obj.zeroPosition = obj.size(2)/2;
       end
     end
     
     
     % initialization
     function obj = init(obj)
-      obj.rangePhi = (1:obj.size(2)) * (2*pi/obj.size(2)) - pi - pi/obj.size(2);
+      % obj.rangePhi = (1:obj.size(2)) * (2*pi/obj.size(2)) - pi - pi/obj.size(2);
+      obj.rangePhi = ((1:obj.size(2)) - obj.zeroPosition) * 2*pi / obj.size(2);
       obj.sineDiffPhi = sin(repmat(obj.rangePhi, [obj.size(2), 1]) - repmat(obj.rangePhi', [1, obj.size(2)]));
       
       obj.phiDotAll = zeros(obj.size);
