@@ -86,12 +86,16 @@ classdef MultiPlot < Visualization
         end
         if numel(obj.plotElementLabels) ~= numel(obj.plotComponents)
           error('MultiPlot:MultiPlot:inconsistentArguments', ...
-            'Arguments ''plotElements'' and ''plotComponents'' must have the same number of elements.');
+            'Arguments ''plotElements'' and ''plotComponents'' must have the same number of entries.');
         end
         obj.nPlots = numel(obj.plotElementLabels);
       end
       if nargin >= 3 && ~isempty(scales)
         obj.plotScales = scales;
+        if ~isnumeric(obj.plotScales) || numel(obj.plotScales) ~= numel(obj.plotElementLabels)
+          error('MultiPlot:MultiPlot:inconsistentArguments', ...
+            'Argument ''scales'' must be a numeric vector with one entry for each element in ''plotElements''.');
+        end
       else
         obj.plotScales = ones(obj.nPlots, 1);
       end
