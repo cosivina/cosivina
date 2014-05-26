@@ -41,8 +41,10 @@ sim.addElement(GaussKernel1D('noise kernel', fieldSize, 0, 0, 1, 1), 'noise', 'o
 %   'attractor dynamics', 'orientation');
 
 % simulated attractor dynamics
-sim.addElement(AttractorDynamics('attractor dynamics', fieldSize, 0.1), 'field u', 'output');
-sim.addElement(DynamicVariable('phi', 1, 10, 0), 'attractor dynamics', 'phiDot', 'attractor dynamics', 'state');
+sim.addElement(DynamicVariable('phi', 1, 10, 0));
+sim.addElement(AttractorDynamics('attractor dynamics', fieldSize, 0.1), {'field u', 'phi'}, {'output', 'state'}, ...
+  'phi', 'phiDot');
+
 
 
 %% setting up the GUI
@@ -53,7 +55,8 @@ elementGroups = {'field u', 'u -> u (mexican hat)', 'u -> u (global)', 'stimulus
 gui = StandardGUI(sim, [50, 50, 950, 700], 0.05, [0.0, 1/4, 1.0, 3/4], [2, 1], 0.075, [0.0, 0.0, 1.0, 1/4], [6, 4], ...
   elementGroups, elementGroups);
 
-vDir = (1:fieldSize) * (2*pi/fieldSize) - pi - pi/fieldSize;
+% vDir = (1:fieldSize) * (2*pi/fieldSize) - pi - pi/fieldSize;
+vDir = ((1:fieldSize) - fieldSize/2) * 2*pi / fieldSize;
 gui.addVisualization(MultiPlot({'field u', 'field u', 'shifted stimulus sum'}, {'activation', 'output', 'output'}, ...
   [1, 10, 1], 'horizontal', {'XLim', [-pi, pi], 'YLim', [-15, 15], 'XGrid', 'on', 'YGrid', 'on'}, ...
   {{'b', 'LineWidth', 3, 'XData', vDir}, {'r', 'LineWidth', 2, 'XData', vDir}, ...
