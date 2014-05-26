@@ -6,8 +6,7 @@
 % Constructor call:
 % StandardGUI(simulatorHandle, figurePosition, pauseDuration, ...
 %   visGridPosition, visGridSize, visGridPadding, 
-%   controlGridPosition, controlGridSize, elementGroups, ...
-%   elementsInGroups, figureTitle)
+%   controlGridPosition, controlGridSize, elementGroups, elementsInGroups)
 % Arguments (all optional except for the first two):
 %   simulatorHandle - handle to the simulator object which should be run in
 %     the GUI (maybe 0, then simulator has to be connected at a later time)
@@ -32,7 +31,6 @@
 %     panel dropdown menu; each list item may access a single element or a
 %     group of elements of the same type that share parameters; given as
 %     cell array of strings or cell array of cell arrays of strings
-%   figureTitle - string displayed in the title bar of the figure window
 %
 % Methods to design the GUI:
 % addVisualization(visualization, positionInGrid, sizeInGrid,
@@ -208,6 +206,9 @@ classdef StandardGUI < handle
       end
       if ishandle(obj.figureHandle)
         delete(obj.figureHandle);
+      end
+      for i = 1 : obj.nControls
+        close(obj.controls{i});
       end
     end
     

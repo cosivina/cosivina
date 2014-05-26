@@ -13,4 +13,10 @@ classdef Control < handle
     obj = update(obj); % update the control element, e.g. after parameters have been changed via parameter panel
   end
   
+  methods
+    function obj = close(obj)
+      % nothing to do for most controls
+    end
+  end
+  
 end
