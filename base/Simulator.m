@@ -21,6 +21,11 @@
 %   specified by targetLabels; the parameter 'element' is an element handle
 %   (obtained by calling an element constructor), the other parameters are
 %   all strings or cell arrays of strings
+% addConnection(inputLabels, inputComponents, targetLabel) - adds new
+%   connections from one or more existing elements, specified by
+%   inputLabels and inputComponents, to the element specified by
+%   targetLabel; arguments inputLabels and inputComponents can be strings
+%   or cell arrays of strings, targetLabel must be a single string
 %
 % Methods for running simulations:
 % init() - initializes the simulator
@@ -279,6 +284,11 @@ classdef Simulator < handle
           inputComponents = cellstr(inputComponents);
         end
         
+        if numel(inputLabels) ~= numel(inputComponents)
+          error('Simulator:addElement:inconsistentArguments', ...
+            'Argument ''inputComponents'' must have the same number of entries as argument ''inputLabels'', or be empty.')
+        end
+        
         for i = 1 : numel(inputLabels)
           elementIndex = find(strcmp(inputLabels{i}, obj.elementLabels), 1);
           if isempty(elementIndex)
@@ -310,6 +320,12 @@ classdef Simulator < handle
           componentsForTargets = cellstr(componentsForTargets);
         end
         
+        if numel(targetLabels) ~= numel(componentsForTargets)
+          error('Simulator:addElement:inconsistentArguments', ...
+            ['Argument ''componentsForTargets'' must have the same number of entries as argument ''targetLabels''', ...
+            'or be empty.'])
+        end
+        
         for i = 1 : numel(targetLabels)
           elementIndex = find(strcmp(targetLabels{i}, obj.elementLabels), 1);
           if isempty(elementIndex)
@@ -319,7 +335,7 @@ classdef Simulator < handle
           end
           targetHandle = obj.elements{elementIndex};
           if isempty(componentsForTargets{i})
-            targetHandle.addInput(element, element.defaultOutputComponent());
+            targetHandle.addInput(element, element.defaultOutputComponent);
           elseif element.isComponent(componentsForTargets{i})
             targetHandle.addInput(element, componentsForTargets{i});
           else
@@ -329,6 +345,56 @@ classdef Simulator < handle
           end
         end
       end
+    end
+    
+    
+    % add a new connections between existing elements
+    function obj = addConnection(obj, inputLabels, inputComponents, targetLabel)
+      if nargin < 4 || ~ischar(targetLabel)
+        error('Simulator:addConnection:noTargetLabel', ...
+          'Argument targetLabel must be a single string.');
+      end
+      elementIndex = find(strcmp(targetLabel, obj.elementLabels), 1);
+      if isempty(elementIndex)
+        error('Simulator:addConnection:invalidTargetLabel', ...
+          'Element label ''%s'' requested as target for connection not found in simulator object.', ...
+          targetLabel);
+      end
+      targetHandle = obj.elements{elementIndex};
+      
+      if ~iscell(inputLabels)
+        inputLabels = cellstr(inputLabels);
+      end
+      if isempty(inputComponents)
+        inputComponents = cell(numel(inputLabels), 1);
+      elseif ~iscell(inputComponents)
+        inputComponents = cellstr(inputComponents);
+      end
+      
+      if numel(inputLabels) ~= numel(inputComponents)
+        error('Simulator:addConnection:inconsistentArguments', ...
+            'Argument ''inputComponents'' must have the same number of entries as argument ''inputLabels'', or be empty.')
+      end
+      
+      for i = 1 : numel(inputLabels)
+        elementIndex = find(strcmp(inputLabels{i}, obj.elementLabels), 1);
+        if isempty(elementIndex)
+          error('Simulator:addConnection:invalidInputLabel', ...
+            'Element label ''%s'' requested as input for connection not found in simulator object.', ...
+            inputLabels{i});
+        end
+        inputHandle = obj.elements{elementIndex};
+        if isempty(inputComponents{i})
+          targetHandle.addInput(inputHandle, inputHandle.defaultOutputComponent);
+        elseif inputHandle.isComponent(inputComponents{i})
+          targetHandle.addInput(inputHandle, inputComponents{i});
+        else
+          error('Simulator:addElement:invalidInputComponent', ...
+            'Invalid input component ''%s'' requsted for input element ''%s''.', ...
+            inputComponents{i}, inputLabels{i});
+        end
+      end
+
     end
     
     

@@ -4,7 +4,7 @@
 % Constructor call:
 % PointwiseProduct(label, size)
 %   label - element label
-%   size - size of inputs and output
+%   size - size of inputs and output (one of the inputs may be a scalar)
 
 
 classdef PointwiseProduct < Element

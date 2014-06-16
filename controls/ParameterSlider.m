@@ -101,7 +101,7 @@ classdef ParameterSlider < Control
       end
       
       obj.nParameters = length(obj.parameterNames);
-      obj.relCaptionWidth = 0.3;
+      obj.relCaptionWidth = 1/3;
       obj.relPaddingWidth = 0.025;
     end
     
