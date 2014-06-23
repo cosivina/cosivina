@@ -163,7 +163,7 @@
 				"param": {
 					"size": [1,100],
 					"sigma": 5,
-					"amplitude": 12.5,
+					"amplitude": 0,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -180,7 +180,7 @@
 				"param": {
 					"size": [1,100],
 					"sigma": 5,
-					"amplitude": 12.5,
+					"amplitude": 0,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -197,7 +197,7 @@
 				"param": {
 					"size": [1,100],
 					"sigma": 10,
-					"amplitude": -12.5,
+					"amplitude": 0,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -213,7 +213,7 @@
 				"class": "SumDimension",
 				"param": {
 					"sumDimensions": 2,
-					"amplitude": -0,
+					"amplitude": 0,
 					"size": [1,1]
 				},
 				"nInputs": 1,

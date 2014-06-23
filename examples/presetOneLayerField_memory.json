@@ -128,10 +128,10 @@
 				"param": {
 					"size": [1,100],
 					"sigmaExc": 5,
-					"amplitudeExc": 24,
-					"sigmaInh": 12.5,
-					"amplitudeInh": 20,
-					"amplitudeGlobal": -0,
+					"amplitudeExc": 30,
+					"sigmaInh": 10,
+					"amplitudeInh": 27.5,
+					"amplitudeGlobal": 0,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5

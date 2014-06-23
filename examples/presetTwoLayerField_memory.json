@@ -163,7 +163,7 @@
 				"param": {
 					"size": [1,100],
 					"sigma": 5,
-					"amplitude": 18,
+					"amplitude": 20,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -196,8 +196,8 @@
 				"class": "GaussKernel1D",
 				"param": {
 					"size": [1,100],
-					"sigma": 12.5,
-					"amplitude": -14,
+					"sigma": 10,
+					"amplitude": -15,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -238,7 +238,7 @@
 				"param": {
 					"size": [1,100],
 					"sigma": 0,
-					"amplitude": 0,
+					"amplitude": 1,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -265,7 +265,7 @@
 				"param": {
 					"size": [1,100],
 					"sigma": 0,
-					"amplitude": 0,
+					"amplitude": 1,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
