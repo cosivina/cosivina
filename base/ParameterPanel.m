@@ -29,6 +29,7 @@ classdef ParameterPanel < handle
     
     selectorHandle
     buttonHandle
+    classNameHandle
     nCells
     captionHandles
     editHandles
@@ -111,6 +112,8 @@ classdef ParameterPanel < handle
       obj.buttonHandle = uicontrol('Parent', obj.figureHandle, ...
         'Style', 'togglebutton', 'Units', 'norm', 'Position', [0, 0, 1, cellHeightRel], ...
         'String', 'Apply', 'Value', 0);
+      obj.classNameHandle = uicontrol('Parent', obj.figureHandle, 'Style', 'text', 'Units', 'norm', ...
+        'String', '', 'Position', [0, 1-2*cellHeightRel, 1, cellHeightRel]);
 
       obj.nCells = 0;
       obj.captionHandles = [];
@@ -132,6 +135,8 @@ classdef ParameterPanel < handle
     
     % update element selection
     function obj = updateSelection(obj)
+      set(obj.classNameHandle, 'String', class(obj.refElementHandles{obj.currentSelection}));
+      
       obj.parameters = obj.refElementHandles{obj.currentSelection}.getParameterList();
       obj.nParams = numel(obj.parameters);
       
@@ -147,12 +152,12 @@ classdef ParameterPanel < handle
         [obj.captionHandles(1:min(obj.nParams, obj.nCells)); zeros(max(obj.nParams-obj.nCells, 0), 1)];
       obj.editHandles = [obj.editHandles(1:min(obj.nParams, obj.nCells)); zeros(max(obj.nParams-obj.nCells, 0), 1)];
       
-      % create new cells if necessary
+      % create new cells
       for i = 1 : obj.nParams
         obj.captionHandles(i) = uicontrol('Parent', obj.figureHandle, 'Style', 'text', 'Units', 'norm', ...
-          'String', '', 'Position', [0, 1 - (i+1)*cellHeightRel, 1-obj.editWidthRel, cellHeightRel]);
+          'String', '', 'Position', [0, 1 - (i+2)*cellHeightRel, 1-obj.editWidthRel, cellHeightRel]);
         obj.editHandles(i) = uicontrol('Parent', obj.figureHandle, 'Style', 'edit', 'Units', 'norm', ...
-          'String', '', 'Position', [ 1 - obj.editWidthRel, 1 - (i+1)*cellHeightRel, obj.editWidthRel, cellHeightRel]);
+          'String', '', 'Position', [ 1 - obj.editWidthRel, 1 - (i+2)*cellHeightRel, obj.editWidthRel, cellHeightRel]);
       end
       
       obj.nCells = obj.nParams;
