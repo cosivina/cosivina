@@ -40,7 +40,7 @@
 					"size": [1,180],
 					"sigma": 5,
 					"amplitude": 0,
-					"position": 45,
+					"position": 36,
 					"circular": 1,
 					"normalized": 0
 				},
@@ -68,7 +68,7 @@
 					"size": [1,180],
 					"sigma": 5,
 					"amplitude": 0,
-					"position": 135,
+					"position": 144,
 					"circular": 1,
 					"normalized": 0
 				},
@@ -102,7 +102,7 @@
 				"class": "ScaleInput",
 				"param": {
 					"size": [1,180],
-					"amplitude": 0
+					"amplitude": 0.2
 				},
 				"nInputs": 1,
 				"input": {
@@ -250,8 +250,8 @@
 				"class": "GaussKernel1D",
 				"param": {
 					"size": [1,180],
-					"sigma": 5,
-					"amplitude": 0,
+					"sigma": 3,
+					"amplitude": 10,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -268,7 +268,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 5,
-					"amplitude": 0,
+					"amplitude": 10,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -285,7 +285,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 5,
-					"amplitude": 0,
+					"amplitude": 9,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -302,7 +302,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 10,
-					"amplitude": 0,
+					"amplitude": -10,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -318,8 +318,8 @@
 				"class": "GaussKernel1D",
 				"param": {
 					"size": [1,180],
-					"sigma": 10,
-					"amplitude": 0,
+					"sigma": 20,
+					"amplitude": -7.5,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -393,7 +393,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 5,
-					"amplitude": 0,
+					"amplitude": 12.5,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -410,7 +410,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 5,
-					"amplitude": 0,
+					"amplitude": 15,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -437,7 +437,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 0,
-					"amplitude": 2,
+					"amplitude": 4,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -464,7 +464,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 0,
-					"amplitude": 1,
+					"amplitude": 2,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -491,7 +491,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 0,
-					"amplitude": 2,
+					"amplitude": 4,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5

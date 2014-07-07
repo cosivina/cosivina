@@ -95,8 +95,8 @@ gui.addVisualization(ScaledImage('field v', 'activation', [-10, 10], {'YDir', 'n
 
 % parameter sliders
 gui.addControl(ParameterSlider('h_v', 'field v', 'h', [-10, 0], '%0.1f', 1, 'resting level of field v'), [22, 1]);
-gui.addControl(ParameterSlider('h_s', 'field s', 'h', [-10, 0], '%0.1f', 1, 'resting level of field f'), [22, 2]);
-gui.addControl(ParameterSlider('h_f', 'field f', 'h', [-10, 0], '%0.1f', 1, 'resting level of field s'), [22, 3]);
+gui.addControl(ParameterSlider('h_s', 'field s', 'h', [-10, 0], '%0.1f', 1, 'resting level of field s'), [22, 2]);
+gui.addControl(ParameterSlider('h_f', 'field f', 'h', [-10, 0], '%0.1f', 1, 'resting level of field f'), [22, 3]);
 
 gui.addControl(ParameterSlider('q_v', 'noise v', 'amplitude', [0, 10], '%0.1f', 1, 'noise level for field v'), [23, 1]);
 gui.addControl(ParameterSlider('q_s', 'noise s', 'amplitude', [0, 10], '%0.1f', 1, 'noise level for field f'), [23, 2]);
