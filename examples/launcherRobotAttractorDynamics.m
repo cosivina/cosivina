@@ -3,8 +3,11 @@
 % system, effectively transforming space into rate code. If this dynamical
 % variable is connected to the orientation control of a robot, it can be
 % used to perform obstacle avoidance or target acquisition tasks.
-% Note: The dynamical variable is defined circularly in this model, so it
-% can run out of the plotted range.
+% Note: The dynamical variable is not defined circularly in this model, so 
+% it can run out of the plotted range.
+
+%#ok<*UNRCH>
+USE_ROBOT = false; % choose whether actual robot or simulation should be used
 
 %% setting up the simulator
 
@@ -35,15 +38,17 @@ sim.addElement(SumDimension('u -> u (global)', 2, 1, 0), 'field u', 'output', 'f
 sim.addElement(NormalNoise('noise', fieldSize, 1));
 sim.addElement(GaussKernel1D('noise kernel', fieldSize, 0, 0, 1, 1), 'noise', 'output', 'field u');
 
-% attractor dynamics with E-Puck robot
-% sim.addElement(AttractorDynamics('attractor dynamics', fieldSize, 0.1), 'field u', 'output');
-% sim.addElement(DynamicRobotController('robot controller', 3, 250), 'attractor dynamics', 'phiDot', ...
-%   'attractor dynamics', 'orientation');
-
-% simulated attractor dynamics
-sim.addElement(DynamicVariable('phi', 1, 10, 0));
-sim.addElement(AttractorDynamics('attractor dynamics', fieldSize, 0.1), {'field u', 'phi'}, {'output', 'state'}, ...
-  'phi', 'phiDot');
+if USE_ROBOT
+  % attractor dynamics with E-Puck robot
+  sim.addElement(AttractorDynamics('attractor dynamics', fieldSize, 0.1), 'field u', 'output');
+  sim.addElement(DynamicRobotController('robot controller', 3, 250), 'attractor dynamics', 'phiDot', ...
+    'attractor dynamics', 'orientation');
+else
+  % simulated attractor dynamics
+  sim.addElement(DynamicVariable('phi', 1, 10, 0));
+  sim.addElement(AttractorDynamics('attractor dynamics', fieldSize, 0.1), {'field u', 'phi'}, {'output', 'state'}, ...
+    'phi', 'phiDot');
+end
 
 
 
@@ -55,18 +60,25 @@ elementGroups = {'field u', 'u -> u (mexican hat)', 'u -> u (global)', 'stimulus
 gui = StandardGUI(sim, [50, 50, 950, 700], 0.05, [0.0, 1/4, 1.0, 3/4], [2, 1], 0.075, [0.0, 0.0, 1.0, 1/4], [6, 4], ...
   elementGroups, elementGroups);
 
-% vDir = (1:fieldSize) * (2*pi/fieldSize) - pi - pi/fieldSize;
 vDir = ((1:fieldSize) - fieldSize/2) * 2*pi / fieldSize;
 gui.addVisualization(MultiPlot({'field u', 'field u', 'shifted stimulus sum'}, {'activation', 'output', 'output'}, ...
   [1, 10, 1], 'horizontal', {'XLim', [-pi, pi], 'YLim', [-15, 15], 'XGrid', 'on', 'YGrid', 'on'}, ...
   {{'b', 'LineWidth', 3, 'XData', vDir}, {'r', 'LineWidth', 2, 'XData', vDir}, ...
   {'Color', [0, 0.75, 0], 'LineWidth', 2, 'XData', vDir}}, ...
   'sensory field', 'direction [rad]', 'activation'), [1, 1]);
-gui.addVisualization(XYPlot({[], 'phi'}, {vDir, 'state'}, ...
-  {'attractor dynamics', 'attractor dynamics'}, {'phiDotAll', 'phiDot'}, ...
-  {'XLim', [-pi, pi], 'YLim', [-2.5, 2.5], 'XGrid', 'on', 'YGrid', 'on'}, ...
-  { {'LineWidth', 2, 'Color', [0.5, 0, 0]}, {'o', 'Color', [0.5, 0, 0], 'LineWidth', 2, 'MarkerSize', 7} }, ...
-  'attractor dynamics for robot orientation', 'direction [rad]', 'rate of change'), [2, 1]);
+if USE_ROBOT
+  gui.addVisualization(XYPlot({[], 'robot controller'}, {vDir, 'orientation'}, ...
+    {'attractor dynamics', 'attractor dynamics'}, {'phiDotAll', 'phiDot'}, ...
+    {'XLim', [-pi, pi], 'YLim', [-2.5, 2.5], 'XGrid', 'on', 'YGrid', 'on'}, ...
+    { {'LineWidth', 2, 'Color', [0.5, 0, 0]}, {'o', 'Color', [0.5, 0, 0], 'LineWidth', 2, 'MarkerSize', 7} }, ...
+    'attractor dynamics for robot orientation', 'direction [rad]', 'rate of change'), [2, 1]);
+else
+  gui.addVisualization(XYPlot({[], 'phi'}, {vDir, 'state'}, ...
+    {'attractor dynamics', 'attractor dynamics'}, {'phiDotAll', 'phiDot'}, ...
+    {'XLim', [-pi, pi], 'YLim', [-2.5, 2.5], 'XGrid', 'on', 'YGrid', 'on'}, ...
+    { {'LineWidth', 2, 'Color', [0.5, 0, 0]}, {'o', 'Color', [0.5, 0, 0], 'LineWidth', 2, 'MarkerSize', 7} }, ...
+    'attractor dynamics for robot orientation', 'direction [rad]', 'rate of change'), [2, 1]);
+end
 
 
 % add sliders
@@ -112,6 +124,6 @@ gui.addControl(GlobalControlButton('Quit', gui, 'quitSimulation', true, false, f
 
 %% run the simulator in the GUI
 
-gui.run(inf);
+gui.run(inf, true, true);
 
 

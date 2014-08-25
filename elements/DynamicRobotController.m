@@ -26,7 +26,7 @@ classdef DynamicRobotController < Element
     maxWheelVelocity = inf;
     
     % accessible structures
-    position = [0, 0];
+    position = [0; 0];
     orientation = 0;
   end
   
@@ -54,17 +54,31 @@ classdef DynamicRobotController < Element
     
     % initialization
     function obj = init(obj)
-      obj.position = [0, 0];
+      obj.position = [0; 0];
       obj.orientation = 0;
       
+      % connect to robot
       if obj.robotHandle == 0
         obj.robotHandle = kOpenPort();
-      else
-        kStop(obj.robotHandle);
       end
+      if numel(obj.robotHandle) ~= 2
+        error('DynamicRobotController:init:connectionFailure', ...
+          'Failed to establish connection to robot.');
+      end
+      kStop(obj.robotHandle); % first command to robot is ignored
       
-%       kSetEncoders(obj.robotHandle, 0, 0);
-      obj.lastEncoderValues = kGetEncoders(obj.robotHandle);
+      % get initial encoder values
+      encoderValues = 0;
+      readAttempts = 0;
+      while any(size(encoderValues) ~= [2, 1]) && readAttempts < 10
+        encoderValues = kGetEncoders(obj.robotHandle);
+        readAttempts = readAttempts + 1;
+      end
+      if any(size(encoderValues) ~= [2, 1])
+        error('DynamicRobotController:init:connectionFailure', ...
+          'Failed to read initial encoder values from robot.');
+      end
+      obj.lastEncoderValues = encoderValues;
     end
     
     
@@ -78,10 +92,9 @@ classdef DynamicRobotController < Element
       deltaEncoderValues = newEncoderValues - obj.lastEncoderValues;
       obj.lastEncoderValues = newEncoderValues;
       
-      newPosition = integrateForwardKinematics(deltaEncoderValues * DynamicRobotController.pulse, ...
-        [obj.position, obj.orientation], obj.wheelbase/2);
-      obj.position = [newPosition(1), newPosition(2)];
-      obj.orientation = mod(newPosition(3) + pi, 2*pi) - pi;
+      [obj.position, obj.orientation] = ...
+        pathIntegrationDifferentialDrive(deltaEncoderValues * DynamicRobotController.pulse, ...
+        obj.position, obj.orientation, obj.wheelbase);
 
       if obj.nInputs >= 1
         v = 1/obj.pulse * obj.inputElements{1}.(obj.inputComponents{1}) * obj.wheelbase/2;

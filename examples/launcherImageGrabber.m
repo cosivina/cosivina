@@ -5,6 +5,9 @@
 % integrated over the vertical axis). The color extraction result is then
 % used as input for a set of fields.
 
+%#ok<*UNRCH>
+USE_CAMERA = false; % choose whether actual camera should be used
+
 %% setting up the simulator
 
 % shared parameters
@@ -16,9 +19,12 @@ sigma_inh = 12.5;
 sim = Simulator();
 
 % add elements
-% sim.addElement(CameraGrabber('grabber', 0, [240, 320]));
-sim.addElement(ImageLoader('grabber', '', ...
-  {'sceneSnapshot1.png', 'sceneSnapshot2.png', 'sceneSnapshot3.png'}, [240, 320], 1));
+if USE_CAMERA
+  sim.addElement(CameraGrabber('grabber', 0, [240, 320]));
+else
+  sim.addElement(ImageLoader('grabber', '', ...
+    {'sceneSnapshot1.png', 'sceneSnapshot2.png', 'sceneSnapshot3.png'}, [240, 320], 1));
+end
 sim.addElement(ColorExtraction('ce', [1, 320], [1, 240], [3, fieldSize], ...
   [0, 1/6, 1; 1/6, 1/2, 2; 1/2, 5/6, 3; 5/6, inf, 1], 0.4, 0.4), 'grabber', 'image');
 
@@ -46,8 +52,10 @@ gui.addVisualization(SlicePlot({'field u', 'field u'}, {'activation', 'output'},
   [6, 1], [2, 1]);
 
 % add controls
-gui.addControl(ParameterDropdownSelector('image', 'grabber', 'currentSelection', [1, 2, 3], ...
-  {'scene 1', 'scene 2', 'scene 3'}, 1, 'image source'), [1, 1]);
+if ~USE_CAMERA
+  gui.addControl(ParameterDropdownSelector('image', 'grabber', 'currentSelection', [1, 2, 3], ...
+    {'scene 1', 'scene 2', 'scene 3'}, 1, 'image source'), [1, 1]);
+end
 gui.addControl(ParameterSlider('c_stim', 'ce scaled', 'amplitude', [0, 1], '%0.1f', 1, ...
   'strengh of input to field u'), [3, 1]);
 gui.addControl(ParameterSlider('h_u', 'field u', 'h', [-10, 0], '%0.1f', 1, ...
@@ -68,6 +76,6 @@ gui.addControl(GlobalControlButton('Quit', gui, 'quitSimulation', true, false, f
 
 %% run the simulator in the GUI
 
-gui.run(inf);
+gui.run(inf, true, true);
 
 
