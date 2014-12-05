@@ -24,12 +24,12 @@
 %   displayed next to the slider (optional, see the Matlab documentation of
 %   the fprintf function on construction of that string)
 % scalingFactor - scalar value specifying a conversion factor from the
-%   element’s parameter value to the slider position (optional)
+%   element's parameter value to the slider position (optional)
 % tooltip - tooltip displayed when hovering over the control with the mouse
 %   (optional)
 % position - position of the control in the GUI figure window in relative
 %   coordinates (optional, is overwritten when specifying a grid position
-%   in the GUI’s addControl function)
+%   in the GUI's addControl function)
 %
 % Example:
 % h = ParameterSlider('h_u', 'field u', 'h', [-10, 0], '%0.1f', 1,

@@ -13,7 +13,7 @@
 %   fprintf function for help on constructing that string)
 % position - position of the control in the GUI figure window in relative
 %   coordinates (optional, is overwritten when specifying a grid position
-%   in the GUI’s addVisualization function)
+%   in the GUI's addVisualization function)
 %
 % Example:
 % h = TimeDisplay('Time: ', ' s', '%0.1f');

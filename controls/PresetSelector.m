@@ -27,7 +27,7 @@
 %   (optional)
 % position - position of the control in the GUI figure window in relative
 %   coordinates (optional, is overwritten when specifying a grid position
-%   in the GUI’s addControl function)
+%   in the GUI's addControl function) the GUI
 % 
 % h = PresetSelector('Select', gui, 'presetsOneLayerField/', ...
 %   {'preset_stabilized.json', 'preset_selection.json', 'preset_memory.json'}, ...

@@ -14,8 +14,8 @@
 %   contribute to the plotted interaction kernel
 % plotComponents - cell array of element components (as strings) for the
 %   corresponding entry in plotElements
-% kernelTypes - cell array of strings, with one entry of either ’local’ 
-%   or ’global’ for each entry in plotElements
+% kernelTypes - cell array of strings, with one entry of either 'local' 
+%   or 'global' for each entry in plotElements
 % plotRange - scalar value determining to which range (positively and
 %   negatively from zero) the kernel should be plotted
 % axesProperties - cell array containing a list of valid axes settings
@@ -32,7 +32,7 @@
 % ylabel - string specifying a y-axis label (optional)
 % position - position of the control in the GUI figure window in relative
 %   coordinates (optional, is overwritten when specifying a grid position
-%   in the GUI’s addVisualization function)
+%   in the GUI's addVisualization function)
 %
 % Example:
 % h = KernelPlot({'u -> u', 'u -> u'}, {'kernel', 'amplitudeGlobal'}, ...
@@ -165,13 +165,13 @@ classdef KernelPlot < Visualization
       set(obj.plotHandle, 'XDataMode', 'manual'); % this is a crutch; can't set it at plot creation
       
       if ~isempty(obj.title)
-        obj.titleHandle = title(obj.title); %#ok<CPROP>
+        obj.titleHandle = title(obj.axesHandle, obj.title); %#ok<CPROP>
       end
       if ~isempty(obj.xlabel)
-        obj.xlabelHandle = xlabel(obj.xlabel); %#ok<CPROP>
+        obj.xlabelHandle = xlabel(obj.axesHandle, obj.xlabel); %#ok<CPROP>
       end
       if ~isempty(obj.ylabel)
-        obj.ylabelHandle = ylabel(obj.ylabel); %#ok<CPROP>
+        obj.ylabelHandle = ylabel(obj.axesHandle, obj.ylabel); %#ok<CPROP>
       end
       
       obj.update();

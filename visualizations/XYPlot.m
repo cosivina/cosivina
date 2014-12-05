@@ -19,7 +19,7 @@
 %   specified element, or the fixed vector that should be used as XData
 %   for that plot
 % plotElementsY - cell array specifying the source elements for the
-%   plots’ YData, analogous to the parameter plotElementsX
+%   plots' YData, analogous to the parameter plotElementsX
 %   plotComponentsOrDataY - cell array specifying the element components
 %   or fixed vectors to be used as YData, analogous to the parameter
 %   plotComponentsOrDataY
@@ -38,7 +38,7 @@
 % ylabel - string specifying a y-axis label (optional)
 % position - position of the control in the GUI figure window in relative
 %   coordinates (optional, is overwritten when specifying a grid position
-%   in the GUI’s addVisualization function)
+%   in the GUI's addVisualization function)
 % 
 % Example:
 % h = XYPlot('node u', 'activation', 'node v', 'activation', ...
@@ -207,13 +207,13 @@ classdef XYPlot < Visualization
       end
 
       if ~isempty(obj.title)
-        obj.titleHandle = title(obj.title); %#ok<PROP,CPROP>
+        obj.titleHandle = title(obj.axesHandle, obj.title); %#ok<CPROP>
       end
       if ~isempty(obj.xlabel)
-        obj.xlabelHandle = xlabel(obj.xlabel); %#ok<PROP,CPROP>
+        obj.xlabelHandle = xlabel(obj.axesHandle, obj.xlabel); %#ok<CPROP>
       end
       if ~isempty(obj.ylabel)
-        obj.ylabelHandle = ylabel(obj.ylabel); %#ok<PROP,CPROP>
+        obj.ylabelHandle = ylabel(obj.axesHandle, obj.ylabel); %#ok<CPROP>
       end
     end
     

@@ -21,7 +21,7 @@
 % ylabel - string specifying a y-axis label (optional)
 % position - position of the control in the GUI figure window in relative
 %   coordinates (optional, is overwritten when specifying a grid position
-%   in the GUI’s addVisualization function)
+%   in the GUI's addVisualization function)
 %
 % Example:
 % h = RGBImage('camera grabber', 'output', {'YDir', 'normal'}, {}, ...
@@ -107,13 +107,13 @@ classdef RGBImage < Visualization
       end
       
       if ~isempty(obj.title)
-       obj.titleHandle = title(obj.title); %#ok<CPROP>
+       obj.titleHandle = title(obj.axesHandle, obj.title); %#ok<CPROP>
      end
      if ~isempty(obj.xlabel)
-       obj.xlabelHandle = xlabel(obj.xlabel); %#ok<CPROP>
+       obj.xlabelHandle = xlabel(obj.axesHandle, obj.xlabel); %#ok<CPROP>
      end
      if ~isempty(obj.ylabel)
-       obj.ylabelHandle = ylabel(obj.ylabel); %#ok<CPROP>
+       obj.ylabelHandle = ylabel(obj.axesHandle, obj.ylabel); %#ok<CPROP>
      end
     end
     

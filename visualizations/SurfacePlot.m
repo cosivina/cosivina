@@ -13,8 +13,8 @@
 %   each plot) listing the component names that should be plotted for the
 %   specified elements; one pair of entries from plotElements and
 %   plotComponents fully specifies the source data for one plot
-% zLim - range of the plot’s axes in the z-dimension
-% plotType - either ’mesh’ or ’surface’ (default)
+% zLim - range of the plot's axes in the z-dimension
+% plotType - either 'mesh' or 'surface' (default)
 % axesProperties - cell array containing a list of valid axes settings
 %   (as property/value pairs) that can be applied to the axes handle via
 %   the set function (optional, see Matlab documentation on axes for 
@@ -29,7 +29,7 @@
 % zlabel - string specifying a y-axis label (optional)
 % position - position of the control in the GUI figure window in relative
 %   coordinates (optional, is overwritten when specifying a grid position
-%   in the GUI’s addVisualization function)
+%   in the GUI's addVisualization function)
 %
 % Example:
 % h = SurfacePlot('field u', 'activation', [-10, 10], {}, {}, ...
@@ -133,16 +133,16 @@ classdef SurfacePlot < Visualization
       colormap(jet(256));
       
       if ~isempty(obj.title)
-        obj.titleHandle = title(obj.title); %#ok<CPROP>
+        obj.titleHandle = title(obj.axesHandle, obj.title); %#ok<CPROP>
       end
       if ~isempty(obj.xlabel)
-        obj.xlabelHandle = xlabel(obj.xlabel); %#ok<CPROP>
+        obj.xlabelHandle = xlabel(obj.axesHandle, obj.xlabel); %#ok<CPROP>
       end
       if ~isempty(obj.ylabel)
-        obj.ylabelHandle = ylabel(obj.ylabel); %#ok<CPROP>
+        obj.ylabelHandle = ylabel(obj.axesHandle, obj.ylabel); %#ok<CPROP>
       end
       if ~isempty(obj.zlabel)
-        obj.zlabelHandle = zlabel(obj.zlabel); %#ok<CPROP>
+        obj.zlabelHandle = zlabel(obj.axesHandle, obj.zlabel); %#ok<CPROP>
       end
       
     end

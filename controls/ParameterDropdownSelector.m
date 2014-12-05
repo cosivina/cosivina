@@ -36,7 +36,7 @@
 %   (optional)
 % position - position of the control in the GUI figure window in relative
 %   coordinates (optional, is overwritten when specifying a grid position
-%   in the GUI’s addControl function)
+%   in the GUI's addControl function)
 %
 % Examples:
 % h = ParameterDropdownSelector('p_sA', 'stimulus A', 'position', ...

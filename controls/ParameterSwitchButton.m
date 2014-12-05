@@ -25,7 +25,7 @@
 %   not pressed state on initialization of the GUI (default is false)
 % position - position of the control in the GUI figure window in relative
 %   coordinates (optional, is overwritten when specifying a grid position
-%   in the GUI’s addControl function)
+%   in the GUI's addControl function)
 %
 % Example:
 % h = ParameterSwitchButton('stimuli on', {'stimulus A', 'stimulus B'}, ...
