@@ -9,9 +9,10 @@
 %   sigmaY, sigmaX - vertical and horizontal width parameter of Gaussian
 %     kernel
 %   amplitude - amplitude of kernel
-%   circularY, circularX - flags indicating whether convolution is circular
+%   circularY, circularX - flags indicating whether convolution is
+%     circular; default is true
 %   normalized - flag indicating whether kernel is normalized before
-%     scaling with amplitude
+%     scaling with amplitude; default is true
 %   cutoffFactor - multiple of sigma at which the kernel is cut off
 
 

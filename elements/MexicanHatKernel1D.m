@@ -10,9 +10,10 @@
 %   amplitudeExc - amplitude of excitatory Gaussian
 %   sigmaInh - width parameter of inhibitory Gaussian
 %   amplitudeInh - amplitude of inhibitory Gaussian
-%   circular - flag indicating whether convolution is circular
+%   circular - flag indicating whether convolution is circular; default is
+%     true
 %   normalized - flag indicating whether kernel components are normalized
-%     before scaling with amplitudes
+%     before scaling with amplitudes; default is true
 %   cutoffFactor - multiple of larger sigma at which the kernel is cut off
 
 

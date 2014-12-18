@@ -7,9 +7,10 @@
 %   size - size of input and output of the convolution
 %   sigma - width parameter of Gaussian kernel
 %   amplitude - amplitude of kernel
-%   circular - flag indicating whether convolution is circular
+%   circular - flag indicating whether convolution is circular; default is
+%     true
 %   normalized - flag indicating whether kernel is normalized before
-%     scaling with amplitude
+%     scaling with amplitude; default is true
 %   cutoffFactor - multiple of sigma at which the kernel is cut off
 
 

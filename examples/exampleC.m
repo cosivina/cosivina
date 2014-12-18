@@ -1,4 +1,4 @@
-% Example C: Using a GUI in offline mode
+% Example C: Using a GUI for visualization only
 % (see the documentation for detailed explanation of the script)
 
 % create object sim by constructor call
@@ -28,9 +28,9 @@ sim.addElement(NormalNoise('noise', fieldSize, 0.5), [], [], 'field u');
 
 
 % create the gui object
-gui = StandardGUI(sim, [50, 50, 700, 500], 0.05, ...
-  [0.0, 1/4, 1.0, 3/4], [1, 1], 0.1, ...
-  [0.0, 0.0, 1.0, 1/4], [3, 3]);
+gui = StandardGUI(sim, [50, 50, 700, 400], 0.05, ...
+  [0.0, 0.1, 1.0, 0.9], [1, 1], 0.1, ...
+  [0.0, 0.0, 1.0, 0.1], [1, 3]);
 
 
 % add a plot of field u (with activation, output, and inputs)
@@ -46,40 +46,23 @@ gui.addVisualization(MultiPlot({'field u', 'field u', 'stim A', 'stim B'}, ...
 gui.addVisualization(TimeDisplay(), [1, 3], [1, 1], 'control');
 
 
-% add basic control elements that can be used in offline mode
-gui.addControl(GlobalControlButton('Pause', gui, 'pauseSimulation', true, false, false, 'pause simulation'), [2, 3]);
-gui.addControl(GlobalControlButton('Quit', gui, 'quitSimulation', true, false, false, 'quit simulation'), [3, 3]);
-
-
 % initialize simulator and GUI
 sim.init();
 gui.init();
 
-
 % run and visualize simulation manually step by step
 while sim.t < tMax
-  if ~gui.pauseSimulation
-    sim.step();
-  end
-  if gui.quitSimulation
-    gui.close();
-    break;
-  end
-  
-  gui.checkAndUpdateControls();
+  sim.step();
   gui.updateVisualizations();
   pause(0.05);
+  
+  act = sim.getComponent('field u', 'activation');
+  if any(act > 5)
+    [nPeaks, peakPositions] = singleLinkageClustering(act > 0, 3, 'circular');
+    break;
+  end
 end
 
 
-% % run the full simulation repeatedly and show each result
-% nTrials = 5;
-% disp('Press a key to show next trial...');
-% for i = 1 : nTrials
-%   sim.run(tMax, true);
-%   gui.updateVisualizations();
-%   pause;
-% end
-% gui.close();
 
 

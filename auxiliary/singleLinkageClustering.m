@@ -1,14 +1,23 @@
+% singleLinkageClustering   Performs a single linkage clustering operation on
+%   a binary input and yields the number of clusters, their centers of
+%   mass, and their sizes.
+% 
+% Function call:
+% [nClusters, clusterCenters, clusterSizes] =
+%   singleLinkageClustering(binaryMap, maxDistance, borderCondition,
+%   distanceNorm)
+% 
 % Inputs:
 % binaryMap: a vector or 2d matrix on which the clustering is performed,
 %   containing only 1s and 0s
 % maxDistance: maximal distance between two points to be linked into a
 %   cluster; a maxDistance of 1 means that points have to be direct
 %   neighbors to be linked
+% borderCondition: 'linear' or 'circular'; circular condition allows
+%   clusters to extend across the borders of the map
 % distanceNorm: the norm used to compute the distance between two points,
-%   either L1 (Manhattan distance) or L2 (Euclidian distance); for 1d
-%   binary map, both yield the same result; for 2d, L1 is slightly faster
-% borderCondition: LINEAR or CIRCULAR; circular condition allows clusters
-%   to extend across the borders of the map, but is slower for 2d
+%   either 'L1' (Manhattan distance) or 'L2' (Euclidian distance); for 1d
+%   binaryMap, both yield the same result
 % 
 % Outputs:
 % nClusters: number of clusters found
@@ -17,7 +26,8 @@
 % clusterSizes: an n x 1 vector of cluster sizes (number of points
 %   belonging to a cluster)
 
-function [nClusters, clusterCenters, clusterSizes] = singleLinkageClustering(binaryMap, maxDistance, borderCondition, distanceNorm)
+function [nClusters, clusterCenters, clusterSizes] = singleLinkageClustering(binaryMap, ...
+  maxDistance, borderCondition, distanceNorm)
 
 if nargin < 3
   borderCondition = 'linear';

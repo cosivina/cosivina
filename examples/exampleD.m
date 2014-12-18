@@ -1,69 +1,86 @@
-% Example D: Building an Architecture with Two-Dimensional Fields
+% Example C: Using a GUI in offline mode
 % (see the documentation for detailed explanation of the script)
 
+% create object sim by constructor call
 sim = Simulator();
 
 % add elements
-% two-dimensional field u
-sim.addElement(NeuralField('field u', [100, 150], 10, -5, 4));
-
-% Gaussian stimuli for 2D field
-sim.addElement(GaussStimulus2D('stim u1', [100, 150], 5, 5, 8, 30, 50), ...
-  [], [], 'field u');
-sim.addElement(GaussStimulus2D('stim u2', [100, 150], 5, 5, 8, 70, 100), ...
-  [], [], 'field u');
-
-% local lateral interactions in 2D field u
-sim.addElement(GaussKernel2D('u -> u (exc)', [100, 150], 5, 5, 20), ...
+sim.addElement(NeuralField('field u', 100, 10, -5, 4));
+sim.addElement(LateralInteractions1D('u -> u', 100, 4, 15, 10, 15, 0), ...
   'field u', 'output', 'field u', 'output');
-sim.addElement(GaussKernel2D('u -> u (inh)', [100, 150], 10, 10, -20), ...
-  'field u', 'output', 'field u', 'output');
-
-% output sum for global interactions and projections to 1D field
-sim.addElement(SumDimension('sum u (vert)', 1, [1, 150], 1.0), ...
-  'field u', 'output');
-sim.addElement(SumDimension('u -> u (global)', 2, [1, 1], -0.05), ...
-  'sum u (vert)', 'output', 'field u', 'output');
-
-% one-dimensional field w
-sim.addElement(NeuralField('field w', [1, 150], 10, -5, 4));
-
-% lateral interactions for one-dimensional field
-sim.addElement(LateralInteractions1D('w -> w', [1, 150], 5, 15, 12.5, 15, 0, true), ...
-  'field w', 'output', 'field w', 'output');
-
-% Gaussian stimulus for field w
-sim.addElement(GaussStimulus1D('stim w1', [1, 150], 5, 3, 50, true), ...
-  [], [], 'field w', 'output');
-
-% projection from u to w, using element 'sum u (vert)'
-sim.addElement(GaussKernel1D('u -> w', [1, 150], 5, 0.5), ...
-  'sum u (vert)', 'output', 'field w', 'output');
-
-% projection from w to u (first convolution, then expansion)
-sim.addElement(GaussKernel1D('w -> u', [1, 150], 5, 5), ...
-  'field w', 'output');
-sim.addElement(ExpandDimension2D('expand w -> u', 1, [100, 150]), ...
-  'w -> u', 'output', 'field u', 'output');
+sim.addElement(GaussStimulus1D('stim A', 100, 5, 6, 25), ...
+  [], [], 'field u');
+sim.addElement(GaussStimulus1D('stim B', 100, 5, 8, 75), ...
+  [], [], 'field u');
 
 
-sim.run(50);
-
-figure('Name', 'After 50 steps')
-axes('Position', [0.1, 0.4, 0.8, 0.5]);
-imagesc(sim.getComponent('field u', 'activation'), [-7.5, 7.5])
-axes('Position', [0.1, 0.1, 0.8, 0.2], 'YGrid', 'on', 'XLim', [0, 150], 'YLim', [-10, 10], 'nextPlot', 'add');
-plot(sim.getComponent('field w', 'activation'));
+% create the gui object
+gui = StandardGUI(sim, [50, 50, 700, 500], 0.05, ...
+  [0.0, 1/3, 1.0, 2/3], [1, 1], 0.1, ...
+  [0.0, 0.0, 1.0, 1/3], [6, 3]);
 
 
-sim.run(100);
+% add a plot of field u (with activation, output, and inputs)
+gui.addVisualization(MultiPlot({'field u', 'field u', 'stim A', 'stim B'}, ...
+  {'activation', 'output', 'output', 'output'}, [1, 10, 1, 1], 'horizontal', ...
+  {'YLim', [-10, 10], 'Box', 'on'}, ...
+  {{'b', 'LineWidth', 2}, {'r'}, {'g'}, {'g'}}, ...
+  'field u', 'field position', 'activation/ouput/input'), ...
+  [1, 1]);
 
-figure('Name', 'After 100 steps')
-axes('Position', [0.1, 0.4, 0.8, 0.5]);
-imagesc(sim.getComponent('field u', 'activation'), [-7.5, 7.5])
-axes('Position', [0.1, 0.1, 0.8, 0.2], 'YGrid', 'on', 'XLim', [0, 150], 'YLim', [-10, 10], 'nextPlot', 'add');
-plot(sim.getComponent('field w', 'activation'));
+
+% creating graphical control elements
+
+% resting level of field u
+gui.addControl(ParameterSlider('h', 'field u', 'h', [-10, 0],...
+  '%0.1f', 1, 'resting level of field u'), [1, 1]);
+
+% interaction strengths
+gui.addControl(ParameterSlider('c_exc', 'u -> u', 'amplitudeExc', [0, 40], '%0.1f', 1, ...
+  'strength of lateral excitation'), [2, 1]);
+gui.addControl(ParameterSlider('c_inh', 'u -> u', 'amplitudeInh', [0, 40], '%0.1f', 1, ...
+  'strength of lateral inhibition'), [2, 2]);
+gui.addControl(ParameterSlider('c_gi', 'u -> u', 'amplitudeGlobal', [0, 1], '%0.1f', -1, ...
+  'strength of global inhibition'), [3, 1]);
+
+% stimulus settings
+gui.addControl(ParameterSlider('p_s1', 'stim A', 'position', [0, 100], '%0.1f', 1, ...
+  'position of stimulus 1'), [4, 1]);
+gui.addControl(ParameterSlider('c_s1', 'stim A', 'amplitude', [0, 20], '%0.1f', 1, ...
+  'stength of stimulus 1'), [4, 2]);
+
+gui.addControl(ParameterSlider('p_s2', 'stim B', 'position', [0, 100], '%0.1f', 1, ...
+  'position of stimulus 2'), [5, 1]);
+gui.addControl(ParameterSlider('c_s2', 'stim B', 'amplitude', [0, 20], '%0.1f', 1, ...
+  'stength of stimulus 2'), [5, 2]);
+
+% buttons to control the GUI
+gui.addControl(GlobalControlButton('Pause', gui, 'pauseSimulation', true, false, false, 'pause simulation'), [1, 3]);
+gui.addControl(GlobalControlButton('Reset', gui, 'resetSimulation', true, false, true, 'reset simulation'), [2, 3]);
+gui.addControl(GlobalControlButton('Parameters', gui, 'paramPanelRequest', true, false, false, 'open parameter panel'), [3, 3]);
+gui.addControl(GlobalControlButton('Save', gui, 'saveParameters', true, false, true, 'save parameter settings'), [4, 3]);
+gui.addControl(GlobalControlButton('Load', gui, 'loadParameters', true, false, true, 'load parameter settings'), [5, 3]);
+gui.addControl(GlobalControlButton('Quit', gui, 'quitSimulation', true, false, false, 'quit simulation'), [6, 3]);
 
 
+% maximal simulation time
+tMax = inf;
+
+% initialize simulator and GUI
+sim.init();
+gui.init();
+
+% run and visualize simulation manually step by step
+while ~gui.quitSimulation && sim.t < tMax
+  gui.step();
+  
+  if any(sim.getComponent('field u', 'activation') > 5)
+    sim.setElementParameters('stim A', 'amplitude', 0);
+    sim.setElementParameters('stim B', 'amplitude', 0);
+    gui.checkAndUpdateControls();
+  end
+end
+
+gui.close();
 
 
