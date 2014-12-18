@@ -5,15 +5,17 @@
 %
 % Constructor call:
 % StandardGUI(simulatorHandle, figurePosition, pauseDuration, ...
-%   visGridPosition, visGridSize, visGridPadding, 
-%   controlGridPosition, controlGridSize, elementGroups, elementsInGroups)
+%   visGridPosition, visGridSize, visGridPadding, ...
+%   controlGridPosition, controlGridSize, elementGroups, ...
+%   elementsInGroups, figureTitle)
+%   
 % Arguments (all optional except for the first two):
 %   simulatorHandle - handle to the simulator object which should be run in
 %     the GUI (maybe 0, then simulator has to be connected at a later time)
 %   figurePosition - screen position and size of the GUI main window in the
 %     form [posX, posY, width, height]
 %   pauseDuration - duration of pause for every simulation step (default =
-%     0.1, should be set lower for computationally costly simulations)
+%     0.1, should be set to zero for computationally costly simulations)
 %   visGridPosition - position of the visualizations grid in the GUI window
 %     in the format [posX, posY, width, height], in normalized coordinates
 %     (relative to figure size)
@@ -31,6 +33,8 @@
 %     panel dropdown menu; each list item may access a single element or a
 %     group of elements of the same type that share parameters; given as
 %     cell array of strings or cell array of cell arrays of strings
+%   figureTitle - character string that is displayed in the GUI window's
+%     title bar
 %
 % Methods to design the GUI:
 % addVisualization(visualization, positionInGrid, sizeInGrid,
@@ -62,6 +66,10 @@
 % Methods to use the GUI in offline mode:
 % init() - initializes the GUI, creating the main figure window with
 %   visualizations and controls
+% step() - performs a single simulation step in the simulator object,
+%   updates all visualizations, checks the controls and applies changes,
+%   checks control flags (for actions like pause, save, and quit) and
+%   performs the associated actions
 % updateVisualizations() - update all visualizations to reflect current
 %   state of the connected simulator object
 % checkAndUpdateControls - check all controls for changes and apply these,
@@ -104,7 +112,7 @@ classdef StandardGUI < handle
     
     % these flags can be set via GUI controls (like buttons)
     pauseSimulation = false; % should remain true as long as simulator should remain paused
-    quitSimulation = false; % set to true once, is automatically reset after quit (to allow restart) 
+    quitSimulation = false; % set to true once, is automatically reset at initialization
     resetSimulation = false; % set to true once, is automatically reset after simulator is re-initialized
     saveParameters = false; % set to true once, is automatically reset after parameters are saved
     loadParameters = false; % set to true once, is automatically reset after parameters are loaded
@@ -147,10 +155,7 @@ classdef StandardGUI < handle
         obj.figureTitle = figureTitle;
       end
       
-      
       obj.paramPanelHandle = ParameterPanel(simulatorHandle, elementGroups, elementsInGroups, obj.figurePosition);
-      
-      
     end
     
     
@@ -245,74 +250,7 @@ classdef StandardGUI < handle
           break;
         end
         
-        % checking for changes in controls and param panel
-        updateControls = false;
-        if obj.paramPanelActive
-          updateControls = check(obj.paramPanelHandle);
-        end
-        for i = 1 : obj.nControls
-          updateControls = check(obj.controls{i}) || updateControls;
-        end
-        
-        
-        % opening and closing param panel
-        if obj.paramPanelActive && ~obj.paramPanelHandle.panelOpen % panel figure was closed manually
-          obj.paramPanelActive = false;
-          obj.paramPanelRequest = false;
-        end
-        if obj.paramPanelRequest && ~obj.paramPanelActive
-          open(obj.paramPanelHandle);
-          obj.paramPanelActive = true;
-        elseif ~obj.paramPanelRequest && obj.paramPanelActive
-          close(obj.paramPanelHandle);
-          obj.paramPanelActive = false;
-        end
-        
-        % reset
-        if obj.resetSimulation
-          obj.simulatorHandle.init();
-          obj.resetSimulation = false;
-        end
-        
-        % save
-        if obj.saveParameters
-          saveParametersToFile(obj);
-          obj.saveParameters = false;
-        end
-        
-        % load
-        if obj.loadParameters
-          if loadParametersFromFile(obj);
-            init(obj.simulatorHandle);
-            updateControls = true;
-          end
-          obj.loadParameters = false;
-        end
-          
-        % the actual simulation step
-        if ~obj.pauseSimulation
-          step(obj.simulatorHandle);
-        end
-        
-        % updating visualizations, controls and panel
-        for i = 1 : obj.nVisualizations
-          update(obj.visualizations{i});
-        end
-        if updateControls
-          if obj.paramPanelActive
-            update(obj.paramPanelHandle);
-          end
-          for i = 1 : obj.nControls
-            update(obj.controls{i});
-          end
-        end
-        
-        drawnow;
-        if obj.pauseSimulation
-          pause(obj.pauseDurationWhilePaused);
-        else
-          pause(obj.pauseDuration);
-        end
+        obj.step();
       end
       
       % close everything
@@ -323,15 +261,99 @@ classdef StandardGUI < handle
     end
     
     
-    % update all visualizations (for operation of the GUI from code)
-    function obj = updateVisualizations(obj)
+    % perform a single step in the GUI (perform simulation step, update
+    % visualizations and controls, check flags for pause, save, quit etc.)
+    function obj = step(obj)
       if ~obj.connected || ~obj.simulatorHandle.initialized
-        error('StandardGUI:updateVisualizations:noValidSim', ...
-          'Cannot update visualizations when GUI is not connected to an initialized simulator object.');
+        error('StandardGUI:step:notInitialized', ...
+          'Cannot perform GUI step when GUI is not open or not connected to an initialized simulator object.');
       end
       
-      if isempty(obj.figureHandle) || ~ishandle(obj.figureHandle)
-        init(obj);
+      if ~ishghandle(obj.figureHandle)
+        obj.quitSimulation = true;
+        return;
+      end
+      
+      % checking for changes in controls and param panel
+      updateControls = false;
+      if obj.paramPanelActive
+        updateControls = check(obj.paramPanelHandle);
+      end
+      for i = 1 : obj.nControls
+        updateControls = check(obj.controls{i}) || updateControls;
+      end
+      
+      % opening and closing param panel
+      if obj.paramPanelActive && ~obj.paramPanelHandle.panelOpen % panel figure was closed manually
+        obj.paramPanelActive = false;
+        obj.paramPanelRequest = false;
+      end
+      if obj.paramPanelRequest && ~obj.paramPanelActive
+        open(obj.paramPanelHandle);
+        obj.paramPanelActive = true;
+      elseif ~obj.paramPanelRequest && obj.paramPanelActive
+        close(obj.paramPanelHandle);
+        obj.paramPanelActive = false;
+      end
+      
+      % reset
+      if obj.resetSimulation
+        obj.simulatorHandle.init();
+        obj.resetSimulation = false;
+      end
+      
+      % save
+      if obj.saveParameters
+        saveParametersToFile(obj);
+        obj.saveParameters = false;
+      end
+      
+      % load
+      if obj.loadParameters
+        if loadParametersFromFile(obj);
+          init(obj.simulatorHandle);
+          updateControls = true;
+        end
+        obj.loadParameters = false;
+      end
+      
+      % the actual simulation step
+      if ~obj.pauseSimulation
+        step(obj.simulatorHandle);
+      end
+      
+      % updating visualizations, controls and panel
+      for i = 1 : obj.nVisualizations
+        update(obj.visualizations{i});
+      end
+      if updateControls
+        if obj.paramPanelActive
+          update(obj.paramPanelHandle);
+        end
+        for i = 1 : obj.nControls
+          update(obj.controls{i});
+        end
+      end
+      
+      drawnow;
+      if obj.pauseSimulation
+        pause(obj.pauseDurationWhilePaused);
+      else
+        pause(obj.pauseDuration);
+      end
+      
+      % close GUI on quit
+      if obj.quitSimulation
+        close(obj);
+      end
+    end
+    
+    
+    % update all visualizations (for operation of the GUI from code)
+    function obj = updateVisualizations(obj)
+      if ~obj.connected || ~obj.simulatorHandle.initialized || ~ishghandle(obj.figureHandle)
+        error('StandardGUI:updateVisualizations:notInitialized', ...
+          'Cannot update visualizations when GUI is not open or not connected to an initialized simulator object.');
       end
       
       for i = 1 : obj.nVisualizations
@@ -345,8 +367,8 @@ classdef StandardGUI < handle
     % check all controls, then update them (for operation of the GUI from
     % code)
     function obj = checkAndUpdateControls(obj)
-      if ~obj.connected || ~obj.simulatorHandle.initialized || ~ishandle(obj.figureHandle)
-        error('StandardGUI:updateVisualizations:noValidSim', ...
+      if ~obj.connected || ~obj.simulatorHandle.initialized || ~ishghandle(obj.figureHandle)
+        error('StandardGUI:updateVisualizations:notInitialized', ...
           'Cannot check controls when GUI is not open or not connected to initialized simulator object.');
       end
       
