@@ -3,11 +3,11 @@ COSIVINA - Compose, Simulate, and Visualize Neurodynamic Architectures
 An open source toolbox for MATLAB
 --------------------------------------------------------------------------------
 
-Version 1.2 (released 2013-05-28)
+Version 1.2
 Written by Sebastian Schneegans at the Institut für Neuroinformatik,
-Ruhr-Universität Bochum, Germany.
+Ruhr-Universität Bochum, Germany. Last updated 2014-12-19.
 
-Copyright (c) 2012, 2013 Sebastian Schneegans <Sebastian@Schneegans.de>
+Copyright (c) 2012-2014 Sebastian Schneegans <Sebastian@Schneegans.de>
 Published under the Simplified BSD License (see LICENSE_BSD.txt)
 
 
@@ -34,7 +34,7 @@ toolbox JSONlab (you can use all other functionality of COSIVINA without
 JSONlab, but will only receive a warning message when trying to save or load a 
 parameter file). You can download JSONlab for free e.g. from here:
 http://sourceforge.net/projects/iso2mesh/files/jsonlab/
-COSIVINA has been tested with JSONlab versions 0.9.1 and 0.9.8. (Note: Using 
+COSIVINA has been tested with JSONlab versions 0.9.1 to 1.0. (Note: Using 
 version 0.9.0 or earlier can cause errors when loading parameters for certain
 architecture elements.)
 

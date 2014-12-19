@@ -1,5 +1,24 @@
 CHANGELOG
 
+* added new example file (with updated documentation) that makes use of the new
+  step function of the StandardGUI class; updated example file and documentation
+  for 2D interactions tutorial (now uses LateralInteractions2D)
+* added step function to StandardGUI class to make it easier to include custom 
+  code to simulations that use a GUI
+* adjusted component lists in 2D interaction elements
+* fixed potential problem with title and axes labels in visualizations (would be
+  added to other plots under certain conditions)
+* added display of element type in ParameterPanel
+* cleaned up and standardized examples for use in DFT book exercises
+* new method addConnection in Simulator class (to allow creating a new 
+  projection between existing elements)
+* slightly changed numerics in AttractorDynamics element to make it more 
+  consistent
+* minor changes in ParameterSlider display and MultiPlot constructor (extra
+  check to help in debugging)
+* added close method for GUI control elements
+* changed behavior of ParameterDropdownSelector (now reflects changes made by
+  other controls)
 * fixed bugs in ShiftInput, StandardGUI (method run could not be called with 4
   arguments), and CameraGrabber
 * added new interaction element LateralInteractionsDiscrete for groups of
