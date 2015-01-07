@@ -53,8 +53,6 @@ classdef LateralInteractions2D < Element
     normalized = true;
     cutoffFactor = 5;
     
-    computeHorizontalSum = true;
-    
     % accessible structures
     kernelExcY
     kernelExcX

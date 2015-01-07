@@ -1,6 +1,6 @@
 % ExpandDimension2D (COSIVINA toolbox)
 %   Element that expands a 1D input into a 2D matrix. The input
-%   automatically transposed if necessary.
+%   is automatically transposed if necessary.
 %
 % Constructor call:
 % ExpandDimension2D(label, expandDimension, outputSize)
