@@ -6,7 +6,7 @@
 % TimedGaussStimulus2D(label, size, sigmaY, sigmaX, amplitude, ...
 %     positionY, positionX, onTimes, circularY, circularX, normalized)
 %   label - element label
-%   size - size of input and output of the convolution
+%   size - size of the output matrix
 %   sigmaY, sigmaX - vertical and horizontal width parameter of the Gaussian
 %   amplitude - amplitude of the Gaussian
 %   positionY, positionX - vertical and horizontal center of the Gaussian
@@ -109,10 +109,10 @@ classdef TimedGaussStimulus2D < Element
     function obj = init(obj)
       obj.stimulusPattern = circularGauss2d(1:obj.size(1), 1:obj.size(2), obj.positionY, obj.positionX, ...
         obj.sigmaY, obj.sigmaX, [], obj.circularY, obj.circularX);
-      if obj.normalized && sum(obj.output) > 0
-        obj.stimulusPattern = obj.amplitude * obj.stimulusPatttern / sum(obj.output);
+      if obj.normalized && any(any(obj.output)) > 0
+        obj.stimulusPattern = (obj.amplitude / sum(sum(obj.output))) * obj.stimulusPatttern;
       else
-        obj.output = obj.amplitude * obj.stimulusPattern;
+        obj.stimulusPattern = obj.amplitude * obj.stimulusPattern;
       end
       obj.output = zeros(obj.size);
       obj.on = false;

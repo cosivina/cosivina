@@ -1,5 +1,6 @@
 % GaussKernel2D (COSIVINA toolbox)
-%   Connective element that performs a 2D convolution with a Gaussian kernel.
+%   Connective element that performs a 2D convolution with a Gaussian
+%   kernel.
 %
 % Constructor call:
 % GaussKernel2D(label, size, sigmaY, sigmaX, amplitude, circularY, ...
@@ -10,10 +11,11 @@
 %     kernel
 %   amplitude - amplitude of kernel
 %   circularY, circularX - flags indicating whether convolution is
-%     circular; default is true
+%     circular along each dimension (default is true)
 %   normalized - flag indicating whether kernel is normalized before
-%     scaling with amplitude; default is true
+%     scaling with amplitude (default is true)
 %   cutoffFactor - multiple of sigma at which the kernel is cut off
+%     (default value is 5)
 
 
 classdef GaussKernel2D < Element

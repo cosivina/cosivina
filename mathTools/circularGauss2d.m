@@ -3,7 +3,7 @@ function G = circularGauss2d(range_y, range_x, mu_y, mu_x, sigma_y, sigma_x, mod
 if nargin < 7 || isempty(mode)
   mode = 'min';
 elseif ~strcmp(mode, 'min') && ~strcmp(mode, 'sum')
-  error('Bad parameter value for mode (must be either min or sum)');
+  error('Bad parameter value for argument MODE (must be either ''min'' or ''sum'').');
 end
 if nargin < 9
   circular_y = true;

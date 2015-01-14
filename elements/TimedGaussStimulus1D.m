@@ -102,8 +102,8 @@ classdef TimedGaussStimulus1D < Element
       else
         obj.stimulusPattern = gauss(1 : obj.size(2), obj.position, obj.sigma);
       end
-      if obj.normalized && sum(obj.output) > 0
-        obj.stimulusPattern = obj.amplitude * obj.stimulusPattern / sum(obj.output);
+      if obj.normalized && any(obj.output) > 0
+        obj.stimulusPattern = (obj.amplitude / sum(obj.output)) * obj.stimulusPattern;
       else
         obj.stimulusPattern = obj.amplitude * obj.stimulusPattern;
       end

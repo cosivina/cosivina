@@ -15,9 +15,11 @@
 %     inhibitory Gaussian component
 %   amplitudeInh - amplitude of inhibitory Gaussian component
 %   circularY, circularX - flags indicating whether convolution is circular
+%     (default is true)
 %   normalized - flag indicating whether Gaussian components are normalized
-%     before scaling with amplitude
+%     before scaling with amplitude (default is true)
 %   cutoffFactor - multiple of sigma at which each kernel is cut off
+%     (default value is 5)
 
 
 classdef MexicanHatKernel2D < Element

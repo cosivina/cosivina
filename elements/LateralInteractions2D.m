@@ -18,10 +18,14 @@
 %   sigmaInhY, sigmaInhX - vertical and horizontal width parameter of 
 %     inhibitory Gaussian component
 %   amplitudeInh - amplitude of inhibitory Gaussian component
+%   amplitudeGlobal - amplitude of global component (set to negative value
+%     to create global inhibition)
 %   circularY, circularX - flags indicating whether convolution is circular
+%     (default is true)
 %   normalized - flag indicating whether Gaussian components are normalized
-%     before scaling with amplitude
+%     before scaling with amplitude (default is true)
 %   cutoffFactor - multiple of sigma at which each kernel is cut off
+%     (default value is 5)
 
 
 classdef LateralInteractions2D < Element
