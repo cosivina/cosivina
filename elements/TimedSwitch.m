@@ -14,7 +14,8 @@
 classdef TimedSwitch < Element
   
   properties (Constant)
-    parameters = struct('size', ParameterStatus.Fixed, 'onTimes', ParameterStatus.Fixed);
+    parameters = struct('size', ParameterStatus.Fixed, ...
+      'onTimes', bitor(ParameterStatus.Changeable, ParameterStatus.VariableRowsMatrix),);
     components = {'output'};
     defaultOutputComponent = 'output';
   end

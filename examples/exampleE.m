@@ -13,9 +13,13 @@ sim.addElement(GaussStimulus2D('stim u1', [100, 150], 5, 5, 8, 30, 50), ...
 sim.addElement(GaussStimulus2D('stim u2', [100, 150], 5, 5, 8, 70, 100), ...
   [], [], 'field u');
 
-% local lateral interactions in 2D field u
-sim.addElement(LateralInteractions2D('u -> u', [100, 150], 5, 5, 20, 10, 10, 20, -0.05), ...
+% lateral interactions in 2D field u
+sim.addElement(KernelFFT('u -> u', [100, 150], [5, 5], 20, [10, 10], 20, -0.05), ...
   'field u', 'output', 'field u', 'output');
+
+% alternative way to implement lateral interactions
+% sim.addElement(LateralInteractions2D('u -> u', [100, 150], 5, 5, 20, 10, 10, 20, -0.05), ...
+%  'field u', 'output', 'field u', 'output');
 
 % one-dimensional field w
 sim.addElement(NeuralField('field w', [1, 150], 10, -5, 4));
@@ -28,9 +32,15 @@ sim.addElement(LateralInteractions1D('w -> w', [1, 150], 5, 15, 12.5, 15, 0, tru
 sim.addElement(GaussStimulus1D('stim w1', [1, 150], 5, 3, 50, true), ...
   [], [], 'field w', 'output');
 
-% projection from u to w, using element 'sum u (vert)'
+% projection from u to w (first summation, then convolution)
+sim.addElement(SumDimension('sum u', 1, [1, 150]), ...
+  'field u', 'output');
 sim.addElement(GaussKernel1D('u -> w', [1, 150], 5, 0.5), ...
-  'u -> u', 'verticalSum', 'field w', 'output');
+  'sum u', 'output', 'field w', 'output');
+
+% alternatively, when using LateralInteractions2D above, we don't need extra summation
+% sim.addElement(GaussKernel1D('u -> w', [1, 150], 5, 0.5), ...
+%   'u -> u', 'verticalSum', 'field w', 'output');
 
 % projection from w to u (first convolution, then expansion)
 sim.addElement(GaussKernel1D('w -> u', [1, 150], 5, 5), ...

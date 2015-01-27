@@ -97,7 +97,7 @@ classdef ParameterSlider < Control
       if ~iscellstr(obj.elementLabels) || ~iscellstr(obj.parameterNames) ...
           || numel(obj.elementLabels) ~= numel(obj.parameterNames)
         error('ParameterSlider:ParameterSlider:invalidArguments', ...
-          'Arguments elementLabels and parameter names must be strings or cell arrays of strings with equal number of elements');
+          'Arguments elementLabels and parameterNames must be strings or cell arrays of strings with equal number of elements');
       end
       
       obj.nParameters = length(obj.parameterNames);
@@ -117,9 +117,10 @@ classdef ParameterSlider < Control
           error('ParameterSlider:connect:invalidParameter', ...
             'No element ''%s'' with parameter ''%s'' in simulator object', obj.elementLabels{i}, obj.parameterNames{i});
         end
-        if tmpElementHandle.getParamChangeStatus(obj.parameterNames{i}) == ParameterStatus.Fixed
+        status = tmpElementHandle.getParamChangeStatus(obj.parameterNames{i});
+        if ~ParameterStatus.isChangeable(status) || ParameterStatus.isMatrix(status)
           error('ParameterSlider:connect:parameterFixed', ...
-            'Parameter ''%s'' in element ''%s'' has change status ''Fixed'' and cannot be changed by a GUI control', ...
+            'Parameter ''%s'' in element ''%s'' is not a changeable scalar parameter and cannot be controlled by a slider.', ...
             obj.parameterNames{i}, obj.elementLabels{i});
         end
       end

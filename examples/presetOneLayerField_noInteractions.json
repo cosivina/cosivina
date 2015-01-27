@@ -2,23 +2,17 @@
 	"simulator": {
 		"deltaT": 1,
 		"tZero": 0,
-		"nElements": 15,
+		"nElements": 9,
 		"elementLabels": [
-				"stimulus 1",
-				"stimulus 2",
-				"stimulus 3",
-				"stimulus sum",
-				"field u",
-				"field v",
-				"shifted stimulus sum",
-				"u -> u",
-				"u -> v",
-				"v -> u (local)",
-				"v -> u (global)",
-				"noise u",
-				"noise kernel u",
-				"noise v",
-				"noise kernel v"
+			"stimulus 1",
+			"stimulus 2",
+			"stimulus 3",
+			"stimulus sum",
+			"field u",
+			"shifted stimulus sum",
+			"u -> u",
+			"noise",
+			"noise kernel"
 		],
 		"elements": [
 			{
@@ -33,7 +27,11 @@
 					"normalized": 0
 				},
 				"nInputs": 0,
-				"input": null
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
 			},
 			{
 				"label": "stimulus 2",
@@ -47,7 +45,11 @@
 					"normalized": 0
 				},
 				"nInputs": 0,
-				"input": null
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
 			},
 			{
 				"label": "stimulus 3",
@@ -61,7 +63,11 @@
 					"normalized": 0
 				},
 				"nInputs": 0,
-				"input": null
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
 			},
 			{
 				"label": "stimulus sum",
@@ -94,7 +100,7 @@
 					"h": -5,
 					"beta": 4
 				},
-				"nInputs": 5,
+				"nInputs": 3,
 				"input": [
 					{
 						"label": "stimulus sum",
@@ -105,36 +111,7 @@
 						"component": "output"
 					},
 					{
-						"label": "v -> u (local)",
-						"component": "output"
-					},
-					{
-						"label": "v -> u (global)",
-						"component": "output"
-					},
-					{
-						"label": "noise kernel u",
-						"component": "output"
-					}
-				]
-			},
-			{
-				"label": "field v",
-				"class": "NeuralField",
-				"param": {
-					"size": [1,100],
-					"tau": 5,
-					"h": -5,
-					"beta": 4
-				},
-				"nInputs": 2,
-				"input": [
-					{
-						"label": "u -> v",
-						"component": "output"
-					},
-					{
-						"label": "noise kernel v",
+						"label": "noise kernel",
 						"component": "output"
 					}
 				]
@@ -159,11 +136,14 @@
 			},
 			{
 				"label": "u -> u",
-				"class": "GaussKernel1D",
+				"class": "LateralInteractions1D",
 				"param": {
 					"size": [1,100],
-					"sigma": 5,
-					"amplitude": 0,
+					"sigmaExc": 5,
+					"amplitudeExc": 0,
+					"sigmaInh": 10,
+					"amplitudeInh": 0,
+					"amplitudeGlobal": 0,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -175,65 +155,21 @@
 				}
 			},
 			{
-				"label": "u -> v",
-				"class": "GaussKernel1D",
-				"param": {
-					"size": [1,100],
-					"sigma": 5,
-					"amplitude": 0,
-					"circular": 1,
-					"normalized": 1,
-					"cutoffFactor": 5
-				},
-				"nInputs": 1,
-				"input": {
-					"label": "field u",
-					"component": "output"
-				}
-			},
-			{
-				"label": "v -> u (local)",
-				"class": "GaussKernel1D",
-				"param": {
-					"size": [1,100],
-					"sigma": 10,
-					"amplitude": 0,
-					"circular": 1,
-					"normalized": 1,
-					"cutoffFactor": 5
-				},
-				"nInputs": 1,
-				"input": {
-					"label": "field v",
-					"component": "output"
-				}
-			},
-			{
-				"label": "v -> u (global)",
-				"class": "SumDimension",
-				"param": {
-					"sumDimensions": 2,
-					"amplitude": 0,
-					"size": [1,1]
-				},
-				"nInputs": 1,
-				"input": {
-					"label": "field v",
-					"component": "output"
-				}
-			},
-			{
-				"label": "noise u",
+				"label": "noise",
 				"class": "NormalNoise",
 				"param": {
 					"size": [1,100],
 					"amplitude": 1
 				},
 				"nInputs": 0,
-				"input": null
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
 			},
 			{
-				"label": "noise kernel u",
+				"label": "noise kernel",
 				"class": "GaussKernel1D",
 				"param": {
 					"size": [1,100],
@@ -245,34 +181,7 @@
 				},
 				"nInputs": 1,
 				"input": {
-					"label": "noise u",
-					"component": "output"
-				}
-			},
-			{
-				"label": "noise v",
-				"class": "NormalNoise",
-				"param": {
-					"size": [1,100],
-					"amplitude": 1
-				},
-				"nInputs": 0,
-				"input": null
-			},
-			{
-				"label": "noise kernel v",
-				"class": "GaussKernel1D",
-				"param": {
-					"size": [1,100],
-					"sigma": 0,
-					"amplitude": 1,
-					"circular": 1,
-					"normalized": 1,
-					"cutoffFactor": 5
-				},
-				"nInputs": 1,
-				"input": {
-					"label": "noise v",
+					"label": "noise",
 					"component": "output"
 				}
 			}

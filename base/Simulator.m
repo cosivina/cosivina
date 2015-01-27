@@ -52,7 +52,7 @@
 %   must be strings)
 % setElementParameters(elementLabels, parameterNames, newValues) - sets one
 %   or more parameter values of one or more elements, re-initializes and
-%   calls step-function of element if necessary for changes to take effect;
+%   calls step function of element if necessary for changes to take effect;
 %   arguments elementLabels and parameterNames must be strings or cell
 %   arrays of strings, newValues must be variable of appropriate type
 %   for the specified parameter, or cell array of such variables
@@ -197,6 +197,43 @@ classdef Simulator < handle
 
       while obj.t < tMax
         step(obj);
+      end
+      
+      if nargin >= 4 && closeWhenFinished
+        close(obj);
+      end
+    end
+    
+    
+    % step function with time measurement
+    function runTimes = stepWithTimer(obj)
+      obj.t = obj.t + obj.deltaT;
+      
+      % access to properties slow, faster to copy into tmp variables
+      tmpElements = obj.elements;
+      tmpT = obj.t;
+      tmpDeltaT = obj.deltaT;
+      
+      runTimes = zeros(obj.nElements, 1);
+      
+      for i = 1 : obj.nElements
+        tic
+        step(tmpElements{i}, tmpT, tmpDeltaT);
+        runTimes(i) = toc;
+      end
+    end
+    
+    
+    % run the simulation (current t to tMax)
+    function runTimes = runWithTimer(obj, tMax, initialize, closeWhenFinished)
+      if ~obj.initialized || nargin >= 3 && initialize
+        init(obj);
+      end
+      
+      runTimes = zeros(obj.nElements, 1);
+      
+      while obj.t < tMax
+        runTimes = runTimes + stepWithTimer(obj);
       end
       
       if nargin >= 4 && closeWhenFinished
@@ -505,15 +542,15 @@ classdef Simulator < handle
           end
           
           changeStatus = getParamChangeStatus(elementHandle, parameterNamesSorted{i}{j});
-          if changeStatus == ParameterStatus.Fixed
+          if ~ParameterStatus.isChangeable(changeStatus)
             error('Simulation:setElementParameter:fixedParameter', ...
               'Parameter %s for element %s cannot be changed because it has ParameterStatus ''Fixed''.', ...
               parameterNamesSorted{i}{j}, elementLabelsUnique{i});
           end
           
           elementHandle.(parameterNamesSorted{i}{j}) = valuesSorted{i}{j};
-          elementStep = elementStep || changeStatus == ParameterStatus.InitStepRequired;
-          elementInit = elementInit || changeStatus == ParameterStatus.InitRequired;
+          elementInit = elementInit || ParameterStatus.requiresInit(changeStatus);
+          elementStep = elementStep || ParameterStatus.requiresStep(changeStatus);
         end
         
         if obj.initialized

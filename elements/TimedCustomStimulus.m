@@ -17,7 +17,7 @@ classdef TimedCustomStimulus < Element
   
   properties (Constant)
     parameters = struct('size', ParameterStatus.Fixed, 'stimulusPattern', ParameterStatus.Fixed, ...
-      'onTimes', ParameterStatus.Fixed);
+      'onTimes', bitor(ParameterStatus.Changeable, ParameterStatus.VariableRowsMatrix));
     components = {'output'};
     defaultOutputComponent = 'output';
   end

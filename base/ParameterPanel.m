@@ -19,7 +19,6 @@ classdef ParameterPanel < handle
     nElementsInGroups
     elementsInGroups
     refElementHandles
-    % elementHandlesInGroups
     
     simulatorHandle
     
@@ -30,9 +29,9 @@ classdef ParameterPanel < handle
     selectorHandle
     buttonHandle
     classNameHandle
-    nCells
     captionHandles
     editHandles
+    nEditFields
   end
   
   methods
@@ -104,6 +103,8 @@ classdef ParameterPanel < handle
       
       obj.figureHandle = figure('Position', obj.figurePosition, 'MenuBar', 'none', ...
         'NumberTitle', 'off', 'Name', 'Parameters');
+      drawnow;
+      obj.figurePosition = get(obj.figureHandle, 'Position');
       cellHeightRel = obj.cellHeightAbs / obj.figurePosition(4);
       
       obj.selectorHandle = uicontrol('Parent', obj.figureHandle, ...
@@ -115,12 +116,13 @@ classdef ParameterPanel < handle
       obj.classNameHandle = uicontrol('Parent', obj.figureHandle, 'Style', 'text', 'Units', 'norm', ...
         'String', '', 'Position', [0, 1-2*cellHeightRel, 1, cellHeightRel]);
 
-      obj.nCells = 0;
+      obj.nParams = 0;
+      obj.nEditFields = 0;
       obj.captionHandles = [];
-      obj.editHandles = [];
+      obj.editHandles = {};
       
-      obj.updateSelection();
       obj.panelOpen = true;
+      obj.updateSelection();
     end
     
     
@@ -135,44 +137,85 @@ classdef ParameterPanel < handle
     
     % update element selection
     function obj = updateSelection(obj)
-      set(obj.classNameHandle, 'String', class(obj.refElementHandles{obj.currentSelection}));
+      if ~ishandle(obj.figureHandle)
+        return;
+      end
       
+      obj.currentSelection = get(obj.selectorHandle, 'Value');
+      
+      % remove old parameter display
+      delete(obj.captionHandles);
+      for i = 1 : obj.nEditFields
+        delete(obj.editHandles{i});
+      end
+      
+      % update class indicator and sizes of permanent graphics elements
+      cellHeightRel = obj.cellHeightAbs / obj.figurePosition(4);
+      set(obj.selectorHandle, 'Position', [0, 1-cellHeightRel, 1, cellHeightRel]);
+      set(obj.classNameHandle, 'String', class(obj.refElementHandles{obj.currentSelection}), ...
+        'Position', [0, 1-2*cellHeightRel, 1, cellHeightRel]);
+      set(obj.buttonHandle, 'Position', [0, 0, 1, cellHeightRel]);
+      
+      % get parameters of selected element
       obj.parameters = obj.refElementHandles{obj.currentSelection}.getParameterList();
       obj.nParams = numel(obj.parameters);
       
-      cellHeightRel = obj.cellHeightAbs / obj.figurePosition(4);
-      
-      % remove all cells
-      for i = 1 : obj.nCells
-        delete(obj.captionHandles(i));
-        delete(obj.editHandles(i));
-      end
-      
-      obj.captionHandles = ...
-        [obj.captionHandles(1:min(obj.nParams, obj.nCells)); zeros(max(obj.nParams-obj.nCells, 0), 1)];
-      obj.editHandles = [obj.editHandles(1:min(obj.nParams, obj.nCells)); zeros(max(obj.nParams-obj.nCells, 0), 1)];
-      
-      % create new cells
-      for i = 1 : obj.nParams
-        obj.captionHandles(i) = uicontrol('Parent', obj.figureHandle, 'Style', 'text', 'Units', 'norm', ...
-          'String', '', 'Position', [0, 1 - (i+2)*cellHeightRel, 1-obj.editWidthRel, cellHeightRel]);
-        obj.editHandles(i) = uicontrol('Parent', obj.figureHandle, 'Style', 'edit', 'Units', 'norm', ...
-          'String', '', 'Position', [ 1 - obj.editWidthRel, 1 - (i+2)*cellHeightRel, obj.editWidthRel, cellHeightRel]);
-      end
-      
-      obj.nCells = obj.nParams;
+      % create new parameter display
       obj.paramChangeStatus = zeros(1, obj.nParams);
-      
+      obj.captionHandles = zeros(obj.nParams, 1);
+      obj.editHandles = cell(obj.nParams, 1);
+      obj.nEditFields = obj.nParams;
+            
+      vOffset = 1;
       for i = 1 : obj.nParams
+        captionVPos = 1 - (vOffset+2)*cellHeightRel;
+        obj.captionHandles(i) = uicontrol('Parent', obj.figureHandle, 'Style', 'text', 'Units', 'norm', 'String', ...
+          obj.parameters{i}, 'Position', [0, captionVPos, 1-obj.editWidthRel, cellHeightRel]);
+
         obj.paramChangeStatus(i) = ...
           obj.refElementHandles{obj.currentSelection}.getParamChangeStatus(obj.parameters{i});
-        set(obj.captionHandles(i), 'String', obj.parameters{i});
-        if obj.paramChangeStatus(i) == ParameterStatus.Fixed
-          set(obj.editHandles(i), 'Enable', 'off');
+        
+        if ParameterStatus.isMatrix(obj.paramChangeStatus(i)) && ParameterStatus.isChangeable(obj.paramChangeStatus(i))
+          % create matrix of edit fields for matrix parameters
+          sz = size(obj.refElementHandles{obj.currentSelection}.(obj.parameters{i}));
+          nRows = sz(1) + ParameterStatus.rowsVariable(obj.paramChangeStatus(i));
+          nCols = sz(2) + ParameterStatus.columnsVariable(obj.paramChangeStatus(i));
+          
+          obj.editHandles{i} = zeros(nRows, nCols);
+          colWidth = obj.editWidthRel/nCols;
+          for r = 1 : nRows
+            for c = 1 : nCols
+              obj.editHandles{i}(r, c) = uicontrol('Parent', obj.figureHandle, 'Style', 'edit', 'Units', 'norm', ...
+                'String', '', 'Enable', 'on', 'BackgroundColor', 'w', 'Position', ...
+                [1 - obj.editWidthRel + (c-1)*colWidth, 1 - (vOffset+2)*cellHeightRel, colWidth, cellHeightRel]);
+            end
+            vOffset = vOffset + 1;
+          end
         else
-          set(obj.editHandles(i), 'Enable', 'on', 'BackgroundColor', 'w');
+          obj.editHandles{i} = uicontrol('Parent', obj.figureHandle, 'Style', 'edit', 'Units', 'norm', 'String', ...
+            '', 'Position', [ 1 - obj.editWidthRel, 1 - (vOffset+2)*cellHeightRel, obj.editWidthRel, cellHeightRel]);
+          
+          if ParameterStatus.isChangeable(obj.paramChangeStatus(i))
+            set(obj.editHandles{i}, 'Enable', 'on', 'BackgroundColor', 'w');
+          else
+            set(obj.editHandles{i}, 'Enable', 'off');
+          end
+          
+          vOffset = vOffset + 1;
         end
+        
+        if (vOffset+3)*cellHeightRel > 1 % not enough space to show all parameters
+          set(obj.captionHandles(i), 'String', 'some parameters not shown', ...
+            'Position', [0, captionVPos, 1, cellHeightRel]);
+          obj.captionHandles = obj.captionHandles(1:i);
+          delete(obj.editHandles{i});
+          obj.editHandles = obj.editHandles(1:i-1);
+          obj.nEditFields = i-1;
+          break;
+        end   
+        
       end
+      
       obj.update();
     end
     
@@ -180,6 +223,7 @@ classdef ParameterPanel < handle
     % check parameter panel for button press and update parameter values of
     % elements
     function changed = check(obj)
+      changed = false;
       
       if ~ishandle(obj.figureHandle)
         changed = obj.panelOpen; % if panel was supposed to be open, change is true (to set updateControls true)
@@ -188,55 +232,99 @@ classdef ParameterPanel < handle
       end
       
       if get(obj.buttonHandle, 'Value')
-        iParametersSettable = find(obj.paramChangeStatus ~= ParameterStatus.Fixed);
+        iParametersSettable = find(ParameterStatus.isChangeable(obj.paramChangeStatus(1:obj.nEditFields)));
         nParametersSettable = numel(iParametersSettable);
         parametersSettable = obj.parameters(iParametersSettable);
         newValues = cell(1, nParametersSettable);
+        
+        invalidValue = 0;
+        
         for i = 1 : nParametersSettable
-          newValues{i} = str2double(get(obj.editHandles(iParametersSettable(i)), 'String'));
-        end
-        for m = 1 : obj.nElementsInGroups(obj.currentSelection)
-          setElementParameters(obj.simulatorHandle, obj.elementsInGroups{obj.currentSelection}{m}, ...
-            parametersSettable, newValues);
+          s = obj.paramChangeStatus(iParametersSettable(i));
+          if ParameterStatus.isMatrix(s)
+            h = obj.editHandles{iParametersSettable(i)};
+            m = zeros(size(h));
+            
+            for j = 1 : numel(h)
+              m(j) = str2double(get(h(j), 'String'));
+            end
+            
+            % prune empty rows and columns if matrix size is variable
+            if ParameterStatus.rowsVariable(s)
+              m = m(~all(isnan(m), 2), :);
+            end
+            if ParameterStatus.columnsVariable(s)
+              m = m(:, ~all(isnan(m), 1));
+            end
+            
+            if any(any(isnan(m)))
+              newValues{i} = nan;
+            else
+              newValues{i} = m;
+            end
+          else
+            newValues{i} = str2double(get(obj.editHandles{iParametersSettable(i)}, 'String'));
+          end
+          
+          if isnan(newValues{i})
+            invalidValue = i;
+            break;
+          end
         end
         
+        if invalidValue
+          warndlg(['Invalid value for parameter ' parametersSettable{invalidValue} '. No changes were applied.'], ...
+            'Warning');
+        else
+          for m = 1 : obj.nElementsInGroups(obj.currentSelection)
+            setElementParameters(obj.simulatorHandle, obj.elementsInGroups{obj.currentSelection}{m}, ...
+              parametersSettable, newValues);
+          end
+          changed = true;
+          obj.updateSelection();
+        end
         set(obj.buttonHandle, 'Value', false);
-        changed = true;
-      else
-        changed = false;
       end
       
-      obj.figurePosition = get(obj.figureHandle, 'Position');
-      
-      if get(obj.selectorHandle, 'Value') ~= obj.currentSelection
-        obj.currentSelection = get(obj.selectorHandle, 'Value');
+      currentPos = get(obj.figureHandle, 'Position');
+      if get(obj.selectorHandle, 'Value') ~= obj.currentSelection || any(currentPos(3:4) ~= obj.figurePosition(3:4))
         obj.updateSelection();
+        obj.figurePosition = currentPos;
       end
     end
     
     
     % update values in panel (e.g. after change of parameters via sliders)
     function obj = update(obj)
-      if obj.panelOpen
-        for i = 1 : obj.nParams
-          if obj.paramChangeStatus(i) == ParameterStatus.Fixed 
-            s = size(obj.refElementHandles{obj.currentSelection}.(obj.parameters{i}));
-            if isnumeric(obj.refElementHandles{obj.currentSelection}.(obj.parameters{i})) ...
-                && s(1) == 1 && s(2) <= 4
-              set(obj.editHandles(i), 'String', ...
-                num2str(obj.refElementHandles{obj.currentSelection}.(obj.parameters{i})));
-            else
-              set(obj.editHandles(i), 'String', ...
-                class(obj.refElementHandles{obj.currentSelection}.(obj.parameters{i})));
+      if ~ishandle(obj.figureHandle)
+        return;
+      end
+      
+      for i = 1 : obj.nEditFields
+        paramValue = obj.refElementHandles{obj.currentSelection}.(obj.parameters{i});
+        if ParameterStatus.isChangeable(obj.paramChangeStatus(i))
+          if ParameterStatus.isMatrix(obj.paramChangeStatus(i))
+            nRows = min(size(paramValue, 1), size(obj.editHandles{i}, 1));
+            nCols = min(size(paramValue, 2), size(obj.editHandles{i}, 2));
+            for r = 1 : nRows
+              for c = 1 : nCols
+                set(obj.editHandles{i}(r, c), 'String', num2str(paramValue(r, c)));
+              end
             end
           else
-            set(obj.editHandles(i), 'String', ...
-              num2str(obj.refElementHandles{obj.currentSelection}.(obj.parameters{i})));
+            set(obj.editHandles{i}, 'String', num2str(paramValue));
+          end
+        else
+          if isnumeric(paramValue) && size(paramValue, 1) == 1 && size(paramValue, 2) <= 4
+            set(obj.editHandles{i}, 'String', num2str(paramValue));
+          else
+            set(obj.editHandles{i}, 'String', class(paramValue));
           end
         end
       end
     end
     
   end
+  
 end
 

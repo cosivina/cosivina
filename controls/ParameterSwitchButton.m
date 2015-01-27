@@ -15,10 +15,12 @@
 %   the element parameters controlled by this button; arguments
 %   elementLabels and parameterNames must have the same size, with each
 %   pair of entries fully specifying one controlled parameter
-% offValues - scalar or vector specifying for every connected element
-%   parameter the value it should take while the button is not pressed
-% onValues - scalar or vector specifying for every connected element
-%   parameter the value it should take while the button is pressed
+% offValues - single scalar value or cell array specifying for every 
+%   connected element parameter the value it should take while the button
+%   is not pressed
+% onValues - single scalar value or cell array specifying for every
+%   connected element parameter the value it should take while the button
+%   is pressed
 % tooltip - tooltip displayed when hovering over the control with the mouse
 %   (optional)
 % pressedOnInit - specifies whether the button should be in the pressed or
@@ -29,7 +31,7 @@
 %
 % Example:
 % h = ParameterSwitchButton('stimuli on', {'stimulus A', 'stimulus B'}, ...
-%   {'amplitude', 'amplitude'}, [0, 0], [6, 6], ...
+%   {'amplitude', 'amplitude'}, {0, 0}, {6, 6}, ...
 %   'toggle stimuli on/off', false);
 
 
@@ -108,9 +110,9 @@ classdef ParameterSwitchButton < Control
           error('ParameterSlider:connect:invalidParameter', ...
             'No element ''%s'' with parameter ''%s'' in simulator object', obj.elementLabels{i}, obj.parameterNames{i});
         end
-        if tmpElementHandle.getParamChangeStatus(obj.parameterNames{i}) == ParameterStatus.Fixed
+        if ~ParameterStatus.isChangeable(tmpElementHandle.getParamChangeStatus(obj.parameterNames{i}))
           error('ParameterSlider:connect:parameterFixed', ...
-            'Parameter ''%s'' in element ''%s'' has change status ''Fixed'' and cannot be changed by a GUI control', ...
+            'Parameter ''%s'' in element ''%s'' has change status ''Fixed'' and cannot be changed by a GUI control.', ...
             obj.parameterNames{i}, obj.elementLabels{i});
         end
       end

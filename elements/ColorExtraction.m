@@ -11,7 +11,7 @@
 %   outputSize - size of output (one row for each hue range)
 %   hueToIndexMap - array specifying hue ranges and associated index
 %   saturationThreshold, valueThreshold - thresholds on saturation and
-%   value for pixel to be counted color salience map
+%     value for pixel to be counted color salience map
 
 
 classdef ColorExtraction < Element
