@@ -25,6 +25,8 @@ launcherOneLayerField2D and launcherOneLayerField2D_surfacePlot: Creates a two-d
 
 launcherCoupling: Creates an architecture of two one-dimensional fields, coupled to the different dimensions of a single two-dimensional field. Can be used to illustrate extraction of lower-dimensional information from a higher-dimensional representation, selection by ridge inputs (e.g. for visual search), and the binding problem.
 
+launcherCoupling3D: Demonstrates the same effects as launcherCoupling, but now using a three-dimensional field (with two spatial and one feature dimension).
+
 launcherTransformation: Creates a model that implements a variable shift of a field, e.g. for reference frame transformations. Can be used for forward transformation, backward transformation, or pattern match. Sliders only control inputs to the model, connection strengths have to be set via parameter panel.
 
 launcherImageGrabber: Demonstrates generation of field input from actual image data. Loads image from file, performs a color extraction/classification and summation over the vertical dimension, and feeds the result as input into a stack of three one-dimensional fields, one for each extracted color channel.

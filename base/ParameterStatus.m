@@ -22,7 +22,7 @@
 %     variable
 
 
-classdef (Abstract) ParameterStatus 
+classdef ParameterStatus 
   properties (Constant)
     ChangeableBit = 1;
     InitRequiredBit = 2;

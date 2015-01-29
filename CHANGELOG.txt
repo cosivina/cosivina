@@ -1,5 +1,20 @@
 CHANGELOG
 
+Version 1.3
+* added new example launcherCoupling3D
+* added visualization TilePlot for 3D and 4D inputs
+* added element KernelFFT, alternative implementation of convolutions, can be 
+  used instead of GaussKernel, MexicanHatKernel, and LateralInteractions for any
+  dimensionality
+* expanded SumDimension to work with more than two dimensions, added new 
+  ExpandDimension element for higher-dimensional fields
+* added GaussKernel3D, MexicanHatKernel3D, and LateralInteractions3D
+* changed Simulator and ParameterPanel to support changing non-scalar parameters
+* changed ParameterStatus to also allow/specify changeable non-scalar parameters
+NOTE: THIS MAY LEAD TO INCOMPATIBILITIES IF YOU LOAD FULL INSTANTIATED 
+  SIMULATORS INTO THE MATLAB WORKSPACE (FROM A MAT-FILE); THERE SHOULD BE NO 
+  PROBLEMS WITH LOADING FROM PARAMETER FILES.
+* bug fix in TimedGaussStimulus elements (for normalized case)
 * added new example file (with updated documentation) that makes use of the new
   step function of the StandardGUI class; updated example file and documentation
   for 2D interactions tutorial (now uses LateralInteractions2D)
