@@ -17,8 +17,12 @@ COSIVINA is an object-oriented framework to construct Dynamic Neural Field
 architectures in Matlab, simulate the evolution of activation in these
 architectures (using the Euler method), and create GUIs to view the activation
 and adjust model parameters online.
-See the documentation for a detailed description of the framework, a class
-reference and examples on creating architectures and GUIs.
+
+You can download the latest version of COSIVINA from the mercurial repository at
+https://bitbucket.org/sschneegans/cosivina
+You can also find a detailed documentation of the framework with a class 
+reference and examples at that location as PDF document and online wiki.
+
 You can subscribe to the cosivina mailing list at 
 https://mailman.ini.ruhr-uni-bochum.de/listinfo/ini_cosivina
 to keep you updated on this framework.
