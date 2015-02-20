@@ -31,6 +31,9 @@ launcherTransformation: Creates a model that implements a variable shift of a fi
 
 launcherImageGrabber: Demonstrates generation of field input from actual image data. Loads image from file, performs a color extraction/classification and summation over the vertical dimension, and feeds the result as input into a stack of three one-dimensional fields, one for each extracted color channel.
 
-launcherRobotAttractorDynamics: Demonstrates the attractor dynamics approach for controlling the orientation of a mobile robot for target acquisition. A neural field is coupled to a uniquely instantiated dynamic variable, reflecting robot heading direction. Peaks in the field set attractors for the dynamic variable.
+launcherAttractorDynamics: Demonstrates the attractor dynamics approach for controlling the orientation of a mobile robot for target acquisition. A neural field is coupled to a uniquely instantiated dynamic variable, reflecting robot heading direction. Peaks in the field set attractors for the dynamic variable.
+
+launcherRobotSimulator: Uses the attractor dynamics approach to control a simulated mobile robot in an arena,
+performing taxis or avoidance behavior with respect to sensor targets.
 
 
