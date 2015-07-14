@@ -8,6 +8,10 @@
 %   tauBuild - time constant of activation build-up (default = 100)
 %   tauDecay - time constant for decay of activation (default = 1000)
 %   threshold - input threshold for activation build-up (default = 0.5)
+%
+% Note: If you use the output of a field as input for a memory trace, you
+% should use the default threshold value of 0.5 (this corresponds to an
+% activation value of 0 in the field).
 
 
 classdef MemoryTrace < Element
