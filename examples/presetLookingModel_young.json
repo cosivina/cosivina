@@ -1,0 +1,1492 @@
+{
+	"simulator": {
+		"deltaT": 1,
+		"tZero": 0,
+		"nElements": 81,
+		"elementLabels": [
+				"field_u",
+				"field_v",
+				"field_w",
+				"mem_u",
+				"mem_w",
+				"rest_L",
+				"rest_C",
+				"rest_R",
+				"rest_A",
+				"node_L",
+				"node_C",
+				"node_R",
+				"node_A",
+				"node_L -> rest_L",
+				"node_C -> rest_C",
+				"node_R -> rest_R",
+				"node_A -> rest_A",
+				"boost node_L",
+				"boost node_C",
+				"boost node_R",
+				"boost node_A",
+				"rest_L -> rest_L",
+				"rest_C -> rest_C",
+				"rest_R -> rest_R",
+				"rest_A -> rest_A",
+				"node_L -> node_L",
+				"node_C -> node_C",
+				"node_R -> node_R",
+				"node_A -> node_A",
+				"u -> u",
+				"v -> v",
+				"w -> w",
+				"v -> u",
+				"w -> u",
+				"mem_u -> u",
+				"u -> v",
+				"w -> v",
+				"u -> w",
+				"v -> w",
+				"mem_w -> w",
+				"node mutual inhibition",
+				"field_u -> nodes_LR",
+				"gated field_u -> node_R",
+				"gated field_u -> node_L",
+				"nodes_LR -> field_u",
+				"stimOn",
+				"stim boost node_L",
+				"stim boost node_R",
+				"constant input node_A",
+				"stim_L",
+				"stim_R",
+				"expand node_L",
+				"gated stim_L -> u",
+				"gated stim_L -> w",
+				"expand node_R",
+				"gated stim_R -> u",
+				"gated stim_R -> w",
+				"activation noise field_u",
+				"activation noise kernel field_u",
+				"activation noise field_v",
+				"activation noise kernel field_v",
+				"activation noise field_w",
+				"activation noise kernel field_w",
+				"resting noise field_u",
+				"resting noise field_v",
+				"resting noise field_w",
+				"activation noise mem_u",
+				"activation noise kernel mem_u",
+				"activation noise mem_w",
+				"activation noise kernel mem_w",
+				"noise node_A",
+				"noise node_L",
+				"gated noise node_L",
+				"noise node_R",
+				"gated noise node_R",
+				"cumulative sum node_L",
+				"cumulative sum node_R",
+				"cumulative sum node_A",
+				"repeater sum node_L",
+				"repeater sum node_R",
+				"repeater sum node_A"
+		],
+		"elements": [
+			{
+				"label": "field_u",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,181],
+					"tau": 80,
+					"h": -6.00412,
+					"beta": 5
+				},
+				"nInputs": 9,
+				"input": [
+					{
+						"label": "u -> u",
+						"component": "output"
+					},
+					{
+						"label": "v -> u",
+						"component": "output"
+					},
+					{
+						"label": "w -> u",
+						"component": "output"
+					},
+					{
+						"label": "mem_u -> u",
+						"component": "output"
+					},
+					{
+						"label": "nodes_LR -> field_u",
+						"component": "output"
+					},
+					{
+						"label": "gated stim_L -> u",
+						"component": "output"
+					},
+					{
+						"label": "gated stim_R -> u",
+						"component": "output"
+					},
+					{
+						"label": "activation noise kernel field_u",
+						"component": "output"
+					},
+					{
+						"label": "resting noise field_u",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "field_v",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,181],
+					"tau": 10,
+					"h": -10.2,
+					"beta": 5
+				},
+				"nInputs": 5,
+				"input": [
+					{
+						"label": "v -> v",
+						"component": "output"
+					},
+					{
+						"label": "u -> v",
+						"component": "output"
+					},
+					{
+						"label": "w -> v",
+						"component": "output"
+					},
+					{
+						"label": "activation noise kernel field_v",
+						"component": "output"
+					},
+					{
+						"label": "resting noise field_v",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "field_w",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,181],
+					"tau": 80,
+					"h": -4.57,
+					"beta": 5
+				},
+				"nInputs": 8,
+				"input": [
+					{
+						"label": "w -> w",
+						"component": "output"
+					},
+					{
+						"label": "u -> w",
+						"component": "output"
+					},
+					{
+						"label": "v -> w",
+						"component": "output"
+					},
+					{
+						"label": "mem_w -> w",
+						"component": "output"
+					},
+					{
+						"label": "gated stim_L -> w",
+						"component": "output"
+					},
+					{
+						"label": "gated stim_R -> w",
+						"component": "output"
+					},
+					{
+						"label": "activation noise kernel field_w",
+						"component": "output"
+					},
+					{
+						"label": "resting noise field_w",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "mem_u",
+				"class": "MemoryTrace",
+				"param": {
+					"size": [1,181],
+					"tauBuild": 5000,
+					"tauDecay": 50000,
+					"threshold": 0.5
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "field_u",
+						"component": "output"
+					},
+					{
+						"label": "activation noise kernel mem_u",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "mem_w",
+				"class": "MemoryTrace",
+				"param": {
+					"size": [1,181],
+					"tauBuild": 5000,
+					"tauDecay": 50000,
+					"threshold": 0.5
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "field_w",
+						"component": "output"
+					},
+					{
+						"label": "activation noise kernel mem_w",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "rest_L",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,1],
+					"tau": 80,
+					"h": -5,
+					"beta": 5
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "node_L -> rest_L",
+						"component": "output"
+					},
+					{
+						"label": "rest_L -> rest_L",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "rest_C",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,1],
+					"tau": 80,
+					"h": -5,
+					"beta": 5
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "node_C -> rest_C",
+						"component": "output"
+					},
+					{
+						"label": "rest_C -> rest_C",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "rest_R",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,1],
+					"tau": 80,
+					"h": -5,
+					"beta": 5
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "node_R -> rest_R",
+						"component": "output"
+					},
+					{
+						"label": "rest_R -> rest_R",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "rest_A",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,1],
+					"tau": 80,
+					"h": -5,
+					"beta": 5
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "node_A -> rest_A",
+						"component": "output"
+					},
+					{
+						"label": "rest_A -> rest_A",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "node_L",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,1],
+					"tau": 80,
+					"h": 0,
+					"beta": 5
+				},
+				"nInputs": 7,
+				"input": [
+					{
+						"label": "rest_L",
+						"component": "activation"
+					},
+					{
+						"label": "boost node_L",
+						"component": "output"
+					},
+					{
+						"label": "node_L -> node_L",
+						"component": "output"
+					},
+					{
+						"label": "node mutual inhibition",
+						"component": "output"
+					},
+					{
+						"label": "gated field_u -> node_L",
+						"component": "output"
+					},
+					{
+						"label": "stim boost node_L",
+						"component": "output"
+					},
+					{
+						"label": "gated noise node_L",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "node_C",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,1],
+					"tau": 80,
+					"h": 0,
+					"beta": 5
+				},
+				"nInputs": 4,
+				"input": [
+					{
+						"label": "rest_C",
+						"component": "activation"
+					},
+					{
+						"label": "boost node_C",
+						"component": "output"
+					},
+					{
+						"label": "node_C -> node_C",
+						"component": "output"
+					},
+					{
+						"label": "node mutual inhibition",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "node_R",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,1],
+					"tau": 80,
+					"h": 0,
+					"beta": 5
+				},
+				"nInputs": 7,
+				"input": [
+					{
+						"label": "rest_R",
+						"component": "activation"
+					},
+					{
+						"label": "boost node_R",
+						"component": "output"
+					},
+					{
+						"label": "node_R -> node_R",
+						"component": "output"
+					},
+					{
+						"label": "node mutual inhibition",
+						"component": "output"
+					},
+					{
+						"label": "gated field_u -> node_R",
+						"component": "output"
+					},
+					{
+						"label": "stim boost node_R",
+						"component": "output"
+					},
+					{
+						"label": "gated noise node_R",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "node_A",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,1],
+					"tau": 80,
+					"h": 0,
+					"beta": 5
+				},
+				"nInputs": 6,
+				"input": [
+					{
+						"label": "rest_A",
+						"component": "activation"
+					},
+					{
+						"label": "boost node_A",
+						"component": "output"
+					},
+					{
+						"label": "node_A -> node_A",
+						"component": "output"
+					},
+					{
+						"label": "node mutual inhibition",
+						"component": "output"
+					},
+					{
+						"label": "constant input node_A",
+						"component": "output"
+					},
+					{
+						"label": "noise node_A",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "node_L -> rest_L",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": -8.8
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node_L",
+					"component": "output"
+				}
+			},
+			{
+				"label": "node_C -> rest_C",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": -8.8
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node_C",
+					"component": "output"
+				}
+			},
+			{
+				"label": "node_R -> rest_R",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": -8.8
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node_R",
+					"component": "output"
+				}
+			},
+			{
+				"label": "node_A -> rest_A",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": -8.8
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node_A",
+					"component": "output"
+				}
+			},
+			{
+				"label": "boost node_L",
+				"class": "BoostStimulus",
+				"param": {
+					"amplitude": 0
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "boost node_C",
+				"class": "BoostStimulus",
+				"param": {
+					"amplitude": 0
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "boost node_R",
+				"class": "BoostStimulus",
+				"param": {
+					"amplitude": 0
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "boost node_A",
+				"class": "BoostStimulus",
+				"param": {
+					"amplitude": 0
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "rest_L -> rest_L",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 0
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "rest_L",
+					"component": "output"
+				}
+			},
+			{
+				"label": "rest_C -> rest_C",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 0
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "rest_C",
+					"component": "output"
+				}
+			},
+			{
+				"label": "rest_R -> rest_R",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 0
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "rest_R",
+					"component": "output"
+				}
+			},
+			{
+				"label": "rest_A -> rest_A",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 0
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "rest_A",
+					"component": "output"
+				}
+			},
+			{
+				"label": "node_L -> node_L",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 7.97059
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node_L",
+					"component": "output"
+				}
+			},
+			{
+				"label": "node_C -> node_C",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 7.97059
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node_C",
+					"component": "output"
+				}
+			},
+			{
+				"label": "node_R -> node_R",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 7.97059
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node_R",
+					"component": "output"
+				}
+			},
+			{
+				"label": "node_A -> node_A",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 7.97059
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node_A",
+					"component": "output"
+				}
+			},
+			{
+				"label": "u -> u",
+				"class": "LateralInteractions1D",
+				"param": {
+					"size": [1,181],
+					"sigmaExc": 3,
+					"amplitudeExc": 0.65,
+					"sigmaInh": 10,
+					"amplitudeInh": 0,
+					"amplitudeGlobal": 0,
+					"circular": 1,
+					"normalized": 0,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field_u",
+					"component": "output"
+				}
+			},
+			{
+				"label": "v -> v",
+				"class": "LateralInteractions1D",
+				"param": {
+					"size": [1,181],
+					"sigmaExc": 5,
+					"amplitudeExc": 0,
+					"sigmaInh": 10,
+					"amplitudeInh": 0,
+					"amplitudeGlobal": 0,
+					"circular": 1,
+					"normalized": 1,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field_v",
+					"component": "output"
+				}
+			},
+			{
+				"label": "w -> w",
+				"class": "LateralInteractions1D",
+				"param": {
+					"size": [1,181],
+					"sigmaExc": 3,
+					"amplitudeExc": 1.922,
+					"sigmaInh": 10,
+					"amplitudeInh": 0,
+					"amplitudeGlobal": 0,
+					"circular": 1,
+					"normalized": 0,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field_w",
+					"component": "output"
+				}
+			},
+			{
+				"label": "v -> u",
+				"class": "LateralInteractions1D",
+				"param": {
+					"size": [1,181],
+					"sigmaExc": 5,
+					"amplitudeExc": 0,
+					"sigmaInh": 15,
+					"amplitudeInh": 1.962245,
+					"amplitudeGlobal": 0,
+					"circular": 1,
+					"normalized": 0,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field_v",
+					"component": "output"
+				}
+			},
+			{
+				"label": "w -> u",
+				"class": "LateralInteractions1D",
+				"param": {
+					"size": [1,181],
+					"sigmaExc": 5,
+					"amplitudeExc": 0,
+					"sigmaInh": 10,
+					"amplitudeInh": 0,
+					"amplitudeGlobal": 0,
+					"circular": 1,
+					"normalized": 1,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field_w",
+					"component": "output"
+				}
+			},
+			{
+				"label": "mem_u -> u",
+				"class": "LateralInteractions1D",
+				"param": {
+					"size": [1,181],
+					"sigmaExc": 3,
+					"amplitudeExc": 0.8,
+					"sigmaInh": 10,
+					"amplitudeInh": 0,
+					"amplitudeGlobal": 0,
+					"circular": 1,
+					"normalized": 0,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "mem_u",
+					"component": "output"
+				}
+			},
+			{
+				"label": "u -> v",
+				"class": "LateralInteractions1D",
+				"param": {
+					"size": [1,181],
+					"sigmaExc": 5,
+					"amplitudeExc": 0.8,
+					"sigmaInh": 10,
+					"amplitudeInh": 0,
+					"amplitudeGlobal": 0,
+					"circular": 1,
+					"normalized": 0,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field_u",
+					"component": "output"
+				}
+			},
+			{
+				"label": "w -> v",
+				"class": "LateralInteractions1D",
+				"param": {
+					"size": [1,181],
+					"sigmaExc": 5,
+					"amplitudeExc": 3,
+					"sigmaInh": 10,
+					"amplitudeInh": 0,
+					"amplitudeGlobal": 0,
+					"circular": 1,
+					"normalized": 0,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field_w",
+					"component": "output"
+				}
+			},
+			{
+				"label": "u -> w",
+				"class": "LateralInteractions1D",
+				"param": {
+					"size": [1,181],
+					"sigmaExc": 5,
+					"amplitudeExc": 0.6,
+					"sigmaInh": 10,
+					"amplitudeInh": 0,
+					"amplitudeGlobal": 0,
+					"circular": 1,
+					"normalized": 0,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field_u",
+					"component": "output"
+				}
+			},
+			{
+				"label": "v -> w",
+				"class": "LateralInteractions1D",
+				"param": {
+					"size": [1,181],
+					"sigmaExc": 5,
+					"amplitudeExc": 0,
+					"sigmaInh": 15,
+					"amplitudeInh": 0.9037,
+					"amplitudeGlobal": 0.125,
+					"circular": 1,
+					"normalized": 0,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field_v",
+					"component": "output"
+				}
+			},
+			{
+				"label": "mem_w -> w",
+				"class": "LateralInteractions1D",
+				"param": {
+					"size": [1,181],
+					"sigmaExc": 3,
+					"amplitudeExc": 1,
+					"sigmaInh": 10,
+					"amplitudeInh": 0,
+					"amplitudeGlobal": 0,
+					"circular": 1,
+					"normalized": 0,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "mem_w",
+					"component": "output"
+				}
+			},
+			{
+				"label": "node mutual inhibition",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": -7
+				},
+				"nInputs": 4,
+				"input": [
+					{
+						"label": "node_L",
+						"component": "output"
+					},
+					{
+						"label": "node_C",
+						"component": "output"
+					},
+					{
+						"label": "node_R",
+						"component": "output"
+					},
+					{
+						"label": "node_A",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "field_u -> nodes_LR",
+				"class": "SumDimension",
+				"param": {
+					"sumDimensions": 2,
+					"amplitude": 0.7,
+					"size": [1,1]
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field_u",
+					"component": "output"
+				}
+			},
+			{
+				"label": "gated field_u -> node_R",
+				"class": "PointwiseProduct",
+				"param": {
+					"size": [1,1]
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "field_u -> nodes_LR",
+						"component": "output"
+					},
+					{
+						"label": "node_R",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "gated field_u -> node_L",
+				"class": "PointwiseProduct",
+				"param": {
+					"size": [1,1]
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "field_u -> nodes_LR",
+						"component": "output"
+					},
+					{
+						"label": "node_L",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "nodes_LR -> field_u",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 1
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "node_L",
+						"component": "output"
+					},
+					{
+						"label": "node_R",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "stimOn",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,1],
+					"tau": 10,
+					"h": 5,
+					"beta": 4
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "stim boost node_L",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 5.5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "stimOn",
+					"component": "output"
+				}
+			},
+			{
+				"label": "stim boost node_R",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 5.5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "stimOn",
+					"component": "output"
+				}
+			},
+			{
+				"label": "constant input node_A",
+				"class": "BoostStimulus",
+				"param": {
+					"amplitude": 3.97938
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "stim_L",
+				"class": "GaussStimulus1D",
+				"param": {
+					"size": [1,181],
+					"sigma": 3,
+					"amplitude": 20,
+					"position": 50,
+					"circular": 1,
+					"normalized": 0
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "stim_R",
+				"class": "GaussStimulus1D",
+				"param": {
+					"size": [1,181],
+					"sigma": 3,
+					"amplitude": 20,
+					"position": 50,
+					"circular": 1,
+					"normalized": 0
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "expand node_L",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,181],
+					"tau": 80,
+					"h": 0,
+					"beta": 4
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node_L",
+					"component": "output"
+				}
+			},
+			{
+				"label": "gated stim_L -> u",
+				"class": "PointwiseProduct",
+				"param": {
+					"size": [1,181]
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "expand node_L",
+						"component": "activation"
+					},
+					{
+						"label": "stim_L",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "gated stim_L -> w",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,181],
+					"amplitude": 0.05
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "gated stim_L -> u",
+					"component": "output"
+				}
+			},
+			{
+				"label": "expand node_R",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,181],
+					"tau": 80,
+					"h": 0,
+					"beta": 4
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node_R",
+					"component": "output"
+				}
+			},
+			{
+				"label": "gated stim_R -> u",
+				"class": "PointwiseProduct",
+				"param": {
+					"size": [1,181]
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "expand node_R",
+						"component": "activation"
+					},
+					{
+						"label": "stim_R",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "gated stim_R -> w",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,181],
+					"amplitude": 0.05
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "gated stim_R -> u",
+					"component": "output"
+				}
+			},
+			{
+				"label": "activation noise field_u",
+				"class": "NormalNoise",
+				"param": {
+					"size": [1,181],
+					"amplitude": 1
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "activation noise kernel field_u",
+				"class": "GaussKernel1D",
+				"param": {
+					"size": [1,181],
+					"sigma": 3,
+					"amplitude": 9.6,
+					"circular": 1,
+					"normalized": 1,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "activation noise field_u",
+					"component": "output"
+				}
+			},
+			{
+				"label": "activation noise field_v",
+				"class": "NormalNoise",
+				"param": {
+					"size": [1,181],
+					"amplitude": 1
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "activation noise kernel field_v",
+				"class": "GaussKernel1D",
+				"param": {
+					"size": [1,181],
+					"sigma": 3,
+					"amplitude": 1.2,
+					"circular": 1,
+					"normalized": 1,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "activation noise field_v",
+					"component": "output"
+				}
+			},
+			{
+				"label": "activation noise field_w",
+				"class": "NormalNoise",
+				"param": {
+					"size": [1,181],
+					"amplitude": 1
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "activation noise kernel field_w",
+				"class": "GaussKernel1D",
+				"param": {
+					"size": [1,181],
+					"sigma": 3,
+					"amplitude": 9.6,
+					"circular": 1,
+					"normalized": 1,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "activation noise field_w",
+					"component": "output"
+				}
+			},
+			{
+				"label": "resting noise field_u",
+				"class": "NormalNoise",
+				"param": {
+					"size": [1,1],
+					"amplitude": 1.5
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "resting noise field_v",
+				"class": "NormalNoise",
+				"param": {
+					"size": [1,1],
+					"amplitude": 0
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "resting noise field_w",
+				"class": "NormalNoise",
+				"param": {
+					"size": [1,1],
+					"amplitude": 1
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "activation noise mem_u",
+				"class": "NormalNoise",
+				"param": {
+					"size": [1,181],
+					"amplitude": 1
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "activation noise kernel mem_u",
+				"class": "GaussKernel1D",
+				"param": {
+					"size": [1,181],
+					"sigma": 0,
+					"amplitude": 0,
+					"circular": 1,
+					"normalized": 1,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "activation noise mem_u",
+					"component": "output"
+				}
+			},
+			{
+				"label": "activation noise mem_w",
+				"class": "NormalNoise",
+				"param": {
+					"size": [1,181],
+					"amplitude": 1
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "activation noise kernel mem_w",
+				"class": "GaussKernel1D",
+				"param": {
+					"size": [1,181],
+					"sigma": 0,
+					"amplitude": 0,
+					"circular": 1,
+					"normalized": 1,
+					"cutoffFactor": 3
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "activation noise mem_w",
+					"component": "output"
+				}
+			},
+			{
+				"label": "noise node_A",
+				"class": "NormalNoise",
+				"param": {
+					"size": [1,1],
+					"amplitude": 10
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "noise node_L",
+				"class": "NormalNoise",
+				"param": {
+					"size": [1,1],
+					"amplitude": 10
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "gated noise node_L",
+				"class": "PointwiseProduct",
+				"param": {
+					"size": [1,1]
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "noise node_L",
+						"component": "output"
+					},
+					{
+						"label": "stimOn",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "noise node_R",
+				"class": "NormalNoise",
+				"param": {
+					"size": [1,1],
+					"amplitude": 10
+				},
+				"nInputs": 0,
+				"input": null
+			},
+			{
+				"label": "gated noise node_R",
+				"class": "PointwiseProduct",
+				"param": {
+					"size": [1,1]
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "noise node_R",
+						"component": "output"
+					},
+					{
+						"label": "stimOn",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "cumulative sum node_L",
+				"class": "SumInputs",
+				"param": {
+					"size": [1,1]
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "node_L",
+						"component": "output"
+					},
+					{
+						"label": "repeater sum node_L",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "cumulative sum node_R",
+				"class": "SumInputs",
+				"param": {
+					"size": [1,1]
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "node_R",
+						"component": "output"
+					},
+					{
+						"label": "repeater sum node_R",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "cumulative sum node_A",
+				"class": "SumInputs",
+				"param": {
+					"size": [1,1]
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "node_A",
+						"component": "output"
+					},
+					{
+						"label": "repeater sum node_A",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "repeater sum node_L",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 1
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "cumulative sum node_L",
+					"component": "output"
+				}
+			},
+			{
+				"label": "repeater sum node_R",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 1
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "cumulative sum node_R",
+					"component": "output"
+				}
+			},
+			{
+				"label": "repeater sum node_A",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 1
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "cumulative sum node_A",
+					"component": "output"
+				}
+			}
+		]
+	}
+}

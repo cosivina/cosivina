@@ -1,0 +1,1194 @@
+{
+	"simulator": {
+		"deltaT": 1,
+		"tZero": 0,
+		"nElements": 61,
+		"elementLabels": [
+				"stimulus CS1",
+				"stimulus CS2",
+				"stimulus CS3",
+				"stimulus CS4",
+				"stimulus SS1",
+				"stimulus SS2",
+				"stimulus SS3",
+				"stimulus SS4",
+				"stimulus1 CS (1d)",
+				"ridge1 CS",
+				"stimulus2 CS (1d)",
+				"ridge2 CS",
+				"stimulus1 SS (1d)",
+				"ridge1 SS",
+				"stimulus2 SS (1d)",
+				"ridge2 SS",
+				"stimulus SP (1d)",
+				"node Color",
+				"node Shape",
+				"field SPw",
+				"field CSw",
+				"field CSv",
+				"field SSw",
+				"field SSv",
+				"SPw -> SPw",
+				"SPwv (global)",
+				"CSw -> CSw (exc)",
+				"CSw -> CSv",
+				"CSv -> CSw",
+				"sum CSv",
+				"CSv -> CSw (global)",
+				"CNode -> CSw",
+				"CNode -> CNode",
+				"CNode -> SNode",
+				"SSw -> SSw (exc)",
+				"SSw -> SSv",
+				"SSv -> SSw",
+				"sum SSv",
+				"SSv -> SSw (global)",
+				"SNode -> SSw",
+				"SNode -> SNode",
+				"SNode -> CNode",
+				"sum CSw",
+				"sum SSw",
+				"CSw -> CNode",
+				"SSw -> SNode",
+				"CSw -> SSw (1d)",
+				"SSw -> CSw (1d)",
+				"CSw -> CLw (1d)",
+				"SSw -> SLw (1d)",
+				"CSw -> SPw (1d)",
+				"SSw -> SPw (1d)",
+				"SPw -> fSw (1d)",
+				"expand SPw -> fSw",
+				"expand CSw -> SSw",
+				"expand SSw -> CSw",
+				"noise CSw",
+				"noise CSv",
+				"noise SSw",
+				"noise SSv",
+				"noise SPw"
+		],
+		"elements": [
+			{
+				"label": "stimulus CS1",
+				"class": "GaussStimulus2D",
+				"param": {
+					"size": [100,100],
+					"sigmaX": 5,
+					"sigmaY": 5,
+					"amplitude": 0.5,
+					"positionX": 25,
+					"positionY": 25,
+					"circularX": 1,
+					"circularY": 0,
+					"normalized": 0
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "stimulus CS2",
+				"class": "GaussStimulus2D",
+				"param": {
+					"size": [100,100],
+					"sigmaX": 5,
+					"sigmaY": 5,
+					"amplitude": 0.5,
+					"positionX": 75,
+					"positionY": 75,
+					"circularX": 1,
+					"circularY": 0,
+					"normalized": 0
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "stimulus CS3",
+				"class": "GaussStimulus2D",
+				"param": {
+					"size": [100,100],
+					"sigmaX": 5,
+					"sigmaY": 5,
+					"amplitude": 0,
+					"positionX": 75,
+					"positionY": 25,
+					"circularX": 1,
+					"circularY": 0,
+					"normalized": 0
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "stimulus CS4",
+				"class": "GaussStimulus2D",
+				"param": {
+					"size": [100,100],
+					"sigmaX": 5,
+					"sigmaY": 5,
+					"amplitude": 0,
+					"positionX": 25,
+					"positionY": 75,
+					"circularX": 1,
+					"circularY": 0,
+					"normalized": 0
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "stimulus SS1",
+				"class": "GaussStimulus2D",
+				"param": {
+					"size": [100,100],
+					"sigmaX": 5,
+					"sigmaY": 5,
+					"amplitude": 0.5,
+					"positionX": 25,
+					"positionY": 25,
+					"circularX": 1,
+					"circularY": 0,
+					"normalized": 0
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "stimulus SS2",
+				"class": "GaussStimulus2D",
+				"param": {
+					"size": [100,100],
+					"sigmaX": 5,
+					"sigmaY": 5,
+					"amplitude": 0.5,
+					"positionX": 75,
+					"positionY": 75,
+					"circularX": 1,
+					"circularY": 0,
+					"normalized": 0
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "stimulus SS3",
+				"class": "GaussStimulus2D",
+				"param": {
+					"size": [100,100],
+					"sigmaX": 5,
+					"sigmaY": 5,
+					"amplitude": 0,
+					"positionX": 75,
+					"positionY": 25,
+					"circularX": 1,
+					"circularY": 0,
+					"normalized": 0
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "stimulus SS4",
+				"class": "GaussStimulus2D",
+				"param": {
+					"size": [100,100],
+					"sigmaX": 5,
+					"sigmaY": 5,
+					"amplitude": 0,
+					"positionX": 25,
+					"positionY": 75,
+					"circularX": 1,
+					"circularY": 0,
+					"normalized": 0
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "stimulus1 CS (1d)",
+				"class": "GaussStimulus1D",
+				"param": {
+					"size": [1,100],
+					"sigma": 5,
+					"amplitude": 0,
+					"position": 25,
+					"circular": 1,
+					"normalized": 0
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "ridge1 CS",
+				"class": "ExpandDimension2D",
+				"param": {
+					"expandDimension": 2,
+					"size": [100,100]
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "stimulus1 CS (1d)",
+					"component": "output"
+				}
+			},
+			{
+				"label": "stimulus2 CS (1d)",
+				"class": "GaussStimulus1D",
+				"param": {
+					"size": [1,100],
+					"sigma": 5,
+					"amplitude": 0,
+					"position": 75,
+					"circular": 1,
+					"normalized": 0
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "ridge2 CS",
+				"class": "ExpandDimension2D",
+				"param": {
+					"expandDimension": 2,
+					"size": [100,100]
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "stimulus2 CS (1d)",
+					"component": "output"
+				}
+			},
+			{
+				"label": "stimulus1 SS (1d)",
+				"class": "GaussStimulus1D",
+				"param": {
+					"size": [1,100],
+					"sigma": 5,
+					"amplitude": 0,
+					"position": 25,
+					"circular": 1,
+					"normalized": 0
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "ridge1 SS",
+				"class": "ExpandDimension2D",
+				"param": {
+					"expandDimension": 2,
+					"size": [100,100]
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "stimulus1 SS (1d)",
+					"component": "output"
+				}
+			},
+			{
+				"label": "stimulus2 SS (1d)",
+				"class": "GaussStimulus1D",
+				"param": {
+					"size": [1,100],
+					"sigma": 5,
+					"amplitude": 0,
+					"position": 75,
+					"circular": 1,
+					"normalized": 0
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "ridge2 SS",
+				"class": "ExpandDimension2D",
+				"param": {
+					"expandDimension": 2,
+					"size": [100,100]
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "stimulus2 SS (1d)",
+					"component": "output"
+				}
+			},
+			{
+				"label": "stimulus SP (1d)",
+				"class": "GaussStimulus1D",
+				"param": {
+					"size": [1,100],
+					"sigma": 5,
+					"amplitude": 0,
+					"position": 75,
+					"circular": 1,
+					"normalized": 0
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "node Color",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,1],
+					"tau": 20,
+					"h": -5,
+					"beta": 5
+				},
+				"nInputs": 3,
+				"input": [
+					{
+						"label": "CNode -> CNode",
+						"component": "output"
+					},
+					{
+						"label": "SNode -> CNode",
+						"component": "output"
+					},
+					{
+						"label": "CSw -> CNode",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "node Shape",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,1],
+					"tau": 20,
+					"h": -5,
+					"beta": 5
+				},
+				"nInputs": 3,
+				"input": [
+					{
+						"label": "CNode -> SNode",
+						"component": "output"
+					},
+					{
+						"label": "SNode -> SNode",
+						"component": "output"
+					},
+					{
+						"label": "SSw -> SNode",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "field SPw",
+				"class": "NeuralField",
+				"param": {
+					"size": [1,100],
+					"tau": 20,
+					"h": -5,
+					"beta": 5
+				},
+				"nInputs": 6,
+				"input": [
+					{
+						"label": "stimulus SP (1d)",
+						"component": "output"
+					},
+					{
+						"label": "SPw -> SPw",
+						"component": "output"
+					},
+					{
+						"label": "SPwv (global)",
+						"component": "output"
+					},
+					{
+						"label": "CSw -> SPw (1d)",
+						"component": "output"
+					},
+					{
+						"label": "SSw -> SPw (1d)",
+						"component": "output"
+					},
+					{
+						"label": "noise SPw",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "field CSw",
+				"class": "NeuralField",
+				"param": {
+					"size": [100,100],
+					"tau": 20,
+					"h": -5,
+					"beta": 5
+				},
+				"nInputs": 13,
+				"input": [
+					{
+						"label": "stimulus CS1",
+						"component": "output"
+					},
+					{
+						"label": "stimulus CS2",
+						"component": "output"
+					},
+					{
+						"label": "stimulus CS3",
+						"component": "output"
+					},
+					{
+						"label": "stimulus CS4",
+						"component": "output"
+					},
+					{
+						"label": "ridge1 CS",
+						"component": "output"
+					},
+					{
+						"label": "ridge2 CS",
+						"component": "output"
+					},
+					{
+						"label": "CSw -> CSw (exc)",
+						"component": "output"
+					},
+					{
+						"label": "CSv -> CSw",
+						"component": "output"
+					},
+					{
+						"label": "CSv -> CSw (global)",
+						"component": "output"
+					},
+					{
+						"label": "CNode -> CSw",
+						"component": "output"
+					},
+					{
+						"label": "expand SPw -> fSw",
+						"component": "output"
+					},
+					{
+						"label": "expand SSw -> CSw",
+						"component": "output"
+					},
+					{
+						"label": "noise CSw",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "field CSv",
+				"class": "NeuralField",
+				"param": {
+					"size": [100,100],
+					"tau": 20,
+					"h": -5,
+					"beta": 5
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "CSw -> CSv",
+						"component": "output"
+					},
+					{
+						"label": "noise CSv",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "field SSw",
+				"class": "NeuralField",
+				"param": {
+					"size": [100,100],
+					"tau": 20,
+					"h": -5,
+					"beta": 5
+				},
+				"nInputs": 13,
+				"input": [
+					{
+						"label": "stimulus SS1",
+						"component": "output"
+					},
+					{
+						"label": "stimulus SS2",
+						"component": "output"
+					},
+					{
+						"label": "stimulus SS3",
+						"component": "output"
+					},
+					{
+						"label": "stimulus SS4",
+						"component": "output"
+					},
+					{
+						"label": "ridge1 SS",
+						"component": "output"
+					},
+					{
+						"label": "ridge2 SS",
+						"component": "output"
+					},
+					{
+						"label": "SSw -> SSw (exc)",
+						"component": "output"
+					},
+					{
+						"label": "SSv -> SSw",
+						"component": "output"
+					},
+					{
+						"label": "SSv -> SSw (global)",
+						"component": "output"
+					},
+					{
+						"label": "SNode -> SSw",
+						"component": "output"
+					},
+					{
+						"label": "expand SPw -> fSw",
+						"component": "output"
+					},
+					{
+						"label": "expand CSw -> SSw",
+						"component": "output"
+					},
+					{
+						"label": "noise SSw",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "field SSv",
+				"class": "NeuralField",
+				"param": {
+					"size": [100,100],
+					"tau": 20,
+					"h": -5,
+					"beta": 5
+				},
+				"nInputs": 2,
+				"input": [
+					{
+						"label": "SSw -> SSv",
+						"component": "output"
+					},
+					{
+						"label": "noise SSv",
+						"component": "output"
+					}
+				]
+			},
+			{
+				"label": "SPw -> SPw",
+				"class": "MexicanHatKernel1D",
+				"param": {
+					"size": [1,100],
+					"sigmaExc": 5,
+					"amplitudeExc": 4.390245,
+					"sigmaInh": 12.5,
+					"amplitudeInh": 4.87805,
+					"circular": 1,
+					"normalized": 1,
+					"cutoffFactor": 5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field SPw",
+					"component": "output"
+				}
+			},
+			{
+				"label": "SPwv (global)",
+				"class": "SumDimension",
+				"param": {
+					"sumDimensions": 2,
+					"amplitude": -0.487804,
+					"size": [1,1]
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field SPw",
+					"component": "output"
+				}
+			},
+			{
+				"label": "CSw -> CSw (exc)",
+				"class": "GaussKernel2D",
+				"param": {
+					"size": [100,100],
+					"sigmaX": 5,
+					"sigmaY": 5,
+					"amplitude": 2.68293,
+					"circularX": 1,
+					"circularY": 0,
+					"normalized": 1,
+					"cutoffFactor": 5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field CSw",
+					"component": "output"
+				}
+			},
+			{
+				"label": "CSw -> CSv",
+				"class": "GaussKernel2D",
+				"param": {
+					"size": [100,100],
+					"sigmaX": 2,
+					"sigmaY": 2,
+					"amplitude": 8.7561,
+					"circularX": 1,
+					"circularY": 0,
+					"normalized": 1,
+					"cutoffFactor": 5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field CSw",
+					"component": "output"
+				}
+			},
+			{
+				"label": "CSv -> CSw",
+				"class": "GaussKernel2D",
+				"param": {
+					"size": [100,100],
+					"sigmaX": 12.5,
+					"sigmaY": 12.5,
+					"amplitude": -2.13902,
+					"circularX": 1,
+					"circularY": 0,
+					"normalized": 1,
+					"cutoffFactor": 5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field CSv",
+					"component": "output"
+				}
+			},
+			{
+				"label": "sum CSv",
+				"class": "SumAllDimensions",
+				"param": {
+					"size": [100,100]
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field CSv",
+					"component": "output"
+				}
+			},
+			{
+				"label": "CSv -> CSw (global)",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": -0.05
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "sum CSv",
+					"component": "fullSum"
+				}
+			},
+			{
+				"label": "CNode -> CSw",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 0.975608
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node Color",
+					"component": "output"
+				}
+			},
+			{
+				"label": "CNode -> CNode",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 3.36585
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node Color",
+					"component": "output"
+				}
+			},
+			{
+				"label": "CNode -> SNode",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": -17.07315
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node Color",
+					"component": "output"
+				}
+			},
+			{
+				"label": "SSw -> SSw (exc)",
+				"class": "GaussKernel2D",
+				"param": {
+					"size": [100,100],
+					"sigmaX": 5,
+					"sigmaY": 5,
+					"amplitude": 2.68293,
+					"circularX": 1,
+					"circularY": 0,
+					"normalized": 1,
+					"cutoffFactor": 5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field SSw",
+					"component": "output"
+				}
+			},
+			{
+				"label": "SSw -> SSv",
+				"class": "GaussKernel2D",
+				"param": {
+					"size": [100,100],
+					"sigmaX": 2,
+					"sigmaY": 2,
+					"amplitude": 8.7561,
+					"circularX": 1,
+					"circularY": 0,
+					"normalized": 1,
+					"cutoffFactor": 5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field SSw",
+					"component": "output"
+				}
+			},
+			{
+				"label": "SSv -> SSw",
+				"class": "GaussKernel2D",
+				"param": {
+					"size": [100,100],
+					"sigmaX": 12.5,
+					"sigmaY": 12.5,
+					"amplitude": -2.13902,
+					"circularX": 1,
+					"circularY": 0,
+					"normalized": 1,
+					"cutoffFactor": 5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field SSv",
+					"component": "output"
+				}
+			},
+			{
+				"label": "sum SSv",
+				"class": "SumAllDimensions",
+				"param": {
+					"size": [100,100]
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field SSv",
+					"component": "output"
+				}
+			},
+			{
+				"label": "SSv -> SSw (global)",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": -0.05
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "sum SSv",
+					"component": "fullSum"
+				}
+			},
+			{
+				"label": "SNode -> SSw",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 0.975608
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node Shape",
+					"component": "output"
+				}
+			},
+			{
+				"label": "SNode -> SNode",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 3.36585
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node Shape",
+					"component": "output"
+				}
+			},
+			{
+				"label": "SNode -> CNode",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": -17.07315
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "node Shape",
+					"component": "output"
+				}
+			},
+			{
+				"label": "sum CSw",
+				"class": "SumAllDimensions",
+				"param": {
+					"size": [100,100]
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field CSw",
+					"component": "output"
+				}
+			},
+			{
+				"label": "sum SSw",
+				"class": "SumAllDimensions",
+				"param": {
+					"size": [100,100]
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field SSw",
+					"component": "output"
+				}
+			},
+			{
+				"label": "CSw -> CNode",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 0.067561
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "sum CSw",
+					"component": "fullSum"
+				}
+			},
+			{
+				"label": "SSw -> SNode",
+				"class": "ScaleInput",
+				"param": {
+					"size": [1,1],
+					"amplitude": 0.067561
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "sum SSw",
+					"component": "fullSum"
+				}
+			},
+			{
+				"label": "CSw -> SSw (1d)",
+				"class": "GaussKernel1D",
+				"param": {
+					"size": [1,100],
+					"sigma": 5,
+					"amplitude": 0.439024,
+					"circular": 0,
+					"normalized": 1,
+					"cutoffFactor": 5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "sum CSw",
+					"component": "verticalSum"
+				}
+			},
+			{
+				"label": "SSw -> CSw (1d)",
+				"class": "GaussKernel1D",
+				"param": {
+					"size": [1,100],
+					"sigma": 5,
+					"amplitude": 0.439024,
+					"circular": 0,
+					"normalized": 1,
+					"cutoffFactor": 5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "sum SSw",
+					"component": "verticalSum"
+				}
+			},
+			{
+				"label": "CSw -> CLw (1d)",
+				"class": "GaussKernel1D",
+				"param": {
+					"size": [1,100],
+					"sigma": 5,
+					"amplitude": 0,
+					"circular": 0,
+					"normalized": 1,
+					"cutoffFactor": 5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "sum CSw",
+					"component": "horizontalSum"
+				}
+			},
+			{
+				"label": "SSw -> SLw (1d)",
+				"class": "GaussKernel1D",
+				"param": {
+					"size": [1,100],
+					"sigma": 5,
+					"amplitude": 0,
+					"circular": 0,
+					"normalized": 1,
+					"cutoffFactor": 5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "sum SSw",
+					"component": "horizontalSum"
+				}
+			},
+			{
+				"label": "CSw -> SPw (1d)",
+				"class": "GaussKernel1D",
+				"param": {
+					"size": [1,100],
+					"sigma": 5,
+					"amplitude": 1.243902,
+					"circular": 0,
+					"normalized": 1,
+					"cutoffFactor": 5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "sum CSw",
+					"component": "verticalSum"
+				}
+			},
+			{
+				"label": "SSw -> SPw (1d)",
+				"class": "GaussKernel1D",
+				"param": {
+					"size": [1,100],
+					"sigma": 5,
+					"amplitude": 1.243902,
+					"circular": 0,
+					"normalized": 1,
+					"cutoffFactor": 5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "sum SSw",
+					"component": "verticalSum"
+				}
+			},
+			{
+				"label": "SPw -> fSw (1d)",
+				"class": "GaussKernel1D",
+				"param": {
+					"size": [1,100],
+					"sigma": 5,
+					"amplitude": 0.609755,
+					"circular": 0,
+					"normalized": 1,
+					"cutoffFactor": 5
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "field SPw",
+					"component": "output"
+				}
+			},
+			{
+				"label": "expand SPw -> fSw",
+				"class": "ExpandDimension2D",
+				"param": {
+					"expandDimension": 1,
+					"size": [100,100]
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "SPw -> fSw (1d)",
+					"component": "output"
+				}
+			},
+			{
+				"label": "expand CSw -> SSw",
+				"class": "ExpandDimension2D",
+				"param": {
+					"expandDimension": 1,
+					"size": [100,100]
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "CSw -> SSw (1d)",
+					"component": "output"
+				}
+			},
+			{
+				"label": "expand SSw -> CSw",
+				"class": "ExpandDimension2D",
+				"param": {
+					"expandDimension": 1,
+					"size": [100,100]
+				},
+				"nInputs": 1,
+				"input": {
+					"label": "SSw -> CSw (1d)",
+					"component": "output"
+				}
+			},
+			{
+				"label": "noise CSw",
+				"class": "NormalNoise",
+				"param": {
+					"size": [100,100],
+					"amplitude": 0.2
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "noise CSv",
+				"class": "NormalNoise",
+				"param": {
+					"size": [100,100],
+					"amplitude": 0.2
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "noise SSw",
+				"class": "NormalNoise",
+				"param": {
+					"size": [100,100],
+					"amplitude": 0.2
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "noise SSv",
+				"class": "NormalNoise",
+				"param": {
+					"size": [100,100],
+					"amplitude": 0.2
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			},
+			{
+				"label": "noise SPw",
+				"class": "NormalNoise",
+				"param": {
+					"size": [1,100],
+					"amplitude": 0.2
+				},
+				"nInputs": 0,
+				"input": {
+					"_ArrayType_": "double",
+					"_ArraySize_": [0,0],
+					"_ArrayData_": null
+				}
+			}
+		]
+	}
+}
