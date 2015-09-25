@@ -150,23 +150,23 @@ gui.addControl(ParameterSlider('a_s2', 'stimulus v2', 'amplitude', [0, 20], '%0.
 
 gui.addVisualization(StaticText('Stimuli for field s'), [10, 4], [1, 1], 'control');
 gui.addControl(ParameterSlider('p_s1', 'stimulus s1', 'position', [0, sizeSpt], '%0.1f', 1, ...
-  'horizontal position of stimulus 1 for field s'), [11, 4]);
+  'position of stimulus 1 for field s'), [11, 4]);
 gui.addControl(ParameterSlider('a_s1', 'stimulus s1', 'amplitude', [0, 20], '%0.1f', 1, ...
   'amplitude of stimulus 1 for field s'), [12, 4]);
 
 gui.addControl(ParameterSlider('p_s2', 'stimulus s2', 'position', [0, sizeSpt], '%0.1f', 1, ...
-  'horizontal position of stimulus 2 for field s'), [13, 4]);
+  'position of stimulus 2 for field s'), [13, 4]);
 gui.addControl(ParameterSlider('a_s2', 'stimulus s2', 'amplitude', [0, 20], '%0.1f', 1, ...
   'amplitude of stimulus 2 for field s'), [14, 4]);
 
 gui.addVisualization(StaticText('Stimuli for field f'), [16, 4], [1, 1], 'control');
 gui.addControl(ParameterSlider('p_s1', 'stimulus f1', 'position', [0, sizeSpt], '%0.1f', 1, ...
-  'horizontal position of stimulus 1 for field f'), [17, 4]);
+  'position of stimulus 1 for field f'), [17, 4]);
 gui.addControl(ParameterSlider('a_s1', 'stimulus f1', 'amplitude', [0, 20], '%0.1f', 1, ...
   'amplitude of stimulus 1 for field f'), [18, 4]);
 
 gui.addControl(ParameterSlider('p_s2', 'stimulus f2', 'position', [0, sizeSpt], '%0.1f', 1, ...
-  'horizontal position of stimulus 2 for field f'), [19, 4]);
+  'position of stimulus 2 for field f'), [19, 4]);
 gui.addControl(ParameterSlider('a_s2', 'stimulus f2', 'amplitude', [0, 20], '%0.1f', 1, ...
   'amplitude of stimulus 2 for field f'), [20, 4]);
 
