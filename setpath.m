@@ -1,4 +1,15 @@
-function setpath
+% setpath (COSIVINA toolbox)
+%   Adds the cosivina subfolders and, if found, the jsonlab folder to the 
+%   Matlab path in order to allow full use of the cosivina framework.
+%   
+%   setpath(false) does not save the path for later sessions (default)
+%   setpath(true) saves the path to pathdef.m file for latter sessions
+
+function setpath(permanent)
+
+if nargin < 1
+  permanent = false;
+end
 
 release = version('-release');
 releaseNum = str2double(release(1:4));
@@ -66,6 +77,12 @@ if ~jfound
   disp('No directory found for JSONlab support. Saving and loading of configuration files may not be possible.');
 end
 
-
-
+if permanent
+  saved = savepath;
+  if saved == 0
+    disp('Path saved successfully.');
+  else
+    disp('Path could not be saved for later sessions. You may not have write permission for pathdef.m file.');
+  end
+end
 
