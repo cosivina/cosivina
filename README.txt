@@ -25,7 +25,7 @@ You can clone the repository and keep it updated from there, or download the lat
 QUICK INSTALLATION FOR MATLAB
 
 - Download the two zip archives for cosivina ( https://bitbucket.org/sschneegans/cosivina/get/tip.zip ) and JSONlab ( https://bitbucket.org/sschneegans/cosivina/downloads/jsonlab-1.1.zip ) (JSONlab is an additional toolbox used to save and load parameter files, see below for details).
-- Unpack both zip archives in a folder of your choice.
+- Unpack both zip archives in a folder of your choice. (Note: The automatically generated zip archive for cosivina and the folder created when unpacking it have somewhat unwieldy names specifying the author and the exact version; I suggest you simply rename that folder to 'cosivina' after unpacking.)
 - Open Matlab, navigate to the cosivina folder (using the 'cd' command or the directory navigation bar), and run the function 'setpath' to add the cosivina and jsonlab folders to the matlab path.
 - To test cosivina, run one of the example scripts, such as 'launcherOneLayerField.m'. This should open a GUI window with plots and control buttons.
 

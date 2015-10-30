@@ -2,10 +2,10 @@
 ## An open source toolbox for Matlab
 
 Version 1.3
-Written by Sebastian Schneegans at the Institut für Neuroinformatik,
+Written by Sebastian Schneegans at the Institut für Neuroinformatik,  
 Ruhr-Universität Bochum, Germany. Last updated 2015-10-30.
 
-Copyright (c) 2012-2015 Sebastian Schneegans <Sebastian@Schneegans.de>
+Copyright (c) 2012-2015 Sebastian Schneegans <Sebastian@Schneegans.de>  
 Published under the Simplified BSD License (see LICENSE_BSD.txt)
 
 
@@ -15,15 +15,15 @@ Cosivina is a free object-oriented framework to construct dynamic field architec
 
 It includes a number of example architectures that are also available in compiled form for those who do not have Matlab available. These examples form the basis for most exercises in the book "Dynamic Thinking - A Primer on Dynamic Field Theory". For more information on the book and Dynamic Field Theory in general, please visit [www.dynamicfieldtheory.org](http://www.dynamicfieldtheory.org).
 
-The cosivina framework is hosted as mercurial repository on bitbucket:
-https://butbucket.org/sschneegans/cosivina
+The cosivina framework is hosted as mercurial repository on bitbucket:  
+https://butbucket.org/sschneegans/cosivina  
 You can clone the repository and keep it updated from there, or download the latest version as zip file. A full [documentation](https://bitbucket.org/sschneegans/cosivina/downloads/documentation_v1_3.pdf) for cosivina is available in pdf format. You can also view the documentation online as a [wiki](https://bitbucket.org/sschneegans/cosivina/wiki/Home).
 
 
 ## Quick installation for Matlab
 
 - Download the two zip archives for [cosivina](https://bitbucket.org/sschneegans/cosivina/get/tip.zip) and [JSONlab](https://bitbucket.org/sschneegans/cosivina/downloads/jsonlab-1.1.zip) (JSONlab is an additional toolbox used to save and load parameter files, see below for details).
-- Unpack both zip archives in a folder of your choice.
+- Unpack both zip archives in a folder of your choice. (Note: The automatically generated zip archive for cosivina and the folder created when unpacking it have somewhat unwieldy names specifying the author and the exact version; I suggest you simply rename that folder to 'cosivina' after unpacking.)
 - Open Matlab, navigate to the cosivina folder (using the 'cd' command or the directory navigation bar), and run the function 'setpath' to add the cosivina and jsonlab folders to the matlab path.
 - To test cosivina, run one of the example scripts, such as 'launcherOneLayerField.m'. This should open a GUI window with plots and control buttons.
 
@@ -71,25 +71,25 @@ See the documentation for further information on how the cosivina can be used to
 
 ### Mailing list
 
-You can subscribe to the cosivina mailing list at
-https://mailman.ini/ruhr-uni-bochum.de/listinfor/ini_cosivina
+You can subscribe to the cosivina mailing list at  
+https://mailman.ini/ruhr-uni-bochum.de/listinfor/ini_cosivina  
 to keep you updated on this framework.
 
 ### JSONlab
 
-JSONlab is a separate toolbox to encode and decode files in JSON format under Matlab. It is used in cosivina to store parameter files in a format that is capable of representing complex parameter structures, but still easily readable for humans. You can use all other functionality of cosivina without JSONlab, but will only receive a warning message when trying to save or load a parameter file. JSONlab was developed by Qianqian Fang and is published under the BSD license or GPLv3 license (see license files for details). JSONlab is hosted on sourceforge, you can find all versions and a documentation here:
-http://iso2mesh.sourceforge.net/jsonlab
+JSONlab is a separate toolbox to encode and decode files in JSON format under Matlab. It is used in cosivina to store parameter files in a format that is capable of representing complex parameter structures, but still easily readable for humans. You can use all other functionality of cosivina without JSONlab, but will only receive a warning message when trying to save or load a parameter file. JSONlab was developed by Qianqian Fang and is published under the BSD license or GPLv3 license (see license files for details). JSONlab is hosted on sourceforge, you can find all versions and a documentation here:  
+http://iso2mesh.sourceforge.net/jsonlab  
 Cosivina has been tested with JSONlab versions 0.9.1 to 1.1. (Note: Using version 0.9.0 or earlier can cause errors when loading parameters for certain architecture elements.)
 
 ### Compatibility with earlier version of Matlab
 
 The full functionality of the framework is supported by Matlab R2011a and later. Compatibility with Matlab R2009a and later can be achieved through a small modification: In the file base/Element.m, replace the first line
 
-  classdef Element < matlab.mixin.Copyable
+    classdef Element < matlab.mixin.Copyable
 
 by
 
-  classdef Element < handle
+    classdef Element < handle
 
 With this modification, there is no longer a straightforward way to create a copy of an element (rather than the element handle). This functionality is not required for basic use of the framework, including creation and use of GUIs (see documentation for further information).
 
