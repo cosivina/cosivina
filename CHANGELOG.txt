@@ -1,5 +1,8 @@
 CHANGELOG
 
+* added optional argument to Simulator::loadSettings function to allow loading 
+  of changeable parameters only 
+
 Version 1.3
 * added new example launcherCoupling3D
 * added visualization TilePlot for 3D and 4D inputs

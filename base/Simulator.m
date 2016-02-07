@@ -582,14 +582,23 @@ classdef Simulator < handle
     
     
     % load settings from file in JSON format (keeps elements and connections the same)
-    function success = loadSettings(obj, filename)
+    function success = loadSettings(obj, filename, parameters)
+      changeableOnly = false;
+      if nargin >= 3 
+        if strcmpi(parameters, 'changeable')
+          changeableOnly = true;
+        elseif ~strcmpi(parameters, 'all')
+          error('Simulator:loadSettings:invalidArgument', ...
+            'Argument ''parameters'' must be either ''all'' or ''changeable''.');
+        end
+      end
       fid = fopen(filename, 'r');
       if fid == -1
         success = false;
       else
         str = fscanf(fid, '%c');
         jsonStruct = loadjson(str);
-        obj.parametersFromStruct(jsonStruct.simulator);
+        obj.parametersFromStruct(jsonStruct.simulator, changeableOnly);
         fclose(fid);
         success = true;
       end
@@ -641,7 +650,11 @@ classdef Simulator < handle
     
     
     % set parameters from json-compatible struct, keeping the existing elements and connections
-    function obj = parametersFromStruct(obj, simStruct)
+    function obj = parametersFromStruct(obj, simStruct, changeableOnly)
+      if nargin < 3
+        changeableOnly = false;
+      end
+      
       if ~iscell(simStruct.elements) % for compatibility with JSONlab 0.9.1
         simStruct.elements = num2cell(simStruct.elements);
       end
@@ -659,7 +672,8 @@ classdef Simulator < handle
         else
           paramNames = obj.elements{iHandle}.getParameterList;
           for j = 1 : length(paramNames)
-            if isfield(simStruct.elements{i}.param, paramNames{j})
+            if isfield(simStruct.elements{i}.param, paramNames{j}) && (~changeableOnly ...
+                || ParameterStatus.isChangeable(obj.elements{iHandle}.getParamChangeStatus(paramNames{j})))
               obj.elements{iHandle}.(paramNames{j}) = simStruct.elements{i}.param.(paramNames{j});
             end
           end
