@@ -61,7 +61,10 @@
 % copy() - create copy of the simulator object and all its elements
 % saveSettings(filename) - saves architecture settings to file in JSON
 %   format
-% loadSettings(filename) - load full architecture from file in JSON format
+% loadSettings(filename, parameters) - load parameter settings from file in 
+%   JSON format; optional argument parameters can be either 'all' (overwrite 
+%   all parameters; default) or 'changeable' (overwrite only parameters that 
+%   can be changed in GUI)
 
 
 classdef Simulator < handle
