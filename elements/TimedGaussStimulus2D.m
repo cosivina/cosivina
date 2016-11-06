@@ -82,7 +82,7 @@ classdef TimedGaussStimulus2D < Element
         obj.normalized = normalized;
       end
       
-      if size(onTimes, 2) ~= 2 %#ok<CPROP>
+      if size(obj.onTimes, 2) ~= 2 %#ok<CPROP>
         error('TimedGaussStimulus2D:constructor:invalidArgument', 'Argument onTimes must be an Nx2 matrix.');
       end
       if numel(obj.size) == 1

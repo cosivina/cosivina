@@ -43,7 +43,7 @@ classdef TimedCustomStimulus < Element
         obj.stimulusPattern = stimulusPattern;
         obj.onTimes = onTimes;
       end
-      if size(onTimes, 2) ~= 2 %#ok<CPROP>
+      if size(obj.onTimes, 2) ~= 2 %#ok<CPROP>
         error('TimedCustomStimulus:constructor:invalidArgument', 'Argument onTimes must be an Nx2 matrix.');
       end
     end
