@@ -5,9 +5,9 @@ An open source toolbox for MATLAB
 
 Version 1.3
 Written by Sebastian Schneegans at the Institut für Neuroinformatik,
-Ruhr-Universität Bochum, Germany. Last updated 2015-10-30.
+Ruhr-Universität Bochum, Germany.
 
-Copyright (c) 2012-2015 Sebastian Schneegans <Sebastian@Schneegans.de>
+Copyright (c) 2012-2017 Sebastian Schneegans <Sebastian@Schneegans.de>
 Published under the Simplified BSD License (see LICENSE_BSD.txt)
 
 
