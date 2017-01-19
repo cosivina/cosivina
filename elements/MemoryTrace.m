@@ -63,7 +63,7 @@ classdef MemoryTrace < Element
     % step function
     function obj = step(obj, time, deltaT) %#ok<INUSD>
       obj.activeRegions = obj.inputElements{1}.(obj.inputComponents{1}) > obj.threshold;
-      if any(any(obj.activeRegions))
+      if any(obj.activeRegions(:))
         obj.output = obj.output ...
           + 1/obj.tauBuild * (-obj.output + obj.inputElements{1}.(obj.inputComponents{1})) .* obj.activeRegions ...
           + 1/obj.tauDecay * (-obj.output) .* ~obj.activeRegions;
