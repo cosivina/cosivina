@@ -1,5 +1,6 @@
 CHANGELOG
 
+* added element TimedBoost
 * added optional argument to Simulator::loadSettings function to allow loading 
   of changeable parameters only 
 

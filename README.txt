@@ -7,7 +7,7 @@ Version 1.3
 Written by Sebastian Schneegans at the Institut für Neuroinformatik,
 Ruhr-Universität Bochum, Germany.
 
-Copyright (c) 2012-2017 Sebastian Schneegans <Sebastian@Schneegans.de>
+Copyright (c) 2012-2018 Sebastian Schneegans <Sebastian@Schneegans.de>
 Published under the Simplified BSD License (see LICENSE_BSD.txt)
 
 
