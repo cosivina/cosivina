@@ -5,7 +5,8 @@
 % Constructor call:
 % TimedGaussStimulus1D(label, amplitude, onTimes)
 %   label - element label
-%   amplitude - amplitude of boost stimulus
+%   amplitude - amplitude of boost stimulus (can be either a scalar, or an Nx1
+%     vector to obtain different amplitudes for different time periods)
 %   onTimes - Nx2 matrix of the form [tStart1, tEnd1; ...; tStartN, tEndN];
 %     stimulus is on at simulation time t if tStartK <= t <= tEndK for
 %     any K
@@ -13,7 +14,7 @@
 classdef TimedBoost < Element
   
   properties (Constant)
-    parameters = struct('amplitude', ParameterStatus.InitStepRequired, ...
+    parameters = struct('amplitude', bitor(ParameterStatus.InitStepRequired, ParameterStatus.VariableRowsMatrix), ...
       'onTimes', bitor(ParameterStatus.Changeable, ParameterStatus.VariableRowsMatrix));
     components = {'output'};
     defaultOutputComponent = 'output';
@@ -25,6 +26,7 @@ classdef TimedBoost < Element
     onTimes = zeros(0, 2);
     
     on = false;
+    activeTimePeriod = NaN;
     
     % accessible structures
     output
@@ -46,20 +48,25 @@ classdef TimedBoost < Element
       if size(obj.onTimes, 2) ~= 2
         error('TimedBoost:constructor:invalidArgument', 'Argument onTimes must be an Nx2 matrix.');
       end
+      if size(obj.amplitude, 2) ~= 1 || size(obj.amplitude, 1) > 1 && size(obj.amplitude, 1) ~= size(obj.onTimes, 1)
+        error('TimedBoost:constructor:invalidArgument', ...
+            'Argument amplitude must be a scalar or a column vector with number of rows matching onTimes');
+      end
     end
     
     
     % step function
     function obj = step(obj, time, deltaT) %#ok<INUSD>
-%       shouldBeOn = any(time >= obj.onTimes(:, 1) & time <= obj.onTimes(:, 2));
       i = find(time >= obj.onTimes(:, 1) & time <= obj.onTimes(:, 2), 1);
       shouldBeOn = ~isempty(i);
-      if ~obj.on && shouldBeOn
-        obj.output = obj.amplitude(i);
+      if shouldBeOn && (~obj.on || obj.activeTimePeriod ~= i)
+        obj.output = obj.amplitude(min(i, size(obj.amplitude, 1)));
         obj.on = true;
-      elseif obj.on && ~shouldBeOn
+        obj.activeTimePeriod = i;
+      elseif ~shouldBeOn && obj.on
         obj.output = 0;
         obj.on = false;
+        obj.activeTimePeriod = NaN;
       end
     end
     
@@ -68,6 +75,7 @@ classdef TimedBoost < Element
     function obj = init(obj)
       obj.output = 0;
       obj.on = false;
+      obj.activeTimePeriod = NaN;
     end
   end
   
