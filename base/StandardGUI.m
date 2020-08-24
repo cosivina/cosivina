@@ -310,7 +310,7 @@ classdef StandardGUI < handle
       
       % load
       if obj.loadParameters
-        if loadParametersFromFile(obj);
+        if loadParametersFromFile(obj)
           init(obj.simulatorHandle);
           updateControls = true;
         end

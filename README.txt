@@ -7,7 +7,7 @@ Version 1.3
 Written by Sebastian Schneegans at the Institut für Neuroinformatik,
 Ruhr-Universität Bochum, Germany.
 
-Copyright (c) 2012-2018 Sebastian Schneegans <Sebastian@Schneegans.de>
+Copyright (c) 2012-2020 Sebastian Schneegans <Sebastian@Schneegans.de>
 Published under the Simplified BSD License (see LICENSE_BSD.txt)
 
 
@@ -17,14 +17,14 @@ Cosivina is a free object-oriented framework to construct dynamic field architec
 
 It includes a number of example architectures that are also available in compiled form for those who do not have Matlab available. These examples form the basis for most exercises in the book "Dynamic Thinking - A Primer on Dynamic Field Theory". For more information on the book and Dynamic Field Theory in general, please visit http://www.dynamicfieldtheory.org.
 
-The cosivina framework is hosted as mercurial repository on bitbucket:
-https://butbucket.org/sschneegans/cosivina
-You can clone the repository and keep it updated from there, or download the latest version as zip file. A full documentation ( https://bitbucket.org/sschneegans/cosivina/downloads/documentation_v1_3.pdf ) for cosivina is available in pdf format. You can also view the documentation online as a wiki ( https://bitbucket.org/sschneegans/cosivina/wiki/Home ).
+The cosivina framework is hosted as git repository on github:
+https://github.com/sschneegans/cosivina.git
+You can clone the repository and keep it updated from there, or download the latest version as zip file. A full documentation for cosivina is available in pdf format. You can also view the documentation online as a wiki.
 
 
 QUICK INSTALLATION FOR MATLAB
 
-- Download the two zip archives for cosivina ( https://bitbucket.org/sschneegans/cosivina/get/tip.zip ) and JSONlab ( https://bitbucket.org/sschneegans/cosivina/downloads/jsonlab-1.1.zip ) (JSONlab is an additional toolbox used to save and load parameter files, see below for details).
+- Pull the repository, or download the two zip archives for cosivina and JSONlab (JSONlab is an additional toolbox used to save and load parameter files, see below for details).
 - Unpack both zip archives in a folder of your choice. (Note: The automatically generated zip archive for cosivina and the folder created when unpacking it have somewhat unwieldy names specifying the author and the exact version; I suggest you simply rename that folder to 'cosivina' after unpacking.)
 - Open Matlab, navigate to the cosivina folder (using the 'cd' command or the directory navigation bar), and run the function 'setpath' to add the cosivina and jsonlab folders to the matlab path.
 - To test cosivina, run one of the example scripts, such as 'launcherOneLayerField.m'. This should open a GUI window with plots and control buttons.
