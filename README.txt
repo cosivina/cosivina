@@ -17,8 +17,9 @@ Cosivina is a free object-oriented framework to construct dynamic field architec
 
 It includes a number of example architectures that are also available in compiled form for those who do not have Matlab available. These examples form the basis for most exercises in the book "Dynamic Thinking - A Primer on Dynamic Field Theory". For more information on the book and Dynamic Field Theory in general, please visit http://www.dynamicfieldtheory.org.
 
-The cosivina framework is hosted as git repository on github:
+The cosivina framework is hosted as git repository on github and bitbucket:
 https://github.com/sschneegans/cosivina
+https://bitbucket.org/sschneegans/cosivina
 You can clone the repository and keep it updated from there, or download the latest version as zip file. A full documentation for cosivina is available in pdf format. You can also view the documentation online as a wiki.
 
 
