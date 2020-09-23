@@ -125,7 +125,7 @@ sim.addElement(ScaleInput('scale ior_s -> atn_sa', fieldSize_spt, 1), 'ior_s -> 
 sim.addElement(ScaleInput('cos -> ior_s', 1, 0), 'cos', [], 'ior_s');
 sim.addElement(ScaleInput('cos -> atn_c', 1, 0), 'cos', [], ...
   cellstr([repmat('atn_c', [nFeatures, 1]), num2str((1:nFeatures)')]));
-sim.addElement(ScaleInput('cos -> atn_sr', 1, 0), 'cos', [], 'atn_sa');
+sim.addElement(ScaleInput('cos -> atn_sr', 1, 0), 'cos', [], 'atn_sr');
 sim.addElement(ScaleInput('cos -> atn_sa', 1, 0), 'cos', [], 'atn_sa');
 sim.addElement(ScaleInput('cos -> atn_f', 1, 0), 'cos', [], ...
   cellstr([repmat('atn_f', [nFeatures, 1]), num2str((1:nFeatures)')]));

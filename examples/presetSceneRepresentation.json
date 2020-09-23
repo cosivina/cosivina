@@ -208,6 +208,10 @@
 						"label": "vis_f2 -> atn_sr",
 						"component": "output"
 					},
+          {
+						"label": "cos -> atn_sr",
+						"component": "output"
+					},
 					{
 						"label": "i1 for atn_sr",
 						"component": "output"
@@ -313,10 +317,6 @@
 					},
 					{
 						"label": "scale ior_s -> atn_sa",
-						"component": "output"
-					},
-					{
-						"label": "cos -> atn_sr",
 						"component": "output"
 					},
 					{
