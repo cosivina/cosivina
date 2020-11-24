@@ -21,7 +21,7 @@
 classdef CustomStimulusSequence < Element
   
   properties (Constant)
-    parameters = struct('size', ParameterStatus.Fixed, 'stimulusPatterns', ParameterStatus.Fixed, ...
+    parameters = struct('stimulusSize', ParameterStatus.Fixed, 'stimulusPatterns', ParameterStatus.Fixed, ...
       'startTimes', ParameterStatus.Fixed);
     components = {'output'};
     defaultOutputComponent = 'output';
