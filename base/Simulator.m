@@ -482,7 +482,7 @@ classdef Simulator < handle
         value = obj.elements{i}.(parameterName);
       else
         error('Simulation:getElementParameter:invalidParameter', ...
-          'Invalid parameter ''%s'' for element ''%''s in simulator object.', parameterName, elementLabel);
+          'Invalid parameter ''%s'' for element ''%s'' in simulator object.', parameterName, elementLabel);
       end
     end
     

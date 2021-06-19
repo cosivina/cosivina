@@ -27,8 +27,7 @@
 classdef LFP < Element
   
   properties (Constant)
-    parameters = struct('size', ParameterStatus.Fixed, 'timeSlots', ParameterStatus.Fixed, ...
-      'interval', ParameterStatus.Fixed);
+    parameters = struct('timeSlots', ParameterStatus.Fixed, 'interval', ParameterStatus.Fixed);
     components = {'output', 'flipoutput'};
     defaultOutputComponent = 'output';
   end
