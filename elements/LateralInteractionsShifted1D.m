@@ -15,7 +15,7 @@
 %   amplitudeInh - amplitude of inhibitory Gaussian
 %   amplitudeGlobal - amplitude of global component
 %   shift - amount by which the center of Gaussian kernel components is
-%     is shifted relative to the center of the kernel
+%     shifted relative to the center of the kernel
 %   circular - flag indicating whether convolution is circular (default is
 %     true)
 %   normalized - flag indicating whether local kernel components are

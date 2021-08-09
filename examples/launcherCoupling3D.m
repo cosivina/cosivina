@@ -41,15 +41,14 @@ sim.addElement(KernelFFT('v -> v', [sizeY, sizeX, sizeZ], [sigmaExcXY, sigmaExcX
 sim.addElement(SumDimension('sum v (color)', [1, 2], sizeZ), 'field v');
 sim.addElement(GaussKernel1D('v -> c', sizeZ, sigmaExcZ, 0, true), 'sum v (color)', [], 'field c');
 sim.addElement(GaussKernel1D('c -> v', sizeZ, sigmaExcZ, 0, true), 'field c');
-sim.addElement(ExpandDimension('expand c -> v', sizeZ, [sizeY, sizeX, sizeZ], 3), 'c -> v', [], 'field v');
+sim.addElement(ExpandDimension('expand c -> v', sizeZ, [1, 1, sizeZ], 3), 'c -> v', [], 'field v');
 
 % interactions between field v and field s
 sim.addElement(SumDimension('sum v (spatial)', 3, [sizeY, sizeX]), 'field v');
 sim.addElement(GaussKernel2D('v -> s', [sizeY, sizeX], sigmaExcXY, sigmaExcXY, 0, false, false), ...
   'sum v (spatial)', [], 'field s');
-sim.addElement(GaussKernel2D('s -> v', [sizeY, sizeX], sigmaExcXY, sigmaExcXY, 0, false, false), 'field s');
-sim.addElement(ExpandDimension('expand s -> v', [sizeY, sizeX], [sizeY, sizeX, sizeZ], [1, 2]), ...
-  's -> v', [], 'field v');
+sim.addElement(GaussKernel2D('s -> v', [sizeY, sizeX], sigmaExcXY, sigmaExcXY, 0, false, false), ...
+  'field s', [], 'field v');
 
 
 %% setting up the GUI

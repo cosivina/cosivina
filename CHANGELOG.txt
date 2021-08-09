@@ -1,5 +1,13 @@
 CHANGELOG
 
+Version 1.4
+* added element Transpose, updated class help and changed examples to omit 
+  obsolete ExpandDimension elements
+* added FastFourierTransform and KernelInverseFFT
+* added auxiliary function switchToFFT
+* updated documentation to address changes wrt ExpandDimension and FFT kernels
+* updated Simulator help text to include stepWith and runWithTimer
+* added element LateralInteractionsShifted1D
 * added element TimedBoost
 * added optional argument to Simulator::loadSettings function to allow loading 
   of changeable parameters only 

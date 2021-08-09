@@ -39,6 +39,10 @@
 % Methods for debugging:
 % tryInit() - like init, but with additional information if errors occur
 % tryStep() - like step, but with additional information if errors occur
+% stepWithTimer() - like step, but measures computation time of each element 
+%   and returns the result as a vector T; to view the results in a readable 
+%   format, use e.g. table(sim.elementLabels', T)
+% runWithTimer() - like run, but measures computation time of each element
 %
 % Methods for accessing elements:
 % isElements(label) - checks whether a string is an existing element label

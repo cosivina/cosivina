@@ -1,6 +1,5 @@
-% same architecture as V8, but implemented using LateralInteractions2D
-% element
-
+% Updated implementation using KernelFFT for visual and scene working memory
+% fields, and omitting ExpandDimension2D
 
 %% setting up the architecture (fields, interactions, and inputs)
 
@@ -57,41 +56,29 @@ for i = 1 : nFeatures
   n = num2str(i);
   
   % lateral connections and output sums for visual field
-  sim.addElement(LateralInteractions2D(['vis_f' n ' -> vis_f' n], [fieldSize_ftr, fieldSize_spt], ...
-    sigma_exc, sigma_exc, 7.5, sigma_inh, sigma_inh, 7.5, -0.002, true, true, true, kcf), ...
+  % sim.addElement(LateralInteractions2D(['vis_f' n ' -> vis_f' n], [fieldSize_ftr, fieldSize_spt], ...
+  %   sigma_exc, sigma_exc, 7.5, sigma_inh, sigma_inh, 7.5, -0.002, true, true, true, kcf), ...
+  %   ['vis_f' n], [], ['vis_f' n]);
+  sim.addElement(KernelFFT(['vis_f' n ' -> vis_f' n], [fieldSize_ftr, fieldSize_spt], ...
+    [sigma_exc, sigma_exc], 7.5, [sigma_inh, sigma_inh], 7.5, -0.002, [true, true], true), ...
     ['vis_f' n], [], ['vis_f' n]);
-%   sim.addElement(GaussKernel2D(['vis_f' n ' -> vis_f' n ' (exc.)'], [fieldSize_ftr, fieldSize_spt], ...
-%     sigma_exc, sigma_exc, 0, true, true, true, kcf), ['vis_f' n], [], ['vis_f' n]);
-%   sim.addElement(GaussKernel2D(['vis_f' n ' -> vis_f' n ' (inh.)'], [fieldSize_ftr, fieldSize_spt], ...
-%     sigma_inh, sigma_inh, 0, true, true, true, kcf), ['vis_f' n], [], ['vis_f' n]);
-%   sim.addElement(SumAllDimensions(['sum vis_f' n], [fieldSize_ftr, fieldSize_spt]), ['vis_f', n]);
-%   sim.addElement(ScaleInput(['vis_f' n ' -> vis_f' n ' (global)'], 1, 0), ['sum vis_f' n], 'fullSum', ['vis_f' n]);
+  sim.addElement(SumAllDimensions(['sum vis_f' n], [fieldSize_ftr, fieldSize_spt]), ['vis_f' n]);
   
   % lateral connections and output sums for 2d selection field
   sim.addElement(LateralInteractions2D(['atn_c' n ' -> atn_c' n], [fieldSize_ftr, fieldSize_spt], ...
     sigma_exc, sigma_exc, 2.5, 0, 0, 0, -0.0175, true, true, true, kcf), ...
     ['atn_c' n], [], ['atn_c' n]);
-%   sim.addElement(GaussKernel2D(['atn_c' n ' -> atn_c' n ' (exc.)'], [fieldSize_ftr, fieldSize_spt], ...
-%     sigma_exc, sigma_exc, 0, true, true, true, kcf), ['atn_c' n], [], ['atn_c' n]);
-% %   sim.addElement(GaussKernel2D(['atn_c' n ' -> atn_c' n ' (inh.)'], [fieldSize_ftr, fieldSize_spt], ...
-% %     sigma_inh, sigma_inh, 0, true, true, true, kcf), ['atn_c' n], [], ['atn_c' n]);
-%   sim.addElement(SumAllDimensions(['sum atn_c' n], [fieldSize_ftr, fieldSize_spt]), ['atn_c', n]);
-%   sim.addElement(ScaleInput(['atn_c' n ' -> atn_c' n ' (global)'], 1, 0), ['sum atn_c' n], 'fullSum', ['atn_c' n]);
   
   % lateral connections and output sums for association memory fields
-  sim.addElement(LateralInteractions2D(['wm_c' n ' -> wm_c' n], [fieldSize_ftr, fieldSize_spt], ...
-    sigma_exc, sigma_exc, 25, sigma_inh, sigma_inh, 27.5, 0, true, true, true, kcf), ...
+  % sim.addElement(LateralInteractions2D(['wm_c' n ' -> wm_c' n], [fieldSize_ftr, fieldSize_spt], ...
+  %   sigma_exc, sigma_exc, 25, sigma_inh, sigma_inh, 27.5, 0, true, true, true, kcf), ...
+  %   ['wm_c' n], [], ['wm_c' n]);
+  sim.addElement(KernelFFT(['wm_c' n ' -> wm_c' n], [fieldSize_ftr, fieldSize_spt], ...
+    [sigma_exc, sigma_exc], 25, [sigma_inh, sigma_inh], 27.5, 0, [true, true], true), ...
     ['wm_c' n], [], ['wm_c' n]);
-%   sim.addElement(GaussKernel2D(['wm_c' n ' -> wm_c' n ' (exc.)'], [fieldSize_ftr, fieldSize_spt], ...
-%     sigma_exc, sigma_exc, 0, true, true, true, kcf), ['wm_c' n], [], ['wm_c' n]);
-%   sim.addElement(GaussKernel2D(['wm_c' n ' -> wm_c' n ' (inh.)'], [fieldSize_ftr, fieldSize_spt], ...
-%     sigma_inh, sigma_inh, 0, true, true, true, kcf), ['wm_c' n], [], ['wm_c' n]);
-%   sim.addElement(SumAllDimensions(['sum wm_c' n], [fieldSize_ftr, fieldSize_spt]), ['wm_c', n]);
-%   sim.addElement(ScaleInput(['wm_c' n ' -> wm_c' n ' (global)'], 1, 0), ['sum wm_c' n], 'fullSum', ['wm_c' n]);
+  sim.addElement(SumAllDimensions(['sum wm_c' n], [fieldSize_ftr, fieldSize_spt]), ['wm_c' n]);
   sim.addElement(ScaleInput(['wm_c' n ' -> wm_c' n ' (global/feature)'], [1, fieldSize_spt], 0), ...
-    ['wm_c' n ' -> wm_c' n], 'verticalSum');
-  sim.addElement(ExpandDimension2D(['expand wm_c' n ' -> wm_c' n ' (global/feature)'], ...
-    1, [fieldSize_ftr, fieldSize_spt]), ['wm_c' n ' -> wm_c' n ' (global/feature)'], [], ['wm_c' n]);
+    ['sum wm_c' n], 'verticalSum', ['wm_c' n]);
   
   % lateral connections for 1D fields
   sim.addElement(LateralInteractions1D(['atn_f' n ' -> atn_f' n], fieldSize_ftr, sigma_exc, 0, sigma_inh, 0, 0, ...
@@ -110,9 +97,8 @@ end
 % from spatial attention (retinal) field
 sim.addElement(GaussKernel1D('atn_sr -> atn_sa', fieldSize_spt, sigma_exc, 0, true, true, kcf), 'atn_sr');
 sim.addElement(ScaleInput('scale atn_sr -> atn_sa', fieldSize_spt, 1), 'atn_sr -> atn_sa', [], 'atn_sa');
-sim.addElement(GaussKernel1D('atn_sr -> vis_f', fieldSize_spt, sigma_exc, 0, true, true, kcf), 'atn_sr');
-sim.addElement(ExpandDimension2D('expand atn_sr -> vis_f', 1, [fieldSize_ftr, fieldSize_spt]), ...
-  'atn_sr -> vis_f', [], cellstr([repmat('vis_f', [nFeatures, 1]), num2str((1:nFeatures)')]));
+sim.addElement(GaussKernel1D('atn_sr -> vis_f', fieldSize_spt, sigma_exc, 0, true, true, kcf), ...
+    'atn_sr', [], cellstr([repmat('vis_f', [nFeatures, 1]), num2str((1:nFeatures)')]));
 sim.addElement(GaussKernel1D('atn_sr -> ior_s', fieldSize_spt, sigma_exc, 0, true, true, kcf), 'atn_sr', [], 'ior_s');
 
 % from inhibition of return field
@@ -136,26 +122,22 @@ sim.addElement(ScaleInput('scale atn_sa -> atn_sr', fieldSize_spt, 1), 'atn_sa -
 sim.addElement(GaussKernel1D('atn_sa -> con_s', fieldSize_spt, sigma_exc, 0, true, true, kcf), 'atn_sa', [], 'con_s');
 sim.addElement(GaussKernel1D('atn_sa -> wm_s', fieldSize_spt, sigma_exc, 0, true, true, kcf), 'atn_sa', [], 'wm_s');
 
-sim.addElement(GaussKernel1D('atn_sa -> wm_c', fieldSize_spt, sigma_exc, 0, true, true, kcf), 'atn_sa');
-sim.addElement(ExpandDimension2D('expand atn_sa -> wm_c', 1, [fieldSize_ftr, fieldSize_spt]), ...
-  'atn_sa -> wm_c', [], cellstr([repmat('wm_c', [nFeatures, 1]), num2str((1:nFeatures)')]));
-sim.addElement(GaussKernel1D('atn_sa -> atn_c', fieldSize_spt, sigma_exc, 0, true, true, kcf), 'atn_sa');
-sim.addElement(ExpandDimension2D('expand atn_sa -> atn_c', 1, [fieldSize_ftr, fieldSize_spt]), ...
-  'atn_sa -> atn_c', [], cellstr([repmat('atn_c', [nFeatures, 1]), num2str((1:nFeatures)')]));
+sim.addElement(GaussKernel1D('atn_sa -> wm_c', fieldSize_spt, sigma_exc, 0, true, true, kcf), ...
+    'atn_sa', [], cellstr([repmat('wm_c', [nFeatures, 1]), num2str((1:nFeatures)')]));
+sim.addElement(GaussKernel1D('atn_sa -> atn_c', fieldSize_spt, sigma_exc, 0, true, true, kcf), ...
+    'atn_sa', [], cellstr([repmat('atn_c', [nFeatures, 1]), num2str((1:nFeatures)')]));
 
 % from contrast (spatial) field
 sim.addElement(GaussKernel1D('con_s -> atn_sa', fieldSize_spt, sigma_exc, 0, true, true, kcf), 'con_s', [], 'atn_sa');
 sim.addElement(GaussKernel1D('con_s -> wm_s', fieldSize_spt, sigma_exc, 0, true, true, kcf), 'con_s', [], 'wm_s');
-sim.addElement(GaussKernel1D('con_s -> atn_c', fieldSize_spt, sigma_exc, 0, true, true, kcf), 'con_s');
-sim.addElement(ExpandDimension2D('expand con_s -> atn_c', 1, [fieldSize_ftr, fieldSize_spt]), ...
-  'con_s -> atn_c', [], cellstr([repmat('atn_c', [nFeatures, 1]), num2str((1:nFeatures)')]));
+sim.addElement(GaussKernel1D('con_s -> atn_c', fieldSize_spt, sigma_exc, 0, true, true, kcf), ...
+    'con_s', [], cellstr([repmat('atn_c', [nFeatures, 1]), num2str((1:nFeatures)')]));
 
 % from working memory (spatial)
 sim.addElement(GaussKernel1D('wm_s -> con_s', fieldSize_spt, sigma_exc, 0, true, true, kcf), 'wm_s', [], 'con_s');
 sim.addElement(GaussKernel1D('wm_s -> atn_sa', fieldSize_spt, sigma_exc, 0, true, true, kcf), 'wm_s', [], 'atn_sa');
-sim.addElement(GaussKernel1D('wm_s -> wm_c', fieldSize_spt, sigma_exc, 0, true, true, kcf), 'wm_s');
-sim.addElement(ExpandDimension2D('expand wm_s -> wm_c', 1, [fieldSize_ftr, fieldSize_spt]), ...
-  'wm_s -> wm_c', [], cellstr([repmat('wm_c', [nFeatures, 1]), num2str((1:nFeatures)')]));
+sim.addElement(GaussKernel1D('wm_s -> wm_c', fieldSize_spt, sigma_exc, 0, true, true, kcf), ...
+    'wm_s', [], cellstr([repmat('wm_c', [nFeatures, 1]), num2str((1:nFeatures)')]));
 
 
 for i = 1 : nFeatures
@@ -163,23 +145,23 @@ for i = 1 : nFeatures
   
   % from visual field
   sim.addElement(GaussKernel1D(['vis_f' n ' -> atn_sr'], fieldSize_spt, sigma_exc, 0, true, true, kcf), ...
-    ['vis_f' n ' -> vis_f' n], 'verticalSum', 'atn_sr');
+    ['sum vis_f' n], 'verticalSum', 'atn_sr');
   sim.addElement(GaussKernel1D(['vis_f' n ' -> ior_s'], fieldSize_spt, sigma_exc, 0, true, true, kcf), ...
-    ['vis_f' n ' -> vis_f' n], 'verticalSum', 'ior_s');
+    ['sum vis_f' n], 'verticalSum', 'ior_s');
   sim.addElement(GaussKernel1D(['vis_f' n ' -> con_s'], fieldSize_spt, sigma_exc, 0, true, true, kcf), ...
-    ['vis_f' n ' -> vis_f' n], 'verticalSum', 'con_s');
+    ['sum vis_f' n], 'verticalSum', 'con_s');
   sim.addElement(GaussKernel1D(['vis_f' n ' -> wm_s'], fieldSize_spt, sigma_exc, 0, true, true, kcf), ...
-    ['vis_f' n ' -> vis_f' n], 'verticalSum', 'wm_s');
+    ['sum vis_f' n], 'verticalSum', 'wm_s');
   sim.addElement(GaussKernel1D(['vis_f' n ' -> atn_f' n], fieldSize_ftr, sigma_exc, 0, true, true, kcf), ...
-    ['vis_f' n ' -> vis_f' n], 'horizontalSum', ['atn_f' n]);
+    ['sum vis_f' n], 'horizontalSum', ['atn_f' n]);
   sim.addElement(GaussKernel1D(['vis_f' n ' -> con_f' n], fieldSize_ftr, sigma_exc, 0, true, true, kcf), ...
-    ['vis_f' n ' -> vis_f' n], 'horizontalSum', ['con_f' n]);
+    ['sum vis_f' n], 'horizontalSum', ['con_f' n]);
   sim.addElement(GaussKernel1D(['vis_f' n ' -> wm_f' n], fieldSize_ftr, sigma_exc, 0, true, true, kcf), ...
-    ['vis_f' n ' -> vis_f' n], 'horizontalSum', ['wm_f' n]);
+    ['sum vis_f' n], 'horizontalSum', ['wm_f' n]);
   
   % from feature attention field
   sim.addElement(GaussKernel1D(['atn_f' n ' -> vis_f' n], fieldSize_ftr, sigma_exc, 0, true, true, kcf), ['atn_f' n]);
-  sim.addElement(ExpandDimension2D(['expand atn_f' n ' -> vis_f' n], 2, [fieldSize_ftr, fieldSize_spt]), ...
+  sim.addElement(Transpose(['transpose atn_f' n ' -> vis_f' n], [fieldSize_ftr, 1]), ...
     ['atn_f' n ' -> vis_f' n], [], ['vis_f' n]);
   
   sim.addElement(GaussKernel1D(['atn_f' n ' -> con_f' n], fieldSize_ftr, sigma_exc, 0, true, true, kcf), ...
@@ -188,21 +170,21 @@ for i = 1 : nFeatures
     ['atn_f' n], [], ['wm_f' n]);
   
   sim.addElement(GaussKernel1D(['atn_f' n ' -> atn_c' n], fieldSize_ftr, sigma_exc, 0, true, true, kcf), ['atn_f' n]);
-  sim.addElement(ExpandDimension2D(['expand atn_f' n ' -> atn_c' n], 2, [fieldSize_ftr, fieldSize_spt]), ...
+  sim.addElement(Transpose(['transpose atn_f' n ' -> atn_c' n], [fieldSize_ftr, 1]), ...
     ['atn_f' n ' -> atn_c' n], [], ['atn_c' n]);
   
   sim.addElement(GaussKernel1D(['atn_f' n ' -> wm_c' n], fieldSize_ftr, sigma_exc, 0, true, true, kcf), ['atn_f' n]);
-  sim.addElement(ExpandDimension2D(['expand atn_f' n ' -> wm_c' n], 2, [fieldSize_ftr, fieldSize_spt]), ...
+  sim.addElement(Transpose(['transpose atn_f' n ' -> wm_c' n], [fieldSize_ftr, 1]), ...
     ['atn_f' n ' -> wm_c' n], [], ['wm_c' n]);
   
-  % from perceptual intention (feature) field
+  % from contrast (feature) field
   sim.addElement(GaussKernel1D(['con_f' n ' -> atn_f' n], fieldSize_ftr, sigma_exc, 0, true, true, kcf), ...
     ['con_f' n], [], ['atn_f' n]);
   sim.addElement(GaussKernel1D(['con_f' n ' -> wm_f' n], fieldSize_ftr, sigma_exc, 0, true, true, kcf), ...
     ['con_f' n], [], ['wm_f' n]);
   
   sim.addElement(GaussKernel1D(['con_f' n ' -> atn_c' n], fieldSize_ftr, sigma_exc, 0, true, true, kcf), ['con_f' n]);
-  sim.addElement(ExpandDimension2D(['expand con_f' n ' -> atn_c' n], 2, [fieldSize_ftr, fieldSize_spt]), ...
+  sim.addElement(Transpose(['transpose con_f' n ' -> atn_c' n], [fieldSize_ftr, 1]), ...
     ['con_f' n ' -> atn_c' n], [], ['atn_c' n]);
   
   % from working memory memory (feature) field
@@ -212,7 +194,7 @@ for i = 1 : nFeatures
     ['wm_f' n], [], ['atn_f' n]);
   
   sim.addElement(GaussKernel1D(['wm_f' n ' -> wm_c' n], fieldSize_ftr, sigma_exc, 0, true, true, kcf), ['wm_f' n]);
-  sim.addElement(ExpandDimension2D(['expand wm_f' n ' -> wm_c' n], 2, [fieldSize_ftr, fieldSize_spt]), ...
+  sim.addElement(Transpose(['transpose wm_f' n ' -> wm_c' n], [fieldSize_ftr, 1]), ...
     ['wm_f' n ' -> wm_c' n], [], ['wm_c' n]);
 
   % from feature selection field
@@ -238,9 +220,9 @@ for i = 1 : nFeatures
     
   % from integrated working memory field
   sim.addElement(GaussKernel1D(['wm_c' n ' -> wm_s'], fieldSize_spt, sigma_exc, 0, true, true, kcf), ...
-    ['wm_c' n ' -> wm_c' n], 'verticalSum', 'wm_s');
+    ['sum wm_c' n], 'verticalSum', 'wm_s');
   sim.addElement(GaussKernel1D(['wm_c' n ' -> wm_f' n], fieldSize_ftr, sigma_exc, 0, true, true, kcf), ...
-    ['wm_c' n ' -> wm_c' n], 'horizontalSum', ['wm_f' n]);
+    ['sum wm_c' n], 'horizontalSum', ['wm_f' n]);
   sim.addElement(GaussKernel2D(['wm_c' n ' -> atn_c' n], [fieldSize_ftr, fieldSize_spt], sigma_exc, sigma_exc, 0, ...
     true, true, true, kcf), ['wm_c' n], [], ['atn_c' n]);
 end
@@ -475,15 +457,16 @@ gui.addControl(GlobalControlButton('Save', gui, 'saveParameters', true, false, t
 gui.addControl(GlobalControlButton('Load', gui, 'loadParameters', true, false, true, 'load parameter settings'), [5, 4]);
 gui.addControl(GlobalControlButton('Quit', gui, 'quitSimulation', true, false, false, 'quit simulation'), [6, 4]);
 
-sim.loadSettings('presetSceneRepresentation.json');
+sim.loadSettings('presetSceneRepresentation_noExpandFFT.json');
 
 
 %% run the simulation
 
 gui.run(inf);
 
-
-
+% sim.run(10);
+% t = sim.runWithTimer(100, true);
+% sum(t)
 
 
 

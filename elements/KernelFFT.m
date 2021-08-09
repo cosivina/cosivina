@@ -1,25 +1,29 @@
 % KernelFFT (COSIVINA toolbox)
-%   Connective element that performs an n-dimensional convolution with a
-%   Mexican hat kernel (difference of two Gaussians) with a global
-%   component, using the FFT method (the kernel and the input are
-%   transformed into Fourier space, multiplied, and the result is
-%   transformed back). This is often faster than the direct convolution
-%   method implemented in elements like GaussKernel1D or
+%   Connective element that performs an n-dimensional convolution with a Mexican
+%   hat kernel (difference of two Gaussians) with a global component, using the
+%   FFT method (the kernel and the input are transformed into Fourier space,
+%   multiplied, and the result is transformed back). This is often faster than
+%   the direct convolution method implemented in elements like GaussKernel1D or
 %   LateralInteractions2D.
 %   
 %   This element can be used for all convolutions with Gaussian kernels or
 %   difference-of-Gaussian kernels (with or without global component). The
-%   computational cost is the same for all of these, and depends only on
-%   the size of the input, not the width of the kernel. It is therefore
-%   especially suited if the kernel is large (high sigma-value) relative to
-%   the size of the input. The input may be of any dimensionality.
+%   computational cost is the same for all of these, and depends only on the
+%   size of the input, not the width of the kernel. It is therefore especially
+%   suited if the kernel is large (high sigma-value) relative to the size of the
+%   input. The input may be of any dimensionality.
 %
 %   By default, the convolution in the FFT method is always performed in a
-%   circular fashion along all dimensions. The element allows an emulation
-%   of a non-circular convolution by automatically padding the input with
-%   zeros and then cutting off the borders from the result. Note that this
-%   can become extremely slow for higher-dimensional inputs; elements with
-%   direct convolution should be used in these cases.
+%   circular fashion along all dimensions. The element allows an emulation of a
+%   non-circular convolution by automatically padding the input with zeros and
+%   then cutting off the borders from the result. Note that this can become
+%   extremely slow for higher-dimensional inputs; elements with direct
+%   convolution should be used in these cases.
+%
+%   If multiple circular convolutions are to be performed on the same input, it
+%   may be faster to perform the transformation into Fourier space via a
+%   separate FastFourierTransform element, and then perform the convolution and
+%   reverse transformation using multiple KernelInverseFFT elements.
 %
 % Constructor call:
 % KernelFFT(label, size, sigmaExc, amplitudeExc, sigmaInh, ... 
@@ -219,7 +223,7 @@ classdef KernelFFT < Element
         end
       end
       
-      if obj.amplitudeExc == 0 && obj.amplitudeInh == 0;
+      if obj.amplitudeExc == 0 && obj.amplitudeInh == 0
         kernel = zeros(obj.size);
       end
       

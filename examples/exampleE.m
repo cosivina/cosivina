@@ -38,16 +38,24 @@ sim.addElement(SumDimension('sum u', 1, [1, 150]), ...
 sim.addElement(GaussKernel1D('u -> w', [1, 150], 5, 0.5), ...
   'sum u', 'output', 'field w', 'output');
 
-% alternatively, when using LateralInteractions2D above, we don't need extra summation
+% alternatively, when using LateralInteractions2D above, we don't need extra summation:
 % sim.addElement(GaussKernel1D('u -> w', [1, 150], 5, 0.5), ...
 %   'u -> u', 'verticalSum', 'field w', 'output');
 
-% projection from w to u (first convolution, then expansion)
+% projection from w to u (convolution projecting directly to u)
 sim.addElement(GaussKernel1D('w -> u', [1, 150], 5, 5), ...
-  'field w', 'output');
-sim.addElement(ExpandDimension2D('expand w -> u', 1, [100, 150]), ...
-  'w -> u', 'output', 'field u', 'output');
+  'field w', 'output', 'field u', 'output');
+% older version (first convolution, then expansion)
+% sim.addElement(GaussKernel1D('w -> u', [1, 150], 5, 5), ...
+%   'field w', 'output');
+% sim.addElement(ExpandDimension2D('expand w -> u', 1, [100, 150]), ...
+%   'w -> u', 'output', 'field u', 'output');
 
+% projection into the vertical dimension of u from a hypothetical field v:
+% sim.addElement(GaussKernel1D('v -> u', [1, 100], 5, 5), ...
+%   'field v', 'output');
+% sim.addElement(Transpose('transpose v -> u', 1, [100, 1]), ...
+%   'v -> u', 'output', 'field u', 'output');
 
 sim.run(50);
 

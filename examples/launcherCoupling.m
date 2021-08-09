@@ -45,21 +45,19 @@ sim.addElement(NeuralField('field f', [1, sizeFtr], 20, -5, 4), 'stimulus sum f'
 % add lateral interactions
 sim.addElement(LateralInteractions2D('v -> v', [sizeFtr, sizeSpt], sigma_exc, sigma_exc, 0, sigma_inh, sigma_inh, 0, 0, ...
   false, false, true), 'field v', 'output', 'field v');
-sim.addElement(SumAllDimensions('sum v', [sizeFtr, sizeSpt]), 'field v', 'output');
 sim.addElement(LateralInteractions1D('s -> s', [1, sizeSpt], sigma_exc, 0, sigma_inh, 0, 0, false, true), ...
   'field s', 'output', 'field s');
 sim.addElement(LateralInteractions1D('f -> f', [1, sizeSpt], sigma_exc, 0, sigma_inh, 0, 0, false, true), ...
   'field f', 'output', 'field f');
 
-% projections from field v to 1D fields (uses sum alon one dimension)
-sim.addElement(GaussKernel1D('v -> s', [1, sizeSpt], sigma_exc, 0, false), 'sum v', 'verticalSum', 'field s');
-sim.addElement(GaussKernel1D('v -> f', [1, sizeFtr], sigma_exc, 0, true), 'sum v', 'horizontalSum', 'field f');
+% projections from field v to 1D fields (uses sum along one dimension)
+sim.addElement(GaussKernel1D('v -> s', [1, sizeSpt], sigma_exc, 0, false), 'v -> v', 'verticalSum', 'field s');
+sim.addElement(GaussKernel1D('v -> f', [1, sizeFtr], sigma_exc, 0, true), 'v -> v', 'horizontalSum', 'field f');
 
-% projections from 1D fields to field v (requires expansion to 2D)
-sim.addElement(GaussKernel1D('s -> v', [1, sizeSpt], sigma_exc, 0, false), 'field s', 'output');
-sim.addElement(ExpandDimension2D('expand s -> v', 1, [sizeFtr, sizeSpt]), 's -> v', 'output', 'field v');
+% projections from 1D fields to field v (requires transpose for vertical dimension)
+sim.addElement(GaussKernel1D('s -> v', [1, sizeSpt], sigma_exc, 0, false), 'field s', 'output', 'field v');
 sim.addElement(GaussKernel1D('f -> v', [1, sizeFtr], sigma_exc, 0, true), 'field f', 'output');
-sim.addElement(ExpandDimension2D('expand f -> v', 2, [sizeFtr, sizeSpt]), 'f -> v', 'output', 'field v');
+sim.addElement(Transpose('transpose f -> v', [sizeFtr, 1]), 'f -> v', 'output', 'field v');
 
 % noise
 sim.addElement(NormalNoise('noise s', [1, sizeSpt], 1), [], [], 'field s');

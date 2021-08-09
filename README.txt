@@ -3,7 +3,7 @@ Cosivina - Compose, Simulate, and Visualize Neurodynamic Architectures
 An open source toolbox for MATLAB
 --------------------------------------------------------------------------------
 
-Version 1.3
+Version 1.4
 Written by Sebastian Schneegans at the Institut für Neuroinformatik,
 Ruhr-Universität Bochum, Germany.
 
