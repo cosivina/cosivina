@@ -4,33 +4,33 @@
 		"tZero": 0,
 		"nElements": 27,
 		"elementLabels": [
-				"stimulus 1",
-				"stimulus 2",
-				"stimulus 3",
-				"stimulus sum",
-				"stimulus scale w",
-				"field u",
-				"field v",
-				"field w",
-				"shifted stimulus sum",
-				"shifted stimulus sum w",
-				"u -> u",
-				"u -> v",
-				"u -> w",
-				"v -> u (local)",
-				"v -> w (local)",
-				"sum v",
-				"v -> u (global)",
-				"v -> w (global)",
-				"w -> u",
-				"w -> v",
-				"w -> w",
-				"noise u",
-				"noise kernel u",
-				"noise v",
-				"noise kernel v",
-				"noise w",
-				"noise kernel w"
+			"stimulus 1",
+			"stimulus 2",
+			"stimulus 3",
+			"stimulus sum",
+			"stimulus scale w",
+			"field u",
+			"field v",
+			"field w",
+			"shifted stimulus sum",
+			"shifted stimulus sum w",
+			"u -> u",
+			"u -> v",
+			"u -> w",
+			"v -> u (local)",
+			"v -> w (local)",
+			"sum v",
+			"v -> u (global)",
+			"v -> w (global)",
+			"w -> u",
+			"w -> v",
+			"w -> w",
+			"noise u",
+			"noise kernel u",
+			"noise v",
+			"noise kernel v",
+			"noise w",
+			"noise kernel w"
 		],
 		"elements": [
 			{
@@ -38,9 +38,9 @@
 				"class": "GaussStimulus1D",
 				"param": {
 					"size": [1,180],
-					"sigma": 15,
-					"amplitude": 3.5,
-					"position": 90,
+					"sigma": 5,
+					"amplitude": 0,
+					"position": 36,
 					"circular": 1,
 					"normalized": 0
 				},
@@ -54,7 +54,7 @@
 					"size": [1,180],
 					"sigma": 5,
 					"amplitude": 0,
-					"position": 72,
+					"position": 90,
 					"circular": 1,
 					"normalized": 0
 				},
@@ -68,7 +68,7 @@
 					"size": [1,180],
 					"sigma": 5,
 					"amplitude": 0,
-					"position": 126,
+					"position": 144,
 					"circular": 1,
 					"normalized": 0
 				},
@@ -102,7 +102,7 @@
 				"class": "ScaleInput",
 				"param": {
 					"size": [1,180],
-					"amplitude": 0.3
+					"amplitude": 0.2
 				},
 				"nInputs": 1,
 				"input": {
@@ -117,7 +117,7 @@
 					"size": [1,180],
 					"tau": 20,
 					"h": -5,
-					"beta": 5
+					"beta": 4
 				},
 				"nInputs": 6,
 				"input": [
@@ -154,7 +154,7 @@
 					"size": [1,180],
 					"tau": 5,
 					"h": -5,
-					"beta": 5
+					"beta": 4
 				},
 				"nInputs": 3,
 				"input": [
@@ -179,7 +179,7 @@
 					"size": [1,180],
 					"tau": 20,
 					"h": -5,
-					"beta": 5
+					"beta": 4
 				},
 				"nInputs": 6,
 				"input": [
@@ -268,7 +268,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 5,
-					"amplitude": 15,
+					"amplitude": 10,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -335,8 +335,9 @@
 				"class": "SumDimension",
 				"param": {
 					"sumDimensions": 2,
+					"size": [1,1],
 					"amplitude": 1,
-					"size": [1,1]
+					"dimensionOrder": [1,2]
 				},
 				"nInputs": 1,
 				"input": {
@@ -437,7 +438,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 0,
-					"amplitude": 2,
+					"amplitude": 4,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -464,7 +465,7 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 0,
-					"amplitude": 1,
+					"amplitude": 2,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
@@ -491,14 +492,14 @@
 				"param": {
 					"size": [1,180],
 					"sigma": 0,
-					"amplitude": 2,
+					"amplitude": 4,
 					"circular": 1,
 					"normalized": 1,
 					"cutoffFactor": 5
 				},
 				"nInputs": 1,
 				"input": {
-					"label": "noise v",
+					"label": "noise w",
 					"component": "output"
 				}
 			}

@@ -4,33 +4,33 @@
 		"tZero": 0,
 		"nElements": 27,
 		"elementLabels": [
-				"stimulus 1",
-				"stimulus 2",
-				"stimulus 3",
-				"stimulus sum",
-				"stimulus scale w",
-				"field u",
-				"field v",
-				"field w",
-				"shifted stimulus sum",
-				"shifted stimulus sum w",
-				"u -> u",
-				"u -> v",
-				"u -> w",
-				"v -> u (local)",
-				"v -> w (local)",
-				"sum v",
-				"v -> u (global)",
-				"v -> w (global)",
-				"w -> u",
-				"w -> v",
-				"w -> w",
-				"noise u",
-				"noise kernel u",
-				"noise v",
-				"noise kernel v",
-				"noise w",
-				"noise kernel w"
+			"stimulus 1",
+			"stimulus 2",
+			"stimulus 3",
+			"stimulus sum",
+			"stimulus scale w",
+			"field u",
+			"field v",
+			"field w",
+			"shifted stimulus sum",
+			"shifted stimulus sum w",
+			"u -> u",
+			"u -> v",
+			"u -> w",
+			"v -> u (local)",
+			"v -> w (local)",
+			"sum v",
+			"v -> u (global)",
+			"v -> w (global)",
+			"w -> u",
+			"w -> v",
+			"w -> w",
+			"noise u",
+			"noise kernel u",
+			"noise v",
+			"noise kernel v",
+			"noise w",
+			"noise kernel w"
 		],
 		"elements": [
 			{
@@ -335,8 +335,9 @@
 				"class": "SumDimension",
 				"param": {
 					"sumDimensions": 2,
+					"size": [1,1],
 					"amplitude": 1,
-					"size": [1,1]
+					"dimensionOrder": [1,2]
 				},
 				"nInputs": 1,
 				"input": {
@@ -498,7 +499,7 @@
 				},
 				"nInputs": 1,
 				"input": {
-					"label": "noise v",
+					"label": "noise w",
 					"component": "output"
 				}
 			}

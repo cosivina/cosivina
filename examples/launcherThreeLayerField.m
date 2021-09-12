@@ -56,7 +56,7 @@ sim.addElement(GaussKernel1D('noise kernel u', fieldSize, 0, 2, true, true), 'no
 sim.addElement(NormalNoise('noise v', fieldSize, 1));
 sim.addElement(GaussKernel1D('noise kernel v', fieldSize, 0, 1, true, true), 'noise v', 'output', 'field v');
 sim.addElement(NormalNoise('noise w', fieldSize, 1));
-sim.addElement(GaussKernel1D('noise kernel w', fieldSize, 0, 2, true, true), 'noise v', 'output', 'field w');
+sim.addElement(GaussKernel1D('noise kernel w', fieldSize, 0, 2, true, true), 'noise w', 'output', 'field w');
 
 
 %% setting up the GUI

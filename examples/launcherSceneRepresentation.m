@@ -457,16 +457,13 @@ gui.addControl(GlobalControlButton('Save', gui, 'saveParameters', true, false, t
 gui.addControl(GlobalControlButton('Load', gui, 'loadParameters', true, false, true, 'load parameter settings'), [5, 4]);
 gui.addControl(GlobalControlButton('Quit', gui, 'quitSimulation', true, false, false, 'quit simulation'), [6, 4]);
 
-sim.loadSettings('presetSceneRepresentation_noExpandFFT.json');
+sim.loadSettings('presetSceneRepresentation.json');
 
 
 %% run the simulation
 
 gui.run(inf);
 
-% sim.run(10);
-% t = sim.runWithTimer(100, true);
-% sum(t)
 
 
 
