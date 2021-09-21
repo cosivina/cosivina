@@ -174,7 +174,7 @@ classdef KernelFFT < Element
       
       obj.paddingSize = obj.paddingFactor ...
         * ((~obj.circular) .* max( (obj.amplitudeExc ~= 0) * obj.sigmaExc, (obj.amplitudeInh ~= 0) * obj.sigmaInh ))';
-      extDimSizes = dimSizes + 2*obj.paddingSize;
+      extDimSizes = dimSizes(:) + 2*obj.paddingSize(:);
       obj.extIndices = cell(1, nDim);
       for i = 1 : nDim
         if obj.circular(i)
