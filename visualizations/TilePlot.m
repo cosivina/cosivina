@@ -156,7 +156,8 @@ classdef TilePlot < Visualization
         'XTick', 0.5:obj.inputSize(2):obj.inputSize(2)^2+0.5, 'XTickLabel', [], 'XGrid', 'on',  ...
         'YTick', 0.5:obj.inputSize(1):obj.inputSize(1)^2+0.5, 'YTickLabel', [], 'YGrid', 'on', ...
         obj.axesProperties{:});
-      colormap(jet(256));
+      %colormap(jet(256));
+      colormap('cool');
       
       if ~isempty(obj.title)
         obj.titleHandle = title(obj.axesHandle, obj.title); %#ok<CPROP>
